@@ -1,8 +1,9 @@
 {
-  "extends": "fullstack",
-  "parser": "babel-eslint",
-  "rules": {
-    "semi": [1,"always"],
-    "quotes": [1,"single",{ "allowTemplateLiterals": true }]
-  }
+	"root": true,
+	"parser": "babel-eslint",
+	"extends": "fullstack",
+	"rules": {
+		"semi": 0,
+		"new-cap": [1, { "capIsNewExceptions": ["Router"] }]
+	}
 }
