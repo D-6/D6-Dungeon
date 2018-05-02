@@ -2,7 +2,8 @@
   "extends": "fullstack",
   "parser": "babel-eslint",
   "rules": {
-    "semi": [1,"always"],
-    "quotes": [1,"single",{ "allowTemplateLiterals": true }]
+    "semi": [1, "always"],
+    "quotes": [1, "single", { "allowTemplateLiterals": true }],
+    "id-length": 0
   }
 }

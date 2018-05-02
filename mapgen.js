@@ -13,9 +13,10 @@ class Room {
 }
 
 class Map {
-  constructor(gridSize = 8, totalRooms = 12) {
+  constructor(gridSize = 9, totalRooms = 12, startMiddle = true) {
     this.gridSize = gridSize;
     this.totalRooms = totalRooms;
+    this.startMiddle = startMiddle;
     this.rooms = [];
     this.createMap();
     this.addDoors();
@@ -23,15 +24,20 @@ class Map {
 
   createMap() {
     if (this.gridSize * this.gridSize >= this.totalRooms) {
-      const start = new Room(this.getRandomPosition(), 'start');
+      let start;
+      if (this.startMiddle) {
+        const middle = Math.floor(this.gridSize / 2);
+        start = new Room({ x: middle, y: middle }, 'start');
+      } else {
+        start = new Room(this.getRandomPosition(), 'start');
+      }
+
       this.addRoom(start);
 
       while (this.rooms.length < this.totalRooms) {
         const nextValidPositions = this.getNextValidPositions();
-        const randomIndex = Math.floor(
-          Math.random() * nextValidPositions.length
-        );
-        const room = new Room(nextValidPositions[randomIndex]);
+        const index = Math.floor(Math.random() * nextValidPositions.length);
+        const room = new Room(nextValidPositions[index]);
         this.addRoom(room);
       }
     }
@@ -105,6 +111,12 @@ class Map {
     this.rooms.push(room);
   }
 
+  // showMap shows rooms as per below:
+  //   ^
+  // + |
+  // y |
+  // - |_________>
+  //    - x +
   showMap() {
     const matrix = [];
     for (let i = 0; i < this.gridSize; i++) {
@@ -122,7 +134,10 @@ class Map {
   }
 }
 
-const newMap = new Map(10, 12);
+const gridSize = 9;
+const totalRooms = 12;
+const startMiddle = true;
+
+const newMap = new Map(gridSize, totalRooms, startMiddle);
 
 newMap.showMap();
-console.log(JSON.stringify(newMap));
