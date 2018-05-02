@@ -14,6 +14,7 @@ class Room {
 
 class Map {
   constructor(size = 12) {
+    this.gridSize = 10;
     this.size = size;
     this.rooms = [];
     this.createMap();
@@ -50,8 +51,8 @@ class Map {
           // Only positions inside the map
           position.x >= 0 &&
           position.y >= 0 &&
-          position.x < this.size &&
-          position.y < this.size &&
+          position.x < this.gridSize &&
+          position.y < this.gridSize &&
           // Only positions NOT already in this.rooms
           !this.rooms.find(
             room =>
@@ -65,8 +66,8 @@ class Map {
   }
 
   getRandomPosition() {
-    const positionX = Math.floor(Math.random() * this.size);
-    const positionY = Math.floor(Math.random() * this.size);
+    const positionX = Math.floor(Math.random() * this.gridSize);
+    const positionY = Math.floor(Math.random() * this.gridSize);
     return { x: positionX, y: positionY };
   }
 
