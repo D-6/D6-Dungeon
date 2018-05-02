@@ -13,27 +13,57 @@ class Room {
 }
 
 class Map {
-  constructor(size = 12) {
-    this.gridSize = 10;
-    this.size = size;
+  constructor(gridSize = 8, totalRooms = 12) {
+    this.gridSize = gridSize;
+    this.totalRooms = totalRooms;
     this.rooms = [];
     this.createMap();
     this.addDoors();
   }
 
   createMap() {
-    const start = new Room(this.getRandomPosition(), 'start');
-    this.addRoom(start);
+    if (this.gridSize * this.gridSize >= this.totalRooms) {
+      const start = new Room(this.getRandomPosition(), 'start');
+      this.addRoom(start);
 
-    while (this.rooms.length < this.size) {
-      const nextValidPositions = this.getNextValidPositions();
-      const randomIndex = Math.floor(Math.random() * nextValidPositions.length);
-      const room = new Room(nextValidPositions[randomIndex]);
-      this.addRoom(room);
+      while (this.rooms.length < this.totalRooms) {
+        const nextValidPositions = this.getNextValidPositions();
+        const randomIndex = Math.floor(
+          Math.random() * nextValidPositions.length
+        );
+        const room = new Room(nextValidPositions[randomIndex]);
+        this.addRoom(room);
+      }
     }
   }
 
-  addDoors() {}
+  // addDoors adds doors as per below:
+  //   ^
+  // + |
+  // y |
+  // - |_________>
+  //    - x +
+  addDoors() {
+    this.rooms.forEach((room, i, self) => {
+      self.forEach((compRoom, j) => {
+        if (i !== j) {
+          const { x, y } = room.position;
+          if (compRoom.position.x === x - 1 && compRoom.position.y === y) {
+            room.doors.w = true;
+          }
+          if (compRoom.position.x === x + 1 && compRoom.position.y === y) {
+            room.doors.e = true;
+          }
+          if (compRoom.position.x === x && compRoom.position.y === y - 1) {
+            room.doors.s = true;
+          }
+          if (compRoom.position.x === x && compRoom.position.y === y + 1) {
+            room.doors.n = true;
+          }
+        }
+      });
+    });
+  }
 
   getNextValidPositions() {
     return this.rooms
@@ -46,7 +76,7 @@ class Map {
           { x: room.position.x, y: room.position.y + 1 }
         );
       }, [])
-      .filter((position, index, self) => {
+      .filter((position, i, self) => {
         return (
           // Only positions inside the map
           position.x >= 0 &&
@@ -58,8 +88,8 @@ class Map {
             room =>
               room.position.x === position.x && room.position.y === position.y
           ) &&
-          // No duplicates allowed
-          index ===
+          // No duplicates allowed (remove clustering bias)
+          i ===
             self.findIndex(pos => pos.x === position.x && pos.y === position.y)
         );
       });
@@ -77,21 +107,22 @@ class Map {
 
   showMap() {
     const matrix = [];
-    for (let i = 0; i < this.size; i++) {
+    for (let i = 0; i < this.gridSize; i++) {
       const row = [];
-      for (let j = 0; j < this.size; j++) {
+      for (let j = 0; j < this.gridSize; j++) {
         row.push(' ');
       }
       matrix.push(row);
     }
 
     this.rooms.forEach(room => {
-      matrix[room.position.y][room.position.x] = 'X';
+      matrix[this.gridSize - 1 - room.position.y][room.position.x] = 'X';
     });
     console.log(matrix);
   }
 }
 
-const map = new Map();
+const newMap = new Map(10, 12);
 
-map.showMap();
+newMap.showMap();
+console.log(JSON.stringify(newMap));
