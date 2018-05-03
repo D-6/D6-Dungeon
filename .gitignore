@@ -58,7 +58,7 @@ typings/
 .env
 
 # Tilemaps
-tilemaps/
+/tilemaps
 
 public/bundle.js
 public/bundle.js.map
