@@ -1,4 +1,22 @@
+import { Weasel } from './components/enemies';
+
 /* global D6Dungeon, Phaser */
+
+let enemies;
+let enemyPos = {
+  pos0: [
+    { x: 300, y: 300 },
+    { x: 300, y: 600 },
+    { x: 600, y: 300 },
+    { x: 600, y: 600 }
+  ],
+  pos1: [
+    { x: 200, y: 800 },
+    { x: 200, y: 200 },
+    { x: 200, y: 400 },
+    { x: 200, y: 600 }
+  ]
+};
 
 let player;
 let keybinds = {};
@@ -11,6 +29,7 @@ export default {
 
     // *** Player - Sprite ***
     player = D6Dungeon.game.add.sprite(500, 450, 'player');
+
     player.anchor.setTo(0.5, 0.5);
     player.scale.set(4);
 
@@ -22,6 +41,13 @@ export default {
 
     // *** Player - Animation ***
     player.animations.add('walk', null, 10, true);
+
+    // *** Enemies ***
+    enemies = [];
+    let ran = Math.floor(Math.random() * 2);
+    enemyPos[`pos${ran}`].forEach(pos => {
+      enemies.push(new Weasel(D6Dungeon.game, pos.x, pos.y));
+    });
 
     // *** Player - Keybinds ***
     keybinds.up = D6Dungeon.game.input.keyboard.addKey(Phaser.Keyboard.W);
