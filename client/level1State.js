@@ -1,8 +1,8 @@
-/* global D6Dungeon */
+/* global D6Dungeon, Phaser */
 
 let player;
 let cursors;
-let facing = 'left';
+let isMoving = false;
 
 export default {
   create() {
@@ -19,13 +19,30 @@ export default {
 
   update(){
     player.body.velocity.x = 0;
+    player.body.velocity.y = 0;
 
-    if (cursors.left.isDown) {
+    if (cursors.up.isDown) {
+      player.body.velocity.y = -150;
+
+      if (!isMoving) {
+        player.animations.play('walk');
+        isMoving = true;
+      }
+    }
+    else if (cursors.down.isDown) {
+      player.body.velocity.y = 150;
+
+      if (!isMoving) {
+        player.animations.play('walk');
+        isMoving = true;
+      }
+    }
+    else if (cursors.left.isDown) {
       player.body.velocity.x = -150;
 
-      if (facing != 'left') {
+      if (!isMoving) {
         player.animations.play('walk');
-        facing = 'left';
+        isMoving = true;
       }
 
       // Flips player to face left
@@ -36,28 +53,21 @@ export default {
     else if (cursors.right.isDown) {
       player.body.velocity.x = 150;
 
-      if (facing != 'right') {
+      if (!isMoving) {
         player.animations.play('walk');
-        facing = 'right';
+        isMoving = true;
       }
 
-      // Flips player to face left
+      // Flips player to face right
       if (player.scale.x > 0) {
         player.scale.x *= -1;
       }
     }
     else {
-      if (facing != 'idle') {
+      if (isMoving) {
         player.animations.stop();
-
-        // if (facing == 'left') {
-        //   player.frame = 0;
-        // }
-        // else {
-        //   player.frame = FRAME_PLAYER_RIGHT;
-        // }
-
-        facing = 'idle';
+        isMoving = false;
+        player.frame = 5;
       }
     }
   }
