@@ -21,6 +21,11 @@ router.get('/:level', async (req, res, next) => {
         newMap = null;
     }
 
+    let map = D6Dungeon.game.add.tilemap('level1map');
+    map.addTilesetImage('level_1', 'level1image');
+    const floor = map.createLayer('Floor');
+    const walls = map.createLayer('Walls');
+
     const data = await newMap.createJSONMap();
     console.log(data);
 
