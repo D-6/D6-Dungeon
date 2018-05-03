@@ -4,6 +4,9 @@
   "rules": {
     "semi": [1, "always"],
     "quotes": [1, "single", { "allowTemplateLiterals": true }],
-    "id-length": 0
+    "id-length": 0,
+    "complexity": "off",
+    "no-lonely-if": "off",
+    "max-statements": "off"
   }
 }
