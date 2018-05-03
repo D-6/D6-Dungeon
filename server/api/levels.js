@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Map, combineRooms } = require('../map_generator/mapGen');
+const { Map } = require('../map_generator/mapGen');
 
 module.exports = router;
 
@@ -21,7 +21,8 @@ router.get('/:level', async (req, res, next) => {
         newMap = null;
     }
 
-    const data = newMap.createJSONMap();
+    const data = await newMap.createJSONMap();
+    console.log(data);
 
     // combineRooms(newMap);
 
