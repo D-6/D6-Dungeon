@@ -50,13 +50,13 @@ router.get('/:id', async (req, res, next) => {
     let newMap;
     switch (id) {
       case '1':
-        newMap = new Map(9, 2, true);
+        newMap = new Map(9, 8, true);
         break;
       case '2':
-        newMap = new Map(9, 24, true);
+        newMap = new Map(9, 12, true);
         break;
       case '3':
-        newMap = new Map(9, 36, true);
+        newMap = new Map(9, 16, true);
         break;
       default:
         newMap = null;
