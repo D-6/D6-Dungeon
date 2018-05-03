@@ -1,10 +1,9 @@
+
 /* global D6Dungeon */
 import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js';
 import { Weasel } from './components/enemies';
-let player;
 let cursors;
 let enemies;
-let facing = 'left';
 let enemyPos = {
   pos0: [
     { x: 300, y: 300 },
@@ -20,6 +19,12 @@ let enemyPos = {
   ]
 };
 
+/* global D6Dungeon, Phaser */
+
+let player;
+let keybinds = {};
+
+
 export default {
   create() {
     player = D6Dungeon.game.add.sprite(500, 450, 'player');
@@ -31,54 +36,57 @@ export default {
 
     player.animations.add('walk', null, 10, true);
 
-    cursors = D6Dungeon.game.input.keyboard.createCursorKeys();
     enemies = [];
     var ran = Math.floor(Math.random()*2);
-    console.log(ran);
     enemyPos[`pos${ran}`].forEach(pos => {
       enemies.push(new Weasel(D6Dungeon.game, pos.x, pos.y));
     });
+
+    keybinds.up = D6Dungeon.game.input.keyboard.addKey(Phaser.Keyboard.W);
+    keybinds.down = D6Dungeon.game.input.keyboard.addKey(Phaser.Keyboard.S);
+    keybinds.left = D6Dungeon.game.input.keyboard.addKey(Phaser.Keyboard.A);
+    keybinds.right = D6Dungeon.game.input.keyboard.addKey(Phaser.Keyboard.D);
+    keybinds.arrows = D6Dungeon.game.input.keyboard.createCursorKeys();
+
   },
 
   update() {
     player.body.velocity.x = 0;
+    player.body.velocity.y = 0;
 
-    if (cursors.left.isDown) {
+    if (keybinds.up.isDown) {
+      player.body.velocity.y = -150;
+    }
+    else if (keybinds.down.isDown) {
+      player.body.velocity.y = 150;
+    }
+
+    if (keybinds.left.isDown) {
       player.body.velocity.x = -150;
+    }
+    else if (keybinds.right.isDown) {
+      player.body.velocity.x = 150;
+    }
 
-      if (facing != 'left') {
-        player.animations.play('walk');
-        facing = 'left';
-      }
+    if (player.body.velocity.x === 0 && player.body.velocity.y === 0) {
+      player.animations.stop('walk', true);
+    }
+    else {
+      player.animations.play('walk');
+    }
 
+    // Arrow keys used for firing
+    if (keybinds.arrows.left.isDown) {
       // Flips player to face left
       if (player.scale.x < 0) {
         player.scale.x *= -1;
       }
-    } else if (cursors.right.isDown) {
-      player.body.velocity.x = 150;
 
-      if (facing != 'right') {
-        player.animations.play('walk');
-        facing = 'right';
-      }
-
-      // Flips player to face left
+    }
+    else if (keybinds.arrows.right.isDown) {
+      // Flips player to face right
       if (player.scale.x > 0) {
         player.scale.x *= -1;
-      }
-    } else {
-      if (facing != 'idle') {
-        player.animations.stop();
-
-        // if (facing == 'left') {
-        //   player.frame = 0;
-        // }
-        // else {
-        //   player.frame = FRAME_PLAYER_RIGHT;
-        // }
-
-        facing = 'idle';
       }
     }
   }
