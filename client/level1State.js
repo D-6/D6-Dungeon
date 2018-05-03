@@ -5,9 +5,11 @@ let keybinds = {};
 
 export default {
   create() {
+    D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
+
     player = D6Dungeon.game.add.sprite(500, 450, 'player');
     player.anchor.setTo(0.5, 0.5);
-    D6Dungeon.game.physics.enable(player, Phaser.Physics.ARCADE);
+    D6Dungeon.game.physics.enable(player, Phaser.Physics.P2JS);
 
     player.scale.set(4);
 
@@ -33,9 +35,19 @@ export default {
 
     if (keybinds.left.isDown) {
       player.body.velocity.x = -150;
+
+      // Flips player to face left
+      if (player.scale.x < 0) {
+        player.scale.x *= -1;
+      }
     }
     else if (keybinds.right.isDown) {
       player.body.velocity.x = 150;
+
+      // Flips player to face right
+      if (player.scale.x > 0) {
+        player.scale.x *= -1;
+      }
     }
 
     if (player.body.velocity.x === 0 && player.body.velocity.y === 0) {
