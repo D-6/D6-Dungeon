@@ -1,6 +1,5 @@
-import { Weasel } from './components/enemies';
-
 /* global D6Dungeon, Phaser */
+import { Weasel } from './components/enemies';
 
 let enemies;
 let enemyPos = {
@@ -24,12 +23,16 @@ const movementSpeed = 150;
 
 export default {
   create() {
+    let map = D6Dungeon.game.add.tilemap('level1map');
+    map.addTilesetImage('level_1', 'level1image');
+    const floor = map.createLayer('Floor');
+    const walls = map.createLayer('Walls');
+
     // P2JS not started by default
     D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
 
     // *** Player - Sprite ***
     player = D6Dungeon.game.add.sprite(500, 450, 'player');
-
     player.anchor.setTo(0.5, 0.5);
     player.scale.set(4);
 

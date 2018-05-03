@@ -1,12 +1,18 @@
-import React from 'react';
-import D6DungeonGame from '../game'
+import React, { Component } from 'react';
+import axios from 'axios';
+import D6DungeonGame from '../game';
 
 /* global D6Dungeon */
 
-D6Dungeon.game = new D6DungeonGame();
+class Game extends Component {
+  componentDidMount = async () => {
+    const { data } = await axios.get('api/levels/1');
+    D6Dungeon.game = new D6DungeonGame(data);
+  };
 
-const Game = props => {
-  return <div id="game-container" />;
-};
+  render() {
+    return <div id="game-container" />;
+  }
+}
 
 export default Game;

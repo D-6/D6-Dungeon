@@ -8,13 +8,13 @@ import level1State from './level1State';
 /* global D6Dungeon */
 
 class D6DungeonGame extends Phaser.Game {
-  constructor() {
+  constructor(rooms) {
     const gameWidth = 1216;
     const gameHeight = 832;
 
     super(gameWidth, gameHeight, Phaser.AUTO, 'game-container');
 
-    this.state.add('preloadState', preloadState);
+    this.state.add('preloadState', preloadState(rooms));
     this.state.add('level1State', level1State);
 
     this.state.start('preloadState', true, false);
