@@ -19,7 +19,6 @@ class Room {
     if (this.doors.s) directions += 's';
     if (this.doors.w) directions += 'w';
     this.filename = 'layout_' + directions.length + '_' + directions + '.json';
-    console.log(this.filename);
   }
 }
 
