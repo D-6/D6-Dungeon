@@ -5,15 +5,6 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 
 export default rooms => ({
   preload() {
-    D6Dungeon.game.load.spritesheet(
-      'player',
-      'assets/character_sprites/DuckB.png',
-      16,
-      16
-    );
-
-    console.log(rooms);
-
     D6Dungeon.game.load.tilemap(
       'level1map',
       null,
@@ -22,6 +13,20 @@ export default rooms => ({
     );
 
     D6Dungeon.game.load.image('level1image', 'assets/tilemaps/level_1.png');
+
+    D6Dungeon.game.load.spritesheet(
+      'weasel',
+      'assets/character_sprites/WeaselA.png',
+      16,
+      16
+    );
+
+    D6Dungeon.game.load.spritesheet(
+      'player',
+      'assets/character_sprites/DuckB.png',
+      16,
+      16
+    );
   },
 
   create() {
