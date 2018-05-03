@@ -44,11 +44,11 @@ const fakeMapInfo = {
   ]
 };
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:level', async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { level } = req.params;
     let newMap;
-    switch (id) {
+    switch (level) {
       case '1':
         newMap = new Map(9, 8, true);
         break;
