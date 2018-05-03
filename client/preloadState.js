@@ -2,7 +2,7 @@
 
 export default {
   preload() {
-    D6Dungeon.game.load.spritesheet('player', 'assets/Mob/DuckB.png', 16, 16);
+    D6Dungeon.game.load.spritesheet('player', 'assets/character_sprites/DuckB.png', 16, 16);
   },
 
   create() {
