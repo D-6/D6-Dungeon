@@ -73,8 +73,14 @@ router.get('/:id', async (req, res, next) => {
       return readFilePromise(pathToFile, 'utf8');
     });
     Promise.all(promiseArray)
-      .then(rooms => rooms.map(room => JSON.parse(room)))
-      .then(data => res.json(data))
+      .then(rooms =>
+        rooms.map((room, i) => {
+          const JSONroom = JSON.parse(room);
+          JSONroom.position = newMap.rooms[i].position;
+          return JSONroom;
+        })
+      )
+      .then(rooms => res.json(rooms))
       .catch(err => next(err));
   } catch (err) {
     next(err);
