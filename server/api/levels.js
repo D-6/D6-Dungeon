@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const path = require('path');
+const readFilePromise = require('fs-readfile-promise');
 const { Map } = require('../map_generator/mapGen');
 
 module.exports = router;
@@ -21,31 +23,29 @@ router.get('/:level', async (req, res, next) => {
         newMap = null;
     }
 
-    let map = D6Dungeon.game.add.tilemap('level1map');
-    map.addTilesetImage('level_1', 'level1image');
-    const floor = map.createLayer('Floor');
-    const walls = map.createLayer('Walls');
+    // let map = D6Dungeon.game.add.tilemap('level1map');
+    // map.addTilesetImage('level_1', 'level1image');
+    // const floor = map.createLayer('Floor');
+    // const walls = map.createLayer('Walls');
 
-    const data = await newMap.createJSONMap();
-    console.log(data);
+    // const data = await newMap.createJSONMap();
+    // console.log(data);
 
     // combineRooms(newMap);
 
     // console.log(newMap.rooms);
 
-    // const pathToFile = path.join(
-    //   __dirname,
-    //   '..',
-    //   'map_generator',
-    //   'layouts',
-    //   newMap.rooms[0].filename
-    // );
+    const pathToFile = path.join(
+      __dirname,
+      '..',
+      'map_generator',
+      'layouts',
+      newMap.rooms[0].filename
+    );
 
-    // let data = await readFilePromise(pathToFile, 'utf8');
+    let data = await readFilePromise(pathToFile, 'utf8');
 
-    // data = JSON.parse(data);
-
-    // data.tilesets[0].name = 'level_1';
+    data = JSON.parse(data);
 
     res.json(data);
 
