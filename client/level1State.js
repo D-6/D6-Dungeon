@@ -5,6 +5,11 @@ let keybinds = {};
 
 export default {
   create() {
+    let map = D6Dungeon.game.add.tilemap('level1map');
+    map.addTilesetImage('level_1', 'level1image');
+    const floor = map.createLayer('Floor');
+    const walls = map.createLayer('Walls');
+
     player = D6Dungeon.game.add.sprite(500, 450, 'player');
     player.anchor.setTo(0.5, 0.5);
     D6Dungeon.game.physics.enable(player, Phaser.Physics.ARCADE);

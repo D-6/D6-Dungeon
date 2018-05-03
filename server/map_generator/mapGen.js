@@ -1,3 +1,6 @@
+const path = require('path');
+const readFilePromise = require('fs-readfile-promise');
+
 // const specialRoomTypes = ['start', 'boss', 'treasure'];
 
 class Room {
@@ -148,6 +151,23 @@ class Map {
     this.rooms.forEach((room, i) => {
       room.makeRoomFilename();
     });
+  }
+
+  createJSONMap() {
+    // const pathToFile = path.join(
+    //   __dirname,
+    //   '.',
+    //   'layouts',
+    //   this.rooms[0].filename
+    // );
+    let data;
+    this.rooms.forEach(async (room, i) => {
+      if (i === 0) {
+        const pathToFile = path.join(__dirname, '.', 'layouts', room.filename);
+        data = JSON.parse(await readFilePromise(pathToFile, 'utf8'));
+      }
+    });
+    console.log(data);
   }
 }
 
