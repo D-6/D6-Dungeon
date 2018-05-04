@@ -1,5 +1,6 @@
-/* global D6Dungeon, Phaser */
 import { Weasel } from './components/enemies';
+
+/* global D6Dungeon, Phaser */
 
 let enemies;
 let enemyPos = {
@@ -40,7 +41,10 @@ export default {
 
     // P2JS not started by default
     D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
+
+    // *** Walls - Physics ***
     D6Dungeon.game.physics.p2.convertTilemap(map, walls);
+    walls.debug = true; // Use to see collision model
 
     // *** Player - Sprite ***
     player = D6Dungeon.game.add.sprite(500, 450, 'player');
@@ -49,9 +53,10 @@ export default {
 
     // *** Player - Physics ***
     D6Dungeon.game.physics.enable(player, Phaser.Physics.P2JS);
+    // player.body.kinematic = true; // Kinematic means that the body will not be effected by physics such as gravity and collisions, but can still move and will fire collision events
     player.body.fixedRotation = true;
     player.body.setRectangle(player.width - 10, player.height - 10, 0, 6);
-    // player.body.debug = true // Use to see collision model
+    player.body.debug = true; // Use to see collision model
 
     // *** Player - Animation ***
     player.animations.add('walk', null, 10, true);
