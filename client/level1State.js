@@ -17,26 +17,54 @@ let enemyPos = {
   ]
 };
 
+const changeRooms = {
+  moveWest: () => {
+    console.log('HELLO!');
+  }
+};
+
 let player;
 let keybinds = {};
-const movementSpeed = 150;
+const movementSpeed = 600;
 
 export default {
   create() {
-    let map = D6Dungeon.game.add.tilemap('level1Map');
+    let map = D6Dungeon.game.add.tilemap('level1_3-3');
     map.addTilesetImage('level_1', 'level1Image');
     const floor = map.createLayer('Floor');
     const walls = map.createLayer('Walls');
 
     // IDs need to be Tile ID + 1
     map.setCollisionBetween(35, 37, true, walls); // Walls
-    map.setCollision([
-      50, 54, 66, 70, 82, 86, 89, // Walls
-      130, 133, 134, 138, 145, 147, 148, 151, 161, 163, 165, 166, 178 // Door frames
-    ], true, walls);
     map.setCollisionBetween(99, 101, true, walls); // Walls
     map.setCollisionBetween(105, 107, true, walls); // Walls
     map.setCollisionBetween(120, 122, true, walls); // Walls
+    map.setCollision(
+      [
+        50,
+        54,
+        66,
+        70,
+        82,
+        86,
+        89, // Walls
+        130,
+        133,
+        134,
+        138,
+        145,
+        147,
+        148,
+        151,
+        161,
+        163,
+        165,
+        166,
+        178 // Door frames
+      ],
+      true,
+      walls
+    );
 
     // P2JS not started by default
     D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
@@ -46,6 +74,31 @@ export default {
     player = D6Dungeon.game.add.sprite(500, 450, 'player');
     player.anchor.setTo(0.5, 0.5);
     player.scale.set(4);
+
+    // *** Door Sensors ***
+    const sensorWest = D6Dungeon.game.add.sprite(64, 384, 'wizard');
+    sensorWest.scale.set(0.14);
+    D6Dungeon.game.physics.p2.enable(sensorWest);
+    const sensorWestShape = sensorWest.body.addCircle(1);
+    sensorWestShape.sensor = true;
+
+    const sensorEast = D6Dungeon.game.add.sprite(1088, 384, 'wizard');
+    sensorEast.scale.set(0.14);
+    D6Dungeon.game.physics.p2.enable(sensorEast);
+    const sensorEastShape = sensorEast.body.addCircle(1);
+    sensorEastShape.sensor = true;
+
+    const sensorNorth = D6Dungeon.game.add.sprite(576, 64, 'wizard');
+    sensorNorth.scale.set(0.14);
+    D6Dungeon.game.physics.p2.enable(sensorNorth);
+    const sensorNorthShape = sensorNorth.body.addCircle(1);
+    sensorNorthShape.sensor = true;
+
+    const sensorSouth = D6Dungeon.game.add.sprite(576, 704, 'wizard');
+    sensorSouth.scale.set(0.14);
+    D6Dungeon.game.physics.p2.enable(sensorSouth);
+    const sensorSouthShape = sensorSouth.body.addCircle(1);
+    sensorSouthShape.sensor = true;
 
     // *** Player - Physics ***
     D6Dungeon.game.physics.enable(player, Phaser.Physics.P2JS);
