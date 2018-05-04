@@ -23,8 +23,8 @@ const movementSpeed = 150;
 
 export default {
   create() {
-    let map = D6Dungeon.game.add.tilemap('level1map');
-    map.addTilesetImage('level_1', 'level1image');
+    let map = D6Dungeon.game.add.tilemap('level1Map');
+    map.addTilesetImage('level_1', 'level1Image');
     const floor = map.createLayer('Floor');
     const walls = map.createLayer('Walls');
 
