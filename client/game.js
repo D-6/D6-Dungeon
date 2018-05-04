@@ -5,8 +5,6 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 import preloadState from './preloadState';
 import level1State from './level1State';
 
-/* global D6Dungeon */
-
 class D6DungeonGame extends Phaser.Game {
   constructor(rooms) {
     const gameWidth = 1216;
