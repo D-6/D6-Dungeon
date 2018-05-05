@@ -1,4 +1,4 @@
-import { Weasel } from './components/enemies';
+import { Weasel } from './enemies';
 
 /* global D6Dungeon, Phaser */
 
@@ -21,6 +21,8 @@ let enemyPos = {
 let player;
 let keybinds = {};
 const movementSpeed = 150;
+let ammo;
+let nextFire = 0;
 
 export default {
   create() {
@@ -31,10 +33,32 @@ export default {
 
     // IDs need to be Tile ID + 1
     map.setCollisionBetween(35, 37, true, walls); // Walls
-    map.setCollision([
-      50, 54, 66, 70, 82, 86, 89, // Walls
-      130, 133, 134, 138, 145, 147, 148, 151, 161, 163, 165, 166, 178 // Door frames
-    ], true, walls);
+    map.setCollision(
+      [
+        50,
+        54,
+        66,
+        70,
+        82,
+        86,
+        89, // Walls
+        130,
+        133,
+        134,
+        138,
+        145,
+        147,
+        148,
+        151,
+        161,
+        163,
+        165,
+        166,
+        178 // Door frames
+      ],
+      true,
+      walls
+    );
     map.setCollisionBetween(99, 101, true, walls); // Walls
     map.setCollisionBetween(105, 107, true, walls); // Walls
     map.setCollisionBetween(120, 122, true, walls); // Walls
@@ -60,6 +84,14 @@ export default {
 
     // *** Player - Animation ***
     player.animations.add('walk', null, 10, true);
+
+    // *** Bullets ***
+    ammo = D6Dungeon.game.add.physicsGroup(Phaser.Physics.P2JS);
+    ammo.createMultiple(30, 'ammo');
+    ammo.setAll('anchor.x', 0.5);
+    ammo.setAll('anchor.y', 0.5);
+    ammo.setAll('outOfBoundsKill', true);
+    ammo.setAll('checkWorldBounds', true);
 
     // *** Enemies ***
     enemies = [];
@@ -119,6 +151,23 @@ export default {
       if (player.scale.x > 0) {
         player.scale.x *= -1;
       }
+    }
+  },
+
+  fire() {
+    if (D6Dungeon.game.time.now > nextFire && ammo.countDead() > 0) {
+      nextFire = D6Dungeon.game.time.now + fireRate;
+
+      var bullet = ammo.getFirstExists(false);
+
+      // bullet.reset(turret.x, turret.y);
+
+      bullet.rotation = D6Dungeon.game.physics.arcade.moveToPointer(
+        bullet,
+        1000,
+        D6Dungeon.game.input.activePointer,
+        500
+      );
     }
   }
 };
