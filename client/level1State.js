@@ -1,4 +1,6 @@
 import { Weasel } from './components/enemies';
+import { createWallCollision } from './wallCollision';
+import { createDoorSensors } from './doorSensors';
 
 /* global D6Dungeon, Phaser */
 
@@ -6,57 +8,44 @@ let enemies;
 let enemyPos = {
   pos0: [
     { x: 300, y: 300 },
-    { x: 300, y: 600 },
-    { x: 600, y: 300 },
-    { x: 600, y: 600 }
+    { x: 300, y: 608 },
+    { x: 608, y: 300 },
+    { x: 608, y: 608 }
   ],
   pos1: [
-    { x: 200, y: 800 },
     { x: 200, y: 200 },
-    { x: 200, y: 400 },
-    { x: 200, y: 600 }
+    { x: 200, y: 350 },
+    { x: 200, y: 500 },
+    { x: 200, y: 650 }
   ]
 };
 
 let player;
 let keybinds = {};
-const movementSpeed = 150;
+const movementSpeed = 400;
 
 export default {
   create() {
-    let map = D6Dungeon.game.add.tilemap('level1Map');
+    D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
+
+    let map = D6Dungeon.game.add.tilemap('level1_3-3');
     map.addTilesetImage('level_1', 'level1Image');
     const floor = map.createLayer('Floor');
     const walls = map.createLayer('Walls');
 
-    // IDs need to be Tile ID + 1
-    map.setCollisionBetween(35, 37, true, walls); // Walls
-    map.setCollision([
-      50, 54, 66, 70, 82, 86, 89, // Walls
-      130, 133, 134, 138, 145, 147, 148, 151, 161, 163, 165, 166, 178 // Door frames
-    ], true, walls);
-    map.setCollisionBetween(99, 101, true, walls); // Walls
-    map.setCollisionBetween(105, 107, true, walls); // Walls
-    map.setCollisionBetween(120, 122, true, walls); // Walls
-
-    // P2JS not started by default
-    D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
-
-    // *** Walls - Physics ***
-    D6Dungeon.game.physics.p2.convertTilemap(map, walls);
-    walls.debug = true; // Use to see collision model
+    createWallCollision(map, walls, D6Dungeon.game);
+    createDoorSensors(D6Dungeon.game);
 
     // *** Player - Sprite ***
-    player = D6Dungeon.game.add.sprite(500, 450, 'player');
+    player = D6Dungeon.game.add.sprite(608, 416, 'player');
     player.anchor.setTo(0.5, 0.5);
     player.scale.set(4);
 
     // *** Player - Physics ***
-    D6Dungeon.game.physics.enable(player, Phaser.Physics.P2JS);
-    // player.body.kinematic = true; // Kinematic means that the body will not be effected by physics such as gravity and collisions, but can still move and will fire collision events
+    // 2nd arg is debug mode
+    D6Dungeon.game.physics.p2.enable(player, true);
     player.body.fixedRotation = true;
     player.body.setRectangle(player.width - 10, player.height - 10, 0, 6);
-    player.body.debug = true; // Use to see collision model
 
     // *** Player - Animation ***
     player.animations.add('walk', null, 10, true);
