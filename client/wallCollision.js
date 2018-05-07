@@ -32,6 +32,8 @@ export const createWallCollision = (map, walls, game) => {
   );
 
   // *** Walls - Physics ***
-  game.physics.p2.convertTilemap(map, walls);
+  const wallBodies = game.physics.p2.convertTilemap(map, walls);
   walls.debug = true;
+
+  return wallBodies;
 };

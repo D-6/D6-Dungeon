@@ -3,15 +3,15 @@
 class Weasel {
   constructor(game, x, y) {
     this.game = game;
-    this.weasel = game.add.sprite(x, y, 'weasel');
-    this.weasel.anchor.set(0.5);
-    this.weasel.scale.set(4);
+    this.sprite = game.add.sprite(x, y, 'weasel');
+    this.sprite.anchor.set(0.5);
+    this.sprite.scale.set(4);
 
     // *** Weasel - Physics ***
     // 2nd arg is debug mode
-    game.physics.p2.enable(this.weasel, true);
-    this.weasel.body.fixedRotation = true;
-    this.weasel.body.setRectangle(this.weasel.width - 3, this.weasel.height, 0, 0);
+    game.physics.p2.enable(this.sprite, true);
+    this.sprite.body.fixedRotation = true;
+    this.sprite.body.setRectangle(this.sprite.width - 3, this.sprite.height, 0, 0);
   }
 }
 
