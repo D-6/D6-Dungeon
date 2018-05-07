@@ -79,7 +79,8 @@ export default {
   },
 
   update() {
-    enemyPathing(easystar, enemies[0].weasel, player, enemySpeed);
+    enemies.forEach(enemy => enemyPathing(easystar, enemy.weasel, player, enemySpeed))
+    // enemyPathing(easystar, enemies[0].weasel, player, enemySpeed);
 
     player.body.velocity.x = 0;
     player.body.velocity.y = 0;
