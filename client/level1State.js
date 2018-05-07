@@ -1,8 +1,15 @@
+import easystarjs from 'easystarjs';
+const easystar = new easystarjs.js();
+
 import { Weasel } from './components/enemies';
 import { createWallCollision } from './wallCollision';
 import { createDoorSensors } from './doorSensors';
+import { enemyPathing } from './enemyPathing';
 
 /* global D6Dungeon, Phaser */
+
+let floorMap;
+let enemySpeed = 90;
 
 let enemies;
 let enemyPos = {
@@ -50,6 +57,12 @@ export default {
     // *** Player - Animation ***
     player.animations.add('walk', null, 10, true);
 
+    // *** Enemy pathfinding ***
+    floorMap = floor.layer.data.map(row => row.map(col => col.index));
+    easystar.setGrid(floorMap);
+    easystar.setAcceptableTiles([3, 4]);
+    easystar.enableDiagonals();
+
     // *** Enemies ***
     enemies = [];
     let ran = Math.floor(Math.random() * 2);
@@ -66,6 +79,8 @@ export default {
   },
 
   update() {
+    enemyPathing(easystar, enemies[0].weasel, player, enemySpeed);
+
     player.body.velocity.x = 0;
     player.body.velocity.y = 0;
 
