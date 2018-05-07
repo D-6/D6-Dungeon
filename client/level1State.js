@@ -22,7 +22,7 @@ let enemyPos = {
 
 let player;
 let keybinds = {};
-const movementSpeed = 400; // should be player stat
+const movementSpeed = 200; // should be player stat
 let bullets;
 let nextFire = 0;
 let fireRate = 400; // should be player stat
@@ -47,12 +47,16 @@ export default {
     const wallBodies = createWallCollision(map, walls, D6Dungeon.game);
     wallBodies.forEach(wallBody => {
       wallBody.setCollisionGroup(wallsCollisionGroup);
-      wallBody.collides([enemiesCollisionGroup, playersCollisionGroup]);
+      wallBody.collides([
+        bulletsCollisionGroup,
+        enemiesCollisionGroup,
+        playersCollisionGroup
+      ]);
     });
 
     createDoorSensors(D6Dungeon.game).forEach(doorSensor => {
-      doorSensor.body.setCollisionGroup(doorSensorsCollisionGroup)
-      doorSensor.body.collides(playersCollisionGroup)
+      doorSensor.body.setCollisionGroup(doorSensorsCollisionGroup);
+      doorSensor.body.collides(playersCollisionGroup);
     });
 
     // *** Player - Sprite ***
@@ -66,7 +70,12 @@ export default {
     player.body.fixedRotation = true;
     player.body.setRectangle(player.width - 10, player.height - 10, 0, 6);
     player.body.setCollisionGroup(playersCollisionGroup);
-    player.body.collides([doorSensorsCollisionGroup, playersCollisionGroup, wallsCollisionGroup]);
+    player.body.collides([
+      bulletsCollisionGroup,
+      doorSensorsCollisionGroup,
+      playersCollisionGroup,
+      wallsCollisionGroup
+    ]);
     player.body.collides(enemiesCollisionGroup, playerHitByEnemy);
 
     // *** Player - Animation ***
@@ -74,10 +83,17 @@ export default {
 
     // *** Bullets ***
     bullets = D6Dungeon.game.add.physicsGroup(Phaser.Physics.P2JS);
-    bullets.createMultiple(30, 'bullets', 0, false, bullet => {
+    bullets.createMultiple(10, 'bullets', 0, false, bullet => {
       bullet.anchor.set(0.5);
       bullet.damage = 1;
       bullet.body.setCollisionGroup(bulletsCollisionGroup);
+      bullet.body.collides(
+        [playersCollisionGroup, wallsCollisionGroup],
+        bulletBody => {
+          bulletBody.sprite.kill();
+        }
+      );
+      bullet.body.collides(enemiesCollisionGroup, bulletHitEnemy);
     });
 
     // *** Enemies ***
@@ -86,7 +102,12 @@ export default {
     enemyPos[`pos${ran}`].forEach(pos => {
       const weasel = new Weasel(D6Dungeon.game, pos.x, pos.y);
       weasel.sprite.body.setCollisionGroup(enemiesCollisionGroup);
-      weasel.sprite.body.collides([enemiesCollisionGroup, playersCollisionGroup, wallsCollisionGroup]);
+      weasel.sprite.body.collides([
+        bulletsCollisionGroup,
+        enemiesCollisionGroup,
+        playersCollisionGroup,
+        wallsCollisionGroup
+      ]);
       enemies.push(weasel);
     });
 
@@ -149,10 +170,10 @@ const fire = () => {
     let bullet = bullets.getFirstExists(false);
 
     if (keybinds.arrows.up.isDown) {
-      bullet.reset(player.x, player.y - 20);
+      bullet.reset(player.x, player.y - 50);
       bullet.body.moveUp(bulletSpeed);
     } else if (keybinds.arrows.down.isDown) {
-      bullet.reset(player.x, player.y + 20);
+      bullet.reset(player.x, player.y + 70);
       bullet.body.moveDown(bulletSpeed);
     } else if (keybinds.arrows.left.isDown) {
       // Flips player to face left
@@ -160,7 +181,7 @@ const fire = () => {
         player.scale.x *= -1;
       }
 
-      bullet.reset(player.x - 20, player.y);
+      bullet.reset(player.x - 60, player.y);
       bullet.body.moveLeft(bulletSpeed);
     } else if (keybinds.arrows.right.isDown) {
       // Flips player to face right
@@ -168,12 +189,17 @@ const fire = () => {
         player.scale.x *= -1;
       }
 
-      bullet.reset(player.x + 20, player.y);
+      bullet.reset(player.x + 60, player.y);
       bullet.body.moveRight(bulletSpeed);
     }
   }
 };
 
 const playerHitByEnemy = (playerBody, enemyBody) => {
-  console.log('playerHitByEnemy')
-}
+  console.log('playerHitByEnemy');
+};
+
+const bulletHitEnemy = (bulletBody, enemyBody) => {
+  console.log('bulletHitEnemy');
+  bulletBody.sprite.kill();
+};
