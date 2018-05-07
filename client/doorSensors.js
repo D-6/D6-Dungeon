@@ -28,4 +28,6 @@ export const createDoorSensors = game => {
   sensorSouth.body.onBeginContact.add(other => {
     console.log('South door entered by:', other.sprite.key);
   });
+
+  return [sensorWest, sensorEast, sensorNorth, sensorSouth];
 };

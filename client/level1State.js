@@ -31,8 +31,10 @@ let bulletSpeed = 400; // should be player stat
 export default {
   create() {
     D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
+    D6Dungeon.game.physics.p2.setImpactEvents(true);
 
     let wallsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
+    let doorSensorsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
     let playersCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
     let enemiesCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
     let bulletsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
@@ -48,7 +50,10 @@ export default {
       wallBody.collides([enemiesCollisionGroup, playersCollisionGroup]);
     });
 
-    createDoorSensors(D6Dungeon.game);
+    createDoorSensors(D6Dungeon.game).forEach(doorSensor => {
+      doorSensor.body.setCollisionGroup(doorSensorsCollisionGroup)
+      doorSensor.body.collides(playersCollisionGroup)
+    });
 
     // *** Player - Sprite ***
     player = D6Dungeon.game.add.sprite(608, 416, 'player');
@@ -61,7 +66,8 @@ export default {
     player.body.fixedRotation = true;
     player.body.setRectangle(player.width - 10, player.height - 10, 0, 6);
     player.body.setCollisionGroup(playersCollisionGroup);
-    player.body.collides([enemiesCollisionGroup, playersCollisionGroup, wallsCollisionGroup]);
+    player.body.collides([doorSensorsCollisionGroup, playersCollisionGroup, wallsCollisionGroup]);
+    player.body.collides(enemiesCollisionGroup, playerHitByEnemy);
 
     // *** Player - Animation ***
     player.animations.add('walk', null, 10, true);
@@ -167,3 +173,7 @@ const fire = () => {
     }
   }
 };
+
+const playerHitByEnemy = (playerBody, enemyBody) => {
+  console.log('playerHitByEnemy')
+}
