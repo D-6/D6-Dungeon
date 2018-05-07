@@ -8,10 +8,10 @@ class Weasel {
     this.weasel.scale.set(4);
 
     // *** Weasel - Physics ***
-    game.physics.enable(this.weasel, Phaser.Physics.P2JS);
+    // 2nd arg is debug mode
+    game.physics.p2.enable(this.weasel, true);
     this.weasel.body.fixedRotation = true;
     this.weasel.body.setRectangle(this.weasel.width - 3, this.weasel.height, 0, 0);
-    this.weasel.body.debug = true; // Use to see collision model
   }
 }
 

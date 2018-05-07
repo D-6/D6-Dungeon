@@ -6,14 +6,22 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 
 export default rooms => ({
   preload() {
-    D6Dungeon.game.load.tilemap(
-      'level1Map',
-      null,
-      rooms[0],
-      Phaser.Tilemap.TILED_JSON
-    );
+    rooms.forEach(room => {
+      const { x, y } = room.position;
+      D6Dungeon.game.load.tilemap(
+        `level1_${x}-${y}`,
+        null,
+        room,
+        Phaser.Tilemap.TILED_JSON
+      );
+    });
 
     D6Dungeon.game.load.image('level1Image', 'assets/tilemaps/level_1.png');
+
+    D6Dungeon.game.load.image(
+      'wizard',
+      'assets/character_sprites/wizard_idle_1.png'
+    );
 
     D6Dungeon.game.load.spritesheet(
       'weasel',
