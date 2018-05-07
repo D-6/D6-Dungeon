@@ -10,23 +10,41 @@ const createSensor = (game, x, y) => {
   return sensor;
 };
 
-export const createDoorSensors = game => {
+export const createDoorSensors = (game, currentState) => {
   const sensorWest = createSensor(game, 32, 416);
   const sensorEast = createSensor(game, 1184, 416);
   const sensorNorth = createSensor(game, 608, 32);
   const sensorSouth = createSensor(game, 608, 800);
 
+  const level = currentState.slice(0, 7);
+  const x = +currentState.slice(7, 8);
+  const y = +currentState.slice(9, 10);
+  let nextRoom;
+
+  console.log(currentState);
   sensorWest.body.onBeginContact.add(other => {
-    console.log('West door entered by:', other.sprite.key);
+    if (other.sprite.key === 'player') {
+      nextRoom = level + (x - 1) + '-' + y;
+      game.state.start(nextRoom, true, false, 'east');
+    }
   });
   sensorEast.body.onBeginContact.add(other => {
-    console.log('East door entered by:', other.sprite.key);
+    if (other.sprite.key === 'player') {
+      nextRoom = level + (x + 1) + '-' + y;
+      game.state.start(nextRoom, true, false, 'west');
+    }
   });
   sensorNorth.body.onBeginContact.add(other => {
-    console.log('North door entered by:', other.sprite.key);
+    if (other.sprite.key === 'player') {
+      nextRoom = level + x + '-' + (y + 1);
+      game.state.start(nextRoom, true, false, 'south');
+    }
   });
   sensorSouth.body.onBeginContact.add(other => {
-    console.log('South door entered by:', other.sprite.key);
+    if (other.sprite.key === 'player') {
+      nextRoom = level + x + '-' + (y - 1);
+      game.state.start(nextRoom, true, false, 'north');
+    }
   });
 
   // try to create collision group here
