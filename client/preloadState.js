@@ -16,9 +16,16 @@ export default rooms => ({
       );
     });
 
+    D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
+
+    // Load all sprites / enemies for the level
+
     D6Dungeon.game.load.image('level1Image', 'assets/tilemaps/level_1.png');
 
-    D6Dungeon.game.load.image('wizard', 'assets/character_sprites/wizard_idle_1.png');
+    D6Dungeon.game.load.image(
+      'wizard',
+      'assets/character_sprites/wizard_idle_1.png'
+    );
 
     D6Dungeon.game.load.spritesheet(
       'weasel',
@@ -36,6 +43,6 @@ export default rooms => ({
   },
 
   create() {
-    this.state.start('level1State', true, false);
+    this.state.start('level1_3-3', true, false);
   }
 });
