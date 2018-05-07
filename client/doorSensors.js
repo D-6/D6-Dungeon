@@ -21,6 +21,7 @@ export const createDoorSensors = (game, currentState) => {
   const y = +currentState.slice(9, 10);
   let nextRoom;
 
+  console.log(currentState);
   sensorWest.body.onBeginContact.add(other => {
     if (other.sprite.key === 'player') {
       nextRoom = level + (x - 1) + '-' + y;
@@ -35,13 +36,13 @@ export const createDoorSensors = (game, currentState) => {
   });
   sensorNorth.body.onBeginContact.add(other => {
     if (other.sprite.key === 'player') {
-      nextRoom = level + x + '-' + (y - 1);
+      nextRoom = level + x + '-' + (y + 1);
       game.state.start(nextRoom, true, false, 'south');
     }
   });
   sensorSouth.body.onBeginContact.add(other => {
     if (other.sprite.key === 'player') {
-      nextRoom = level + x + '-' + (y + 1);
+      nextRoom = level + x + '-' + (y - 1);
       game.state.start(nextRoom, true, false, 'north');
     }
   });
