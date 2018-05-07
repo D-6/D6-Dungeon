@@ -17,6 +17,7 @@ export default rooms => ({
     });
 
     D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
+    D6Dungeon.game.physics.p2.setImpactEvents(true);
 
     // Load all sprites / enemies for the level
 

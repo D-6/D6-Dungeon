@@ -46,4 +46,8 @@ export const createDoorSensors = (game, currentState) => {
       game.state.start(nextRoom, true, false, 'north');
     }
   });
+
+  // try to create collision group here
+
+  return [sensorWest, sensorEast, sensorNorth, sensorSouth];
 };
