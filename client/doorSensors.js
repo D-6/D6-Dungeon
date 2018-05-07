@@ -29,5 +29,7 @@ export const createDoorSensors = game => {
     console.log('South door entered by:', other.sprite.key);
   });
 
+  // try to create collision group here
+
   return [sensorWest, sensorEast, sensorNorth, sensorSouth];
 };
