@@ -11,7 +11,6 @@ import { addPlayerToRoom } from '../../Player';
 
 let player1;
 let enemies;
-let floorMap;
 
 export default {
   create() {
@@ -67,7 +66,7 @@ export default {
     );
 
     // *** Enemy pathfinding ***
-    floorMap = floor.layer.data.map(row => row.map(col => col.index));
+    const floorMap = floor.layer.data.map(row => row.map(col => col.index));
     easystar.setGrid(floorMap);
     easystar.setAcceptableTiles([3, 4]);
     easystar.enableDiagonals();
