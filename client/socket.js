@@ -4,9 +4,6 @@ const socket = io(window.location.origin);
 
 socket.on('connect', () => {
   console.log('Connected!');
-  socket.on('moveUpMsg', (data) => {
-    console.log(data);
-  });
 });
 
 export default socket;

@@ -12,11 +12,13 @@ import { Potion } from '../../Items';
 /* global D6Dungeon */
 
 let player1;
+let player2;
 let enemies;
 
 export default {
   create() {
     player1 = D6Dungeon.game.state.player1;
+    player2 = D6Dungeon.game.state.player2;
 
     const wallsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
     const doorsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
@@ -83,7 +85,19 @@ export default {
       ],
       enemiesCollisionGroup
     );
-
+    player2.addPlayerToRoom(
+      D6Dungeon.game,
+      playersCollisionGroup,
+      [
+        bulletsCollisionGroup,
+        doorSensorsCollisionGroup,
+        playersCollisionGroup,
+        wallsCollisionGroup,
+        itemsCollisionGroup,
+        doorsCollisionGroup
+      ],
+      enemiesCollisionGroup
+    );
     // *** Bullets ***
     player1.addBullets(
       D6Dungeon.game,
@@ -111,8 +125,11 @@ export default {
     enemies.forEach(enemy => {
       enemyPathing(easystar, enemy, player1);
     });
+    socket.on('moveP2', (data) => {
+      player2.sprite.body.x = data.x;
+      player2.sprite.body.y = data.y;
+    });
     player1.addMovement();
     player1.addShooting(D6Dungeon.game);
-    socket.emit('playerMove', { x: player1.sprite.x, y: player1.sprite.y });
   }
 };
