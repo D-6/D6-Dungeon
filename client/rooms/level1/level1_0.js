@@ -7,7 +7,7 @@ import { enemyGenerator } from '../../enemyGenerator';
 import { enemyPathing } from '../../enemyPathing';
 import { addPlayerToRoom } from '../../Player';
 
-/* global D6Dungeon, Phaser */
+/* global D6Dungeon */
 
 let player1;
 let enemies;
@@ -16,14 +16,14 @@ export default {
   create() {
     player1 = D6Dungeon.game.state.player1;
 
-    let wallsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
-    let doorSensorsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
-    let playersCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
-    let enemiesCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
-    let bulletsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
+    const wallsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
+    const doorSensorsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
+    const playersCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
+    const enemiesCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
+    const bulletsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
 
     const currentState = D6Dungeon.game.state.current;
-    let map = D6Dungeon.game.add.tilemap(currentState);
+    const map = D6Dungeon.game.add.tilemap(currentState);
     map.addTilesetImage('level_1', 'level1Image');
     const floor = map.createLayer('Floor');
     const walls = map.createLayer('Walls');
@@ -84,7 +84,7 @@ export default {
       enemyPathing(easystar, enemy, player1);
     });
 
-    player1.movePlayer();
-    player1.shoot(D6Dungeon.game);
+    player1.addMovement();
+    player1.addShooting(D6Dungeon.game);
   }
 };

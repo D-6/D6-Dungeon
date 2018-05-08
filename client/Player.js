@@ -1,3 +1,5 @@
+/* global Phaser */
+
 export default class Player {
   constructor() {
     this.health = 10;
@@ -18,7 +20,7 @@ export default class Player {
     this.keybinds.arrows = game.input.keyboard.createCursorKeys();
   }
 
-  movePlayer() {
+  addMovement() {
     this.sprite.body.velocity.x = 0;
     this.sprite.body.velocity.y = 0;
 
@@ -72,7 +74,7 @@ export default class Player {
     });
   }
 
-  shoot(game) {
+  addShooting(game) {
     if (
       this.keybinds.arrows.up.isDown ||
       this.keybinds.arrows.down.isDown ||
