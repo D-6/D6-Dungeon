@@ -1,10 +1,13 @@
-import io from 'socket.io-client'
+import io from 'socket.io-client';
 
-const socket = io(window.location.origin)
+const socket = io(window.location.origin);
 
 socket.on('connect', () => {
-  console.log('Connected!')
-})
+  console.log('Connected!');
+  socket.on('moveUpMsg', (data) => {
+    console.log(data);
+  });
+});
 
-export default socket
+export default socket;
 //comment

@@ -1,6 +1,6 @@
 import easystarjs from 'easystarjs';
 const easystar = new easystarjs.js();
-
+import socket from '../../socket';
 import { createWallCollision } from '../../wallCollision';
 import { createDoorCollision } from '../../doorCollision';
 import { createDoorSensors } from '../../doorSensors';
@@ -111,8 +111,8 @@ export default {
     enemies.forEach(enemy => {
       enemyPathing(easystar, enemy, player1);
     });
-
     player1.addMovement();
     player1.addShooting(D6Dungeon.game);
+    socket.emit('playerMove', { x: player1.sprite.x, y: player1.sprite.y });
   }
 };

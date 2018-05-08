@@ -1,5 +1,5 @@
 /* global Phaser */
-
+import socket from './socket';
 export default class Player {
   constructor() {
     this.health = 10;
@@ -57,20 +57,22 @@ export default class Player {
 
     if (this.keybinds.up.isDown) {
       this.sprite.body.moveUp(this.speed);
+      socket.emit('moveUp', {x: this.sprite.body.x, y: this.sprite.body.y, mgs: 'UP UP UP'});
     } else if (this.keybinds.down.isDown) {
+      socket.emit('moveDown', {x: this.sprite.body.x, y: this.sprite.body.y, msg: 'DOWN DOWN DOWN'});
       this.sprite.body.moveDown(this.speed);
     }
 
     if (this.keybinds.left.isDown) {
       this.sprite.body.moveLeft(this.speed);
-
+      socket.emit('moveLeft', {x: this.sprite.body.x, y: this.sprite.body.y, msg: 'LEFT LEFT LEFT'});
       // Flips player to face left
       if (this.sprite.scale.x < 0) {
         this.sprite.scale.x *= -1;
       }
     } else if (this.keybinds.right.isDown) {
       this.sprite.body.moveRight(this.speed);
-
+      socket.emit('moveRight', {x: this.sprite.body.x, y: this.sprite.body.y, msg: 'RIGHT RIGHT RIGHT'});
       // Flips player to face right
       if (this.sprite.scale.x > 0) {
         this.sprite.scale.x *= -1;
