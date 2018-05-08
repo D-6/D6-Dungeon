@@ -1,31 +1,15 @@
 import easystarjs from 'easystarjs';
 const easystar = new easystarjs.js();
 
-import { Weasel } from '../../enemies';
 import { createWallCollision } from '../../wallCollision';
 import { createDoorSensors } from '../../doorSensors';
+import { enemyGenerator } from '../../enemyGenerator';
 import { enemyPathing } from '../../enemyPathing';
 
 /* global D6Dungeon, Phaser */
 
 let floorMap;
-let enemySpeed = 90;
-
 let enemies;
-let enemyPos = {
-  pos0: [
-    { x: 300, y: 300 },
-    { x: 300, y: 608 },
-    { x: 608, y: 300 },
-    { x: 608, y: 608 }
-  ],
-  pos1: [
-    { x: 200, y: 200 },
-    { x: 200, y: 350 },
-    { x: 200, y: 500 },
-    { x: 200, y: 650 }
-  ]
-};
 
 let player1;
 let keybinds = {};
@@ -115,20 +99,12 @@ export default {
     easystar.setAcceptableTiles([3, 4]);
     easystar.enableDiagonals();
 
-    // *** Enemies ***
-    enemies = [];
-    let ran = Math.floor(Math.random() * 2);
-    enemyPos[`pos${ran}`].forEach(pos => {
-      const weasel = new Weasel(D6Dungeon.game, pos.x, pos.y);
-      weasel.sprite.body.setCollisionGroup(enemiesCollisionGroup);
-      weasel.sprite.body.collides([
-        bulletsCollisionGroup,
-        enemiesCollisionGroup,
-        playersCollisionGroup,
-        wallsCollisionGroup
-      ]);
-      enemies.push(weasel);
-    });
+    enemies = enemyGenerator(D6Dungeon.game, enemiesCollisionGroup, [
+      bulletsCollisionGroup,
+      enemiesCollisionGroup,
+      playersCollisionGroup,
+      wallsCollisionGroup
+    ]);
 
     // *** Player - Keybinds ***
     keybinds.up = D6Dungeon.game.input.keyboard.addKey(Phaser.Keyboard.W);
@@ -140,7 +116,7 @@ export default {
 
   update() {
     enemies.forEach(enemy => {
-      enemyPathing(easystar, enemy.sprite, player1, enemySpeed);
+      enemyPathing(easystar, enemy, player1);
     });
 
     player1.body.velocity.x = 0;
