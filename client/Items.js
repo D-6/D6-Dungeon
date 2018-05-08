@@ -1,10 +1,12 @@
 export class Potion {
-  constructor(type) {
+  constructor(type, x, y) {
     this.type = type;
+    this.x = x;
+    this.y = y;
   }
 
   createPotionSprite(game, itemsCollisionGroup, collidesWithItemsArr) {
-    this.sprite = game.add.sprite(400, 400, 'potion');
+    this.sprite = game.add.sprite(this.x, this.y, 'potion');
     this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.scale.set(4);
 

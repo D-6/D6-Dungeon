@@ -47,8 +47,12 @@ export default {
     });
 
     // *** Potions ***
-    const healthPotion = new Potion('health');
+    const healthPotion = new Potion('health', 400, 400);
     healthPotion.createPotionSprite(D6Dungeon.game, itemsCollisionGroup, [
+      playersCollisionGroup
+    ]);
+    const healthPotion2 = new Potion('health', 800, 600);
+    healthPotion2.createPotionSprite(D6Dungeon.game, itemsCollisionGroup, [
       playersCollisionGroup
     ]);
 

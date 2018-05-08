@@ -8,8 +8,8 @@ import Game from './components/Game'
 const App = () => {
   return (
     <div>
-      <Navbar />
-      <Routes />
+      {/* <Navbar /> */}
+      {/* <Routes /> */}
       <Game />
     </div>
   )
