@@ -6,7 +6,7 @@ import { createDoorSensors } from '../../doorSensors';
 import { enemyGenerator } from '../../enemyGenerator';
 import { enemyPathing } from '../../enemyPathing';
 import { addPlayerToRoom } from '../../Player';
-import { Potion, createPotionSprite } from '../../Items';
+import { Potion } from '../../Items';
 
 /* global D6Dungeon */
 
