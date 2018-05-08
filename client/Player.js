@@ -11,6 +11,37 @@ export default class Player {
     this.items = [];
   }
 
+  addPlayerToRoom(
+    game,
+    playersCollisionGroup,
+    collidesWithPlayerArr,
+    enemiesCollisionGroup
+  ) {
+    this.sprite = game.add.sprite(608, 416, 'player');
+    this.sprite.anchor.setTo(0.5, 0.5);
+    this.sprite.scale.set(4);
+
+    // *** Player - Physics ***
+    // 2nd arg is debug mode
+    game.physics.p2.enable(this.sprite, true);
+    this.sprite.body.fixedRotation = true;
+    this.sprite.body.setRectangle(
+      this.sprite.width - 10,
+      this.sprite.height - 10,
+      0,
+      6
+    );
+
+    this.sprite.body.setCollisionGroup(playersCollisionGroup);
+    this.sprite.body.collides(collidesWithPlayerArr);
+    this.sprite.body.collides(enemiesCollisionGroup, playerHitByEnemy);
+
+    // *** Player - Animation ***
+    this.sprite.animations.add('walk', null, 10, true);
+
+    this.addKeybinds(game);
+  }
+
   addKeybinds(game) {
     this.keybinds = {};
     this.keybinds.up = game.input.keyboard.addKey(Phaser.Keyboard.W);
@@ -125,34 +156,4 @@ const playerHitByEnemy = (playerBody, enemyBody) => {
 const bulletHitEnemy = (bulletBody, enemyBody) => {
   console.log('bulletHitEnemy');
   bulletBody.sprite.kill();
-};
-
-export const addPlayerToRoom = (
-  game,
-  playersCollisionGroup,
-  collidesWithPlayerArr,
-  enemiesCollisionGroup
-) => {
-  const playerSprite = game.add.sprite(608, 416, 'player');
-  playerSprite.anchor.setTo(0.5, 0.5);
-  playerSprite.scale.set(4);
-
-  // *** Player - Physics ***
-  // 2nd arg is debug mode
-  game.physics.p2.enable(playerSprite, true);
-  playerSprite.body.fixedRotation = true;
-  playerSprite.body.setRectangle(
-    playerSprite.width - 10,
-    playerSprite.height - 10,
-    0,
-    6
-  );
-  playerSprite.body.setCollisionGroup(playersCollisionGroup);
-  playerSprite.body.collides(collidesWithPlayerArr);
-  playerSprite.body.collides(enemiesCollisionGroup, playerHitByEnemy);
-
-  // *** Player - Animation ***
-  playerSprite.animations.add('walk', null, 10, true);
-
-  return playerSprite;
 };
