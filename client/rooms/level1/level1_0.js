@@ -6,6 +6,7 @@ import { createDoorSensors } from '../../doorSensors';
 import { enemyGenerator } from '../../enemyGenerator';
 import { enemyPathing } from '../../enemyPathing';
 import { addPlayerToRoom } from '../../Player';
+import { Potion, createPotionSprite } from '../../Items';
 
 /* global D6Dungeon */
 
@@ -21,6 +22,7 @@ export default {
     const playersCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
     const enemiesCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
     const bulletsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
+    const itemsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
 
     const currentState = D6Dungeon.game.state.current;
     const map = D6Dungeon.game.add.tilemap(currentState);
@@ -38,24 +40,31 @@ export default {
       ]);
     });
 
+    // *** Door Sensors ***
     createDoorSensors(D6Dungeon.game, currentState).forEach(doorSensor => {
       doorSensor.body.setCollisionGroup(doorSensorsCollisionGroup);
       doorSensor.body.collides(playersCollisionGroup);
     });
 
+    // *** Potions ***
+    const healthPotion = new Potion('health');
+    healthPotion.createPotionSprite(D6Dungeon.game, itemsCollisionGroup, [
+      playersCollisionGroup
+    ]);
+
     // *** Player - Sprite ***
-    player1.sprite = addPlayerToRoom(
+    player1.addPlayerToRoom(
       D6Dungeon.game,
       playersCollisionGroup,
       [
         bulletsCollisionGroup,
         doorSensorsCollisionGroup,
         playersCollisionGroup,
-        wallsCollisionGroup
+        wallsCollisionGroup,
+        itemsCollisionGroup
       ],
       enemiesCollisionGroup
     );
-    player1.addKeybinds(D6Dungeon.game);
 
     // *** Bullets ***
     player1.addBullets(
