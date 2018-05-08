@@ -2,6 +2,7 @@ import easystarjs from 'easystarjs';
 const easystar = new easystarjs.js();
 
 import { createWallCollision } from '../../wallCollision';
+import { createDoorCollision } from '../../doorCollision';
 import { createDoorSensors } from '../../doorSensors';
 import { enemyGenerator } from '../../enemyGenerator';
 import { enemyPathing } from '../../enemyPathing';
@@ -18,6 +19,7 @@ export default {
     player1 = D6Dungeon.game.state.player1;
 
     const wallsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
+    const doorsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
     const doorSensorsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
     const playersCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
     const enemiesCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
@@ -29,11 +31,22 @@ export default {
     map.addTilesetImage('level_1', 'level1Image');
     const floor = map.createLayer('Floor');
     const walls = map.createLayer('Walls');
+    const doors = map.createLayer('Doors');
 
     const wallBodies = createWallCollision(map, walls, D6Dungeon.game);
     wallBodies.forEach(wallBody => {
       wallBody.setCollisionGroup(wallsCollisionGroup);
       wallBody.collides([
+        bulletsCollisionGroup,
+        enemiesCollisionGroup,
+        playersCollisionGroup
+      ]);
+    });
+
+    const doorBodies = createDoorCollision(map, doors, D6Dungeon.game);
+    doorBodies.forEach(doorBody => {
+      doorBody.setCollisionGroup(doorsCollisionGroup);
+      doorBody.collides([
         bulletsCollisionGroup,
         enemiesCollisionGroup,
         playersCollisionGroup
@@ -65,7 +78,8 @@ export default {
         doorSensorsCollisionGroup,
         playersCollisionGroup,
         wallsCollisionGroup,
-        itemsCollisionGroup
+        itemsCollisionGroup,
+        doorsCollisionGroup
       ],
       enemiesCollisionGroup
     );
@@ -74,7 +88,7 @@ export default {
     player1.addBullets(
       D6Dungeon.game,
       bulletsCollisionGroup,
-      [playersCollisionGroup, wallsCollisionGroup],
+      [playersCollisionGroup, wallsCollisionGroup, doorsCollisionGroup],
       enemiesCollisionGroup
     );
 
@@ -88,7 +102,8 @@ export default {
       bulletsCollisionGroup,
       enemiesCollisionGroup,
       playersCollisionGroup,
-      wallsCollisionGroup
+      wallsCollisionGroup,
+      doorsCollisionGroup
     ]);
   },
 
