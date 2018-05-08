@@ -5,29 +5,17 @@ import { createWallCollision } from '../../wallCollision';
 import { createDoorSensors } from '../../doorSensors';
 import { enemyGenerator } from '../../enemyGenerator';
 import { enemyPathing } from '../../enemyPathing';
+import { addPlayerToRoom } from '../../Player';
 
 /* global D6Dungeon, Phaser */
 
-let floorMap;
-let enemies;
-
 let player1;
-let keybinds = {};
-
-let player1Health;
-let player1Speed;
-let player1Items;
-
-let bullets;
-let nextFire = 0;
-let fireRate = 400; // should be player stat
-let bulletSpeed = 400; // should be player stat
+let enemies;
+let floorMap;
 
 export default {
   create() {
-    player1Health = D6Dungeon.game.state.player1.health;
-    player1Speed = D6Dungeon.game.state.player1.speed;
-    player1Items = D6Dungeon.game.state.player1.items;
+    player1 = D6Dungeon.game.state.player1;
 
     let wallsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
     let doorSensorsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
@@ -57,41 +45,26 @@ export default {
     });
 
     // *** Player - Sprite ***
-    player1 = D6Dungeon.game.add.sprite(608, 416, 'player');
-    player1.anchor.setTo(0.5, 0.5);
-    player1.scale.set(4);
-
-    // *** Player - Physics ***
-    // 2nd arg is debug mode
-    D6Dungeon.game.physics.p2.enable(player1, true);
-    player1.body.fixedRotation = true;
-    player1.body.setRectangle(player1.width - 10, player1.height - 10, 0, 6);
-    player1.body.setCollisionGroup(playersCollisionGroup);
-    player1.body.collides([
-      bulletsCollisionGroup,
-      doorSensorsCollisionGroup,
+    player1.sprite = addPlayerToRoom(
+      D6Dungeon.game,
       playersCollisionGroup,
-      wallsCollisionGroup
-    ]);
-    player1.body.collides(enemiesCollisionGroup, playerHitByEnemy);
-
-    // *** Player - Animation ***
-    player1.animations.add('walk', null, 10, true);
+      [
+        bulletsCollisionGroup,
+        doorSensorsCollisionGroup,
+        playersCollisionGroup,
+        wallsCollisionGroup
+      ],
+      enemiesCollisionGroup
+    );
+    player1.addKeybinds(D6Dungeon.game);
 
     // *** Bullets ***
-    bullets = D6Dungeon.game.add.physicsGroup(Phaser.Physics.P2JS);
-    bullets.createMultiple(10, 'bullets', 0, false, bullet => {
-      bullet.anchor.set(0.5);
-      bullet.damage = 1;
-      bullet.body.setCollisionGroup(bulletsCollisionGroup);
-      bullet.body.collides(
-        [playersCollisionGroup, wallsCollisionGroup],
-        bulletBody => {
-          bulletBody.sprite.kill();
-        }
-      );
-      bullet.body.collides(enemiesCollisionGroup, bulletHitEnemy);
-    });
+    player1.addBullets(
+      D6Dungeon.game,
+      bulletsCollisionGroup,
+      [playersCollisionGroup, wallsCollisionGroup],
+      enemiesCollisionGroup
+    );
 
     // *** Enemy pathfinding ***
     floorMap = floor.layer.data.map(row => row.map(col => col.index));
@@ -105,13 +78,6 @@ export default {
       playersCollisionGroup,
       wallsCollisionGroup
     ]);
-
-    // *** Player - Keybinds ***
-    keybinds.up = D6Dungeon.game.input.keyboard.addKey(Phaser.Keyboard.W);
-    keybinds.down = D6Dungeon.game.input.keyboard.addKey(Phaser.Keyboard.S);
-    keybinds.left = D6Dungeon.game.input.keyboard.addKey(Phaser.Keyboard.A);
-    keybinds.right = D6Dungeon.game.input.keyboard.addKey(Phaser.Keyboard.D);
-    keybinds.arrows = D6Dungeon.game.input.keyboard.createCursorKeys();
   },
 
   update() {
@@ -119,86 +85,7 @@ export default {
       enemyPathing(easystar, enemy, player1);
     });
 
-    player1.body.velocity.x = 0;
-    player1.body.velocity.y = 0;
-
-    if (keybinds.up.isDown) {
-      player1.body.moveUp(player1Speed);
-    } else if (keybinds.down.isDown) {
-      player1.body.moveDown(player1Speed);
-    }
-
-    if (keybinds.left.isDown) {
-      player1.body.moveLeft(player1Speed);
-
-      // Flips player to face left
-      if (player1.scale.x < 0) {
-        player1.scale.x *= -1;
-      }
-    } else if (keybinds.right.isDown) {
-      player1.body.moveRight(player1Speed);
-
-      // Flips player to face right
-      if (player1.scale.x > 0) {
-        player1.scale.x *= -1;
-      }
-    }
-
-    if (player1.body.velocity.x === 0 && player1.body.velocity.y === 0) {
-      player1.animations.stop('walk', true);
-    } else {
-      player1.animations.play('walk');
-    }
-
-    // Arrow keys used for firing
-    if (
-      keybinds.arrows.up.isDown ||
-      keybinds.arrows.down.isDown ||
-      keybinds.arrows.left.isDown ||
-      keybinds.arrows.right.isDown
-    ) {
-      fire();
-    }
+    player1.movePlayer();
+    player1.shoot(D6Dungeon.game);
   }
-};
-
-const fire = () => {
-  if (D6Dungeon.game.time.now > nextFire && bullets.countDead() > 0) {
-    nextFire = D6Dungeon.game.time.now + fireRate;
-
-    let bullet = bullets.getFirstExists(false);
-
-    if (keybinds.arrows.up.isDown) {
-      bullet.reset(player1.x, player1.y - 50);
-      bullet.body.moveUp(bulletSpeed);
-    } else if (keybinds.arrows.down.isDown) {
-      bullet.reset(player1.x, player1.y + 70);
-      bullet.body.moveDown(bulletSpeed);
-    } else if (keybinds.arrows.left.isDown) {
-      // Flips player to face left
-      if (player1.scale.x < 0) {
-        player1.scale.x *= -1;
-      }
-
-      bullet.reset(player1.x - 60, player1.y);
-      bullet.body.moveLeft(bulletSpeed);
-    } else if (keybinds.arrows.right.isDown) {
-      // Flips player to face right
-      if (player1.scale.x > 0) {
-        player1.scale.x *= -1;
-      }
-
-      bullet.reset(player1.x + 60, player1.y);
-      bullet.body.moveRight(bulletSpeed);
-    }
-  }
-};
-
-const playerHitByEnemy = (playerBody, enemyBody) => {
-  console.log('playerHitByEnemy');
-};
-
-const bulletHitEnemy = (bulletBody, enemyBody) => {
-  console.log('bulletHitEnemy');
-  bulletBody.sprite.kill();
 };

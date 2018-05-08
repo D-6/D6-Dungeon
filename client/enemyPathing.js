@@ -4,8 +4,8 @@ export const enemyPathing = (easystar, enemy, target) => {
   let nextEnemyX;
   let nextEnemyY;
 
-  let targetX = Math.floor(target.worldPosition.x / 64);
-  let targetY = Math.floor(target.worldPosition.y / 64);
+  let targetX = Math.floor(target.sprite.worldPosition.x / 64);
+  let targetY = Math.floor(target.sprite.worldPosition.y / 64);
 
   easystar.findPath(enemyX, enemyY, targetX, targetY, path => {
     if (path === null) {
