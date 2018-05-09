@@ -21,14 +21,18 @@ module.exports = io => {
       damage: 2,
       fireRate: 400,
       bulletSpeed: 400,
+      socketId: socket.id,
       items: ['Duck Bullets']
     };
 
     socket.emit('createPlayer', players[socket.id]);
 
     const movePlayer2 = data => {
+      const { x, y, socketId } = data;
+      players[socketId] = { ...players[socketId], x, y }; // Updates current player position
       socket.broadcast.emit('movePlayer2', data);
     };
+
     const setEnemies = data => {
       enemies = data;
     };
@@ -36,10 +40,7 @@ module.exports = io => {
       runIntervals(io, arg);
     });
     socket.on('setEnemies', setEnemies);
-    socket.on('moveUp', movePlayer2);
-    socket.on('moveDown', movePlayer2);
-    socket.on('moveLeft', movePlayer2);
-    socket.on('moveRight', movePlayer2);
+    socket.on('playerMove', movePlayer2);
     socket.on('disconnect', () => {
       console.log(`Connection ${socket.id} has left the building`);
       delete players[socket.id];

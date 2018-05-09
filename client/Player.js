@@ -3,13 +3,22 @@ import socket from './socket';
 /* global Phaser */
 
 export default class Player {
-  constructor({ health, speed, damage, fireRate, bulletSpeed, items }) {
+  constructor({
+    health,
+    speed,
+    damage,
+    fireRate,
+    bulletSpeed,
+    items,
+    socketId
+  }) {
     this.health = health;
     this.speed = speed;
     this.damage = damage;
     this.fireRate = fireRate;
     this.bulletSpeed = bulletSpeed;
     this.items = items;
+    this.socketId = socketId;
     this.nextFire = 0;
   }
 
@@ -61,24 +70,37 @@ export default class Player {
 
     if (this.keybinds.up.isDown) {
       this.sprite.body.moveUp(this.speed);
-      socket.emit('moveUp', { x: this.sprite.body.x, y: this.sprite.body.y });
+      socket.emit('playerMove', {
+        x: this.sprite.body.x,
+        y: this.sprite.body.y,
+        socketId: this.socketId
+      });
     } else if (this.keybinds.down.isDown) {
-      socket.emit('moveDown', { x: this.sprite.body.x, y: this.sprite.body.y });
+      socket.emit('playerMove', {
+        x: this.sprite.body.x,
+        y: this.sprite.body.y,
+        socketId: this.socketId
+      });
       this.sprite.body.moveDown(this.speed);
     }
 
     if (this.keybinds.left.isDown) {
       this.sprite.body.moveLeft(this.speed);
-      socket.emit('moveLeft', { x: this.sprite.body.x, y: this.sprite.body.y });
+      socket.emit('playerMove', {
+        x: this.sprite.body.x,
+        y: this.sprite.body.y,
+        socketId: this.socketId
+      });
       // Flips player to face left
       if (this.sprite.scale.x < 0) {
         this.sprite.scale.x *= -1;
       }
     } else if (this.keybinds.right.isDown) {
       this.sprite.body.moveRight(this.speed);
-      socket.emit('moveRight', {
+      socket.emit('playerMove', {
         x: this.sprite.body.x,
-        y: this.sprite.body.y
+        y: this.sprite.body.y,
+        socketId: this.socketId
       });
       // Flips player to face right
       if (this.sprite.scale.x > 0) {

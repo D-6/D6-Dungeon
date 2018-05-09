@@ -44,9 +44,7 @@ class D6DungeonGame extends Phaser.Game {
 
     this.state.enemies = enemies;
     socket.emit('setEnemies', enemies);
-    // socket.emit('getPlayer', {x: this.sprite.body.x, y: this.sprite.body.y});
 
-    // this.state.player1 = new Player();
     // this.state.player2 = new Player();
 
     this.state.start('preloadState', true, false);
