@@ -7,8 +7,7 @@ export const enemyGenerator = (
   collidesWithEnemiesArr
 ) => {
   let enemiesArr = [];
-  const minSpeed = 60;
-  const speedVariation = 60;
+  const currentState = game.state.current;
 
   const enemyPos = {
     pos0: [
@@ -25,14 +24,34 @@ export const enemyGenerator = (
     ]
   };
 
-  const random = Math.floor(Math.random() * 2);
-  enemyPos[`pos${random}`].forEach(pos => {
-    const enemy = new Weasel(game, pos.x, pos.y);
-    enemy.sprite.body.setCollisionGroup(enemiesCollisionGroup);
-    enemy.sprite.body.collides(collidesWithEnemiesArr);
-    enemy.speed = minSpeed + Math.floor(Math.random() * speedVariation);
-    enemiesArr.push(enemy);
-  });
+  if (game.state.rooms[currentState].spawnEnemies === true) {
+    const random = Math.floor(Math.random() * 2);
+    const positions = `pos${random}`;
+    enemyPos[positions].forEach(position => {
+      const enemy = new Weasel(game, position.x, position.y);
+
+      enemy.speed =
+        enemy.minSpeed + Math.floor(Math.random() * enemy.speedVariation);
+
+      enemy.sprite.body.setCollisionGroup(enemiesCollisionGroup);
+      enemy.sprite.body.collides(collidesWithEnemiesArr);
+
+      enemy.sprite.body.onBeginContact.add(other => {
+        if (other.sprite && other.sprite.key === 'bullet') {
+          enemy.sprite.damage(other.sprite.damage);
+          other.sprite.kill();
+
+          if (!enemy.sprite._exists) {
+            game.state.rooms[currentState].enemiesLeft--;
+          }
+        }
+      });
+
+      enemiesArr.push(enemy);
+    });
+    game.state.rooms[currentState].enemiesLeft = positions.length;
+    game.state.rooms[currentState].spawnEnemies = false;
+  }
 
   return enemiesArr;
 };
