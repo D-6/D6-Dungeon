@@ -5,7 +5,7 @@ import { createWallCollision } from '../../wallCollision';
 import { createDoorCollision } from '../../doorCollision';
 import { createDoorSensors } from '../../doorSensors';
 import { enemyGenerator } from '../../enemyGenerator';
-import { enemyPathing } from '../../enemyPathing';
+import { enemyPathing } from '../../../server/enemyPathing';
 import { addPlayerToRoom } from '../../Player';
 import { Potion } from '../../Items';
 
