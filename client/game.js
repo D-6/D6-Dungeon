@@ -39,9 +39,7 @@ class D6DungeonGame extends Phaser.Game {
     rooms.forEach((room, i) => {
       const { x, y } = room.position;
       const roomName = `level1_${x}-${y}`;
-      this.state.rooms[roomName] = {};
       this.state.add(roomName, level1Arr[i]);
-      this.state.rooms[roomName].spawnEnemies = true;
     });
 
     this.state.enemies = enemies;
