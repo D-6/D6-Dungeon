@@ -24,6 +24,7 @@ export default rooms => ({
     D6Dungeon.game.load.image('level1Image', 'assets/tilemaps/level_1.png');
 
     D6Dungeon.game.load.image('potion', 'assets/items/Potion_42.png');
+    D6Dungeon.game.load.image('bullet', 'assets/items/Potion_42.png');
 
     D6Dungeon.game.load.image(
       'wizard',

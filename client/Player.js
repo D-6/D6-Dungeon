@@ -94,14 +94,14 @@ export default class Player {
     enemiesCollisionGroup
   ) {
     this.bullets = game.add.physicsGroup(Phaser.Physics.P2JS);
-    this.bullets.createMultiple(10, 'bullets', 0, false, bullet => {
+    this.bullets.createMultiple(10, 'bullet', 0, false, bullet => {
       bullet.anchor.set(0.5);
       bullet.damage = 1;
       bullet.body.setCollisionGroup(bulletsCollisionGroup);
       bullet.body.collides(collidesWithBulletsArr, bulletBody => {
         bulletBody.sprite.kill();
       });
-      bullet.body.collides(enemiesCollisionGroup, bulletHitEnemy);
+      bullet.body.collides(enemiesCollisionGroup);
     });
   }
 
@@ -151,9 +151,4 @@ export default class Player {
 
 const playerHitByEnemy = (playerBody, enemyBody) => {
   console.log('playerHitByEnemy');
-};
-
-const bulletHitEnemy = (bulletBody, enemyBody) => {
-  console.log('bulletHitEnemy');
-  bulletBody.sprite.kill();
 };
