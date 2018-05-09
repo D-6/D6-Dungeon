@@ -36,6 +36,9 @@ export default {
     ] = createCollisionGroups(game);
 
     currentState = game.state.current;
+    //sends socket request to setRoom to set the currentRoom variable in the server
+    socket.emit('setRoom', currentState);
+
     map = game.add.tilemap(currentState);
     map.addTilesetImage('level_1', 'level1Image');
     const floor = map.createLayer('Floor');

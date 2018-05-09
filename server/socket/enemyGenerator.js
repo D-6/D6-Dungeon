@@ -57,4 +57,4 @@ const findClosestPlayer = (gamePlayers, enemy) => {
 };
 
 
-module.exports = { createEnemies };
+module.exports = { createEnemies, findClosestPlayer };

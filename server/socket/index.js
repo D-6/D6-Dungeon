@@ -1,12 +1,13 @@
+const { findClosestPlayer } = require('./enemyGenerator');
 const players = {};
 let enemies = {};
+let currentRoom = '';
+const enemyPathing = io => {
 
-const enemyPathing = (io, arg) => {
-  io.emit('setIntervalTest', { msg: 'enemyPathing is running', a: arg });
 };
 
-const runIntervals = (io, arg) => {
-  setInterval(() => enemyPathing(io, arg), 1000);
+const runIntervals = io => {
+  setInterval(() => enemyPathing(io), 100);
 };
 
 module.exports = io => {
@@ -36,22 +37,27 @@ module.exports = io => {
     const setEnemies = data => {
       enemies = data;
     };
+    const setRoom = room => {
+      currentRoom = room;
+      console.log(currentRoom)
+    };
     socket.on('intervalTest', arg => {
       runIntervals(io, arg);
     });
+    socket.on('setRoom', setRoom);
     socket.on('setEnemies', setEnemies);
     socket.on('playerMove', movePlayer2);
     socket.on('disconnect', () => {
       console.log(`Connection ${socket.id} has left the building`);
       delete players[socket.id];
     });
-
+    //get rid of room on server/client
     socket.on('enemyKill', ({ name, room }) => {
       enemies[room] = enemies[room].filter(enemy => {
         return enemy.name !== name;
       });
       socket.emit('getEnemies', enemies);
-      console.log(enemies);
+      // console.log(enemies);
     });
   });
 };
