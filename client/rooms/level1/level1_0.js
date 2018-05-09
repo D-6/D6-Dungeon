@@ -23,7 +23,9 @@ export default {
   create() {
     game = D6Dungeon.game;
     player1 = game.state.player1;
-    player2 = game.state.player2;
+    // player2 = game.state.player2;
+
+    console.log(D6Dungeon.game.state);
 
     const [
       wallsCollisionGroup,
@@ -92,19 +94,19 @@ export default {
       ],
       enemiesCollisionGroup
     );
-    player2.addPlayerToRoom(
-      game,
-      playersCollisionGroup,
-      [
-        bulletsCollisionGroup,
-        doorSensorsCollisionGroup,
-        playersCollisionGroup,
-        wallsCollisionGroup,
-        itemsCollisionGroup,
-        doorsCollisionGroup
-      ],
-      enemiesCollisionGroup
-    );
+    // player2.addPlayerToRoom(
+    //   game,
+    //   playersCollisionGroup,
+    //   [
+    //     bulletsCollisionGroup,
+    //     doorSensorsCollisionGroup,
+    //     playersCollisionGroup,
+    //     wallsCollisionGroup,
+    //     itemsCollisionGroup,
+    //     doorsCollisionGroup
+    //   ],
+    //   enemiesCollisionGroup
+    // );
     // *** Bullets ***
     player1.addBullets(
       game,
