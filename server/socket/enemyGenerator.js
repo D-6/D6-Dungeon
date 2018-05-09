@@ -17,7 +17,7 @@ const generateEnemies = () => {
     enemy.x = getRandomPosition(minX, maxX);
     enemy.y = getRandomPosition(minY, maxY);
     enemy.name = `weasel${i}`;
-    enemy.health = 5;
+    enemy.health = 1;
     enemyArray.push(enemy);
   }
   return enemyArray;
@@ -26,11 +26,11 @@ const generateEnemies = () => {
 const createEnemies = (newMap, level) => {
   newMap.rooms.forEach(room => {
     const { x, y } = room.position;
-    if (room.type === 'start') {
-      enemies[`level${level}_${x}-${y}`] = [];
-    } else if (room.type === 'normal') {
+    // if (room.type === 'start') {
+    //   enemies[`level${level}_${x}-${y}`] = [];
+    // } else if (room.type === 'normal') {
       enemies[`level${level}_${x}-${y}`] = generateEnemies();
-    }
+    // }
   });
   return enemies;
 };

@@ -1,12 +1,13 @@
 class Weasel {
-  constructor(game, x, y) {
+  constructor(game, name, x, y, health) {
     this.game = game;
+    this.name = name;
     this.x = x;
     this.y = y;
+    this.health = health;
 
     this.minSpeed = 60;
     this.speedVariation = 60;
-    this.health = 2;
     this.damage = 1;
 
     this.createWeaselSprite();

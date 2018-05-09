@@ -44,5 +44,13 @@ module.exports = io => {
       console.log(`Connection ${socket.id} has left the building`);
       delete players[socket.id];
     });
+
+    socket.on('enemyKill', ({ name, room }) => {
+      enemies[room] = enemies[room].filter(enemy => {
+        return enemy.name !== name;
+      });
+      socket.emit('getEnemies', enemies);
+      console.log(enemies);
+    });
   });
 };

@@ -159,5 +159,5 @@ export default class Player {
 }
 
 const playerHitByEnemy = (playerBody, enemyBody) => {
-  console.log('playerHitByEnemy');
+  // console.log('playerHitByEnemy');
 };

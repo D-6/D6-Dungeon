@@ -7,7 +7,7 @@ const socket = io(window.location.origin);
 const socketFunctions = socket => {
   socket.on('createPlayer', createPlayer);
   socket.on('getEnemies', getEnemies);
-  // socket.on('getPlayers', getPlayers);
+  // socket.on('currentEnemies', getPlayers);
   // socket.on('addPlayer', addPlayer);
   // socket.on('updatePlayer', updatePlayer);
   // socket.on('removePlayer', removePlayer);

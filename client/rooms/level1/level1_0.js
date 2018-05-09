@@ -4,7 +4,7 @@ import socket from '../../socket';
 import { createWallCollision } from '../../wallCollision';
 import { createDoorCollision } from '../../doorCollision';
 import { createDoorSensors } from '../../doorSensors';
-import { enemyGenerator } from '../../enemyGenerator';
+import { enemyRenderer } from '../../enemyRenderer';
 import { enemyPathing } from '../../enemyPathing';
 import { createCollisionGroups } from '../../collisionGroups';
 import { Potion } from '../../Items';
@@ -24,8 +24,6 @@ export default {
     game = D6Dungeon.game;
     player1 = game.state.player1;
     // player2 = game.state.player2;
-
-    console.log(D6Dungeon.game.state);
 
     const [
       wallsCollisionGroup,
@@ -121,7 +119,7 @@ export default {
     easystar.setAcceptableTiles([3, 4]);
     easystar.enableDiagonals();
 
-    enemies = enemyGenerator(game, enemiesCollisionGroup, [
+    enemies = enemyRenderer(game, enemiesCollisionGroup, [
       bulletsCollisionGroup,
       enemiesCollisionGroup,
       playersCollisionGroup,
@@ -141,7 +139,7 @@ export default {
     player1.addMovement();
     player1.addShooting(game);
 
-    if (!game.state.rooms[currentState].enemiesLeft) {
+    if (!game.state.enemies[currentState].length) {
       game.physics.p2.clearTilemapLayerBodies(map, doors);
       doors.destroy();
     }
