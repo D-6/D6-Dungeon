@@ -1,4 +1,5 @@
 const players = {};
+let enemies = {};
 
 module.exports = io => {
   io.on('connection', socket => {
@@ -20,7 +21,11 @@ module.exports = io => {
     const movePlayer2 = data => {
       socket.broadcast.emit('movePlayer2', data);
     };
+    const setEnemies = data => {
+      enemies = data;
+    };
 
+    socket.on('setEnemies', setEnemies);
     socket.on('moveUp', movePlayer2);
     socket.on('moveDown', movePlayer2);
     socket.on('moveLeft', movePlayer2);
