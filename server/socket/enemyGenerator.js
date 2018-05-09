@@ -29,7 +29,7 @@ const createEnemies = (newMap, level) => {
     // if (room.type === 'start') {
     //   enemies[`level${level}_${x}-${y}`] = [];
     // } else if (room.type === 'normal') {
-      enemies[`level${level}_${x}-${y}`] = generateEnemies();
+    enemies[`level${level}_${x}-${y}`] = generateEnemies();
     // }
   });
   return enemies;
@@ -38,10 +38,13 @@ const createEnemies = (newMap, level) => {
 //using this, we can use findClosestPlayer as the target in the enemyPathing function
 const findClosestPlayer = (gamePlayers, enemy) => {
   //gamePlayers has to be an array of both players
-  gamePlayers = [player1, player2];
+  const players = Object.keys(gamePlayers);
+
   let shortestDist;
   let closestPlayer = null;
-  gamePlayers.forEach(player => {
+  for (let i = 0; i < players.length; i++) {
+    let player = gamePlayers[players[i]];
+    console.log(player);
     const dist = Math.sqrt(
       Math.pow(player.x - enemy.x, 2) + Math.pow(player.y - enemy.y, 2)
     );
@@ -52,9 +55,8 @@ const findClosestPlayer = (gamePlayers, enemy) => {
       closestPlayer = player;
       shortestDist = dist;
     }
-  });
+  }
   return closestPlayer;
 };
-
 
 module.exports = { createEnemies, findClosestPlayer };

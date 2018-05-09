@@ -3,11 +3,14 @@ const players = {};
 let enemies = {};
 let currentRoom = '';
 const enemyPathing = io => {
-
+  enemies[currentRoom].forEach(enemy => {
+    const closestPlayer = findClosestPlayer(players, enemy);
+    console.log(closestPlayer);
+  })
 };
 
 const runIntervals = io => {
-  setInterval(() => enemyPathing(io), 100);
+  setInterval(() => enemyPathing(io), 10000);
 };
 
 module.exports = io => {
@@ -41,8 +44,8 @@ module.exports = io => {
       currentRoom = room;
       console.log(currentRoom)
     };
-    socket.on('intervalTest', arg => {
-      runIntervals(io, arg);
+    socket.on('intervalTest', () => {
+      runIntervals(io);
     });
     socket.on('setRoom', setRoom);
     socket.on('setEnemies', setEnemies);
