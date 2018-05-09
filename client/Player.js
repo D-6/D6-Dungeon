@@ -1,3 +1,5 @@
+import socket from './socket';
+
 /* global Phaser */
 
 export default class Player {
@@ -31,6 +33,8 @@ export default class Player {
       0,
       6
     );
+    //remove this after testing 2player
+    this.sprite.body.kinematic = true;
 
     this.sprite.body.setCollisionGroup(playersCollisionGroup);
     this.sprite.body.collides(collidesWithPlayerArr);
@@ -57,20 +61,22 @@ export default class Player {
 
     if (this.keybinds.up.isDown) {
       this.sprite.body.moveUp(this.speed);
+      socket.emit('moveUp', {x: this.sprite.body.x, y: this.sprite.body.y});
     } else if (this.keybinds.down.isDown) {
+      socket.emit('moveDown', {x: this.sprite.body.x, y: this.sprite.body.y});
       this.sprite.body.moveDown(this.speed);
     }
 
     if (this.keybinds.left.isDown) {
       this.sprite.body.moveLeft(this.speed);
-
+      socket.emit('moveLeft', {x: this.sprite.body.x, y: this.sprite.body.y});
       // Flips player to face left
       if (this.sprite.scale.x < 0) {
         this.sprite.scale.x *= -1;
       }
     } else if (this.keybinds.right.isDown) {
       this.sprite.body.moveRight(this.speed);
-
+      socket.emit('moveRight', {x: this.sprite.body.x, y: this.sprite.body.y});
       // Flips player to face right
       if (this.sprite.scale.x > 0) {
         this.sprite.scale.x *= -1;

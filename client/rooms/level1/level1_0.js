@@ -1,6 +1,6 @@
 import easystarjs from 'easystarjs';
 const easystar = new easystarjs.js();
-
+import socket from '../../socket';
 import { createWallCollision } from '../../wallCollision';
 import { createDoorCollision } from '../../doorCollision';
 import { createDoorSensors } from '../../doorSensors';
@@ -12,6 +12,7 @@ import { Potion } from '../../Items';
 /* global D6Dungeon */
 
 let player1;
+let player2;
 let enemies;
 let game;
 let currentState;
@@ -22,6 +23,7 @@ export default {
   create() {
     game = D6Dungeon.game;
     player1 = game.state.player1;
+    player2 = game.state.player2;
 
     const [
       wallsCollisionGroup,
@@ -90,7 +92,19 @@ export default {
       ],
       enemiesCollisionGroup
     );
-
+    player2.addPlayerToRoom(
+      game,
+      playersCollisionGroup,
+      [
+        bulletsCollisionGroup,
+        doorSensorsCollisionGroup,
+        playersCollisionGroup,
+        wallsCollisionGroup,
+        itemsCollisionGroup,
+        doorsCollisionGroup
+      ],
+      enemiesCollisionGroup
+    );
     // *** Bullets ***
     player1.addBullets(
       game,
@@ -118,7 +132,10 @@ export default {
     enemies.forEach(enemy => {
       if (enemy.sprite._exists) enemyPathing(easystar, enemy, player1);
     });
-
+    socket.on('movePlayer2', data => {
+      player2.sprite.body.x = data.x;
+      player2.sprite.body.y = data.y;
+    });
     player1.addMovement();
     player1.addShooting(game);
 
