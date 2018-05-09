@@ -1,3 +1,5 @@
+import socket from './socket';
+
 const createSensor = (game, x, y) => {
   const sensor = game.add.sprite(x, y, 'wizard');
   sensor.scale.set(0.1);
@@ -26,24 +28,28 @@ export const createDoorSensors = (game, currentState) => {
     if (other.sprite.key === 'player') {
       nextRoom = level + (x - 1) + '-' + y;
       game.state.start(nextRoom, true, false, 'east');
+      socket.emit('intervalTest', 'test');
     }
   });
   sensorEast.body.onBeginContact.add(other => {
     if (other.sprite.key === 'player') {
       nextRoom = level + (x + 1) + '-' + y;
       game.state.start(nextRoom, true, false, 'west');
+      socket.emit('intervalTest', 'test');
     }
   });
   sensorNorth.body.onBeginContact.add(other => {
     if (other.sprite.key === 'player') {
       nextRoom = level + x + '-' + (y + 1);
       game.state.start(nextRoom, true, false, 'south');
+      socket.emit('intervalTest', 'test');
     }
   });
   sensorSouth.body.onBeginContact.add(other => {
     if (other.sprite.key === 'player') {
       nextRoom = level + x + '-' + (y - 1);
       game.state.start(nextRoom, true, false, 'north');
+      socket.emit('intervalTest', 'test');
     }
   });
 

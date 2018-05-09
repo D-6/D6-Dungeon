@@ -1,6 +1,14 @@
 const players = {};
 let enemies = {};
 
+const enemyPathing = (io, arg) => {
+  io.emit('setIntervalTest', { msg: 'enemyPathing is running', a: arg });
+};
+
+const runIntervals = (io, arg) => {
+  setInterval(() => enemyPathing(io, arg), 1000);
+};
+
 module.exports = io => {
   io.on('connection', socket => {
     console.log(
@@ -24,7 +32,9 @@ module.exports = io => {
     const setEnemies = data => {
       enemies = data;
     };
-
+    socket.on('intervalTest', arg => {
+      runIntervals(io, arg);
+    });
     socket.on('setEnemies', setEnemies);
     socket.on('moveUp', movePlayer2);
     socket.on('moveDown', movePlayer2);

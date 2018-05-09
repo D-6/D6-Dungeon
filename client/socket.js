@@ -37,7 +37,9 @@ const getEnemies = data => {
 socket.on('connect', () => {
   console.log('Connected!');
 });
-
+socket.on('setIntervalTest', (arg) => {
+  console.log(arg);
+});
 socketFunctions(socket);
 
 export default socket;

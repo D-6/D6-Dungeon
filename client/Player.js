@@ -34,7 +34,7 @@ export default class Player {
       6
     );
     //remove this after testing 2player
-    this.sprite.body.kinematic = true;
+    // this.sprite.body.kinematic = true;
 
     this.sprite.body.setCollisionGroup(playersCollisionGroup);
     this.sprite.body.collides(collidesWithPlayerArr);

@@ -16,6 +16,8 @@ const generateEnemies = () => {
     const enemy = { type: 'weasel' };
     enemy.x = getRandomPosition(minX, maxX);
     enemy.y = getRandomPosition(minY, maxY);
+    enemy.name = `weasel${i}`;
+    enemy.health = 5;
     enemyArray.push(enemy);
   }
   return enemyArray;
@@ -32,5 +34,27 @@ const createEnemies = (newMap, level) => {
   });
   return enemies;
 };
+
+//using this, we can use findClosestPlayer as the target in the enemyPathing function
+const findClosestPlayer = (gamePlayers, enemy) => {
+  //gamePlayers has to be an array of both players
+  gamePlayers = [player1, player2];
+  let shortestDist;
+  let closestPlayer = null;
+  gamePlayers.forEach(player => {
+    const dist = Math.sqrt(
+      Math.pow(player.x - enemy.x, 2) + Math.pow(player.y - enemy.y, 2)
+    );
+    if (!closestPlayer) {
+      closestPlayer = player;
+      shortestDist = dist;
+    } else if (dist < shortestDist) {
+      closestPlayer = player;
+      shortestDist = dist;
+    }
+  });
+  return closestPlayer;
+};
+
 
 module.exports = { createEnemies };
