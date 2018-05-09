@@ -1,6 +1,3 @@
-const { getEnemies } = require('../socket/enemyGenerator');
-const { enemies } = require('../api/levels');
-
 const players = {};
 
 module.exports = io => {
@@ -18,13 +15,7 @@ module.exports = io => {
       items: ['Duck Bullets']
     };
 
-    // io.emit() // Everyone
-
     socket.emit('createPlayer', players[socket.id]);
-    // const enemies = getEnemies();
-    console.log(enemies);
-    socket.emit('getEnemies', enemies);
-    // socket.emit('sendEnemies', data);
 
     const movePlayer2 = data => {
       socket.broadcast.emit('movePlayer2', data);

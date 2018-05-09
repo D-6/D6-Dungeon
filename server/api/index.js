@@ -1,8 +1,7 @@
 const router = require('express').Router();
-const { levelsRouter } = require('./levels');
 
 router.use('/users', require('./users'));
-router.use('/levels', levelsRouter);
+router.use('/levels', require('./levels'));
 
 router.use((req, res, next) => {
   const error = new Error('Not Found');
