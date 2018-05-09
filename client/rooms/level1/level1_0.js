@@ -6,7 +6,7 @@ import { createDoorCollision } from '../../doorCollision';
 import { createDoorSensors } from '../../doorSensors';
 import { enemyGenerator } from '../../enemyGenerator';
 import { enemyPathing } from '../../enemyPathing';
-import { addPlayerToRoom } from '../../Player';
+import { createCollisionGroups } from '../../collisionGroups';
 import { Potion } from '../../Items';
 
 /* global D6Dungeon */
@@ -14,28 +14,35 @@ import { Potion } from '../../Items';
 let player1;
 let player2;
 let enemies;
+let game;
+let currentState;
+let doors;
+let map;
 
 export default {
   create() {
-    player1 = D6Dungeon.game.state.player1;
-    player2 = D6Dungeon.game.state.player2;
+    game = D6Dungeon.game;
+    player1 = game.state.player1;
+    player2 = game.state.player2;
 
-    const wallsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
-    const doorsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
-    const doorSensorsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
-    const playersCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
-    const enemiesCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
-    const bulletsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
-    const itemsCollisionGroup = D6Dungeon.game.physics.p2.createCollisionGroup();
+    const [
+      wallsCollisionGroup,
+      doorsCollisionGroup,
+      doorSensorsCollisionGroup,
+      playersCollisionGroup,
+      enemiesCollisionGroup,
+      bulletsCollisionGroup,
+      itemsCollisionGroup
+    ] = createCollisionGroups(game);
 
-    const currentState = D6Dungeon.game.state.current;
-    const map = D6Dungeon.game.add.tilemap(currentState);
+    currentState = game.state.current;
+    map = game.add.tilemap(currentState);
     map.addTilesetImage('level_1', 'level1Image');
     const floor = map.createLayer('Floor');
     const walls = map.createLayer('Walls');
-    const doors = map.createLayer('Doors');
+    doors = map.createLayer('Doors');
 
-    const wallBodies = createWallCollision(map, walls, D6Dungeon.game);
+    const wallBodies = createWallCollision(map, walls, game);
     wallBodies.forEach(wallBody => {
       wallBody.setCollisionGroup(wallsCollisionGroup);
       wallBody.collides([
@@ -45,7 +52,7 @@ export default {
       ]);
     });
 
-    const doorBodies = createDoorCollision(map, doors, D6Dungeon.game);
+    const doorBodies = createDoorCollision(map, doors, game);
     doorBodies.forEach(doorBody => {
       doorBody.setCollisionGroup(doorsCollisionGroup);
       doorBody.collides([
@@ -56,24 +63,24 @@ export default {
     });
 
     // *** Door Sensors ***
-    createDoorSensors(D6Dungeon.game, currentState).forEach(doorSensor => {
+    createDoorSensors(game, currentState).forEach(doorSensor => {
       doorSensor.body.setCollisionGroup(doorSensorsCollisionGroup);
       doorSensor.body.collides(playersCollisionGroup);
     });
 
     // *** Potions ***
     const healthPotion = new Potion('health', 400, 400);
-    healthPotion.createPotionSprite(D6Dungeon.game, itemsCollisionGroup, [
+    healthPotion.createPotionSprite(game, itemsCollisionGroup, [
       playersCollisionGroup
     ]);
     const healthPotion2 = new Potion('health', 800, 600);
-    healthPotion2.createPotionSprite(D6Dungeon.game, itemsCollisionGroup, [
+    healthPotion2.createPotionSprite(game, itemsCollisionGroup, [
       playersCollisionGroup
     ]);
 
     // *** Player - Sprite ***
     player1.addPlayerToRoom(
-      D6Dungeon.game,
+      game,
       playersCollisionGroup,
       [
         bulletsCollisionGroup,
@@ -86,7 +93,7 @@ export default {
       enemiesCollisionGroup
     );
     player2.addPlayerToRoom(
-      D6Dungeon.game,
+      game,
       playersCollisionGroup,
       [
         bulletsCollisionGroup,
@@ -100,7 +107,7 @@ export default {
     );
     // *** Bullets ***
     player1.addBullets(
-      D6Dungeon.game,
+      game,
       bulletsCollisionGroup,
       [playersCollisionGroup, wallsCollisionGroup, doorsCollisionGroup],
       enemiesCollisionGroup
@@ -112,7 +119,7 @@ export default {
     easystar.setAcceptableTiles([3, 4]);
     easystar.enableDiagonals();
 
-    enemies = enemyGenerator(D6Dungeon.game, enemiesCollisionGroup, [
+    enemies = enemyGenerator(game, enemiesCollisionGroup, [
       bulletsCollisionGroup,
       enemiesCollisionGroup,
       playersCollisionGroup,
@@ -123,13 +130,18 @@ export default {
 
   update() {
     enemies.forEach(enemy => {
-      enemyPathing(easystar, enemy, player1);
+      if (enemy.sprite._exists) enemyPathing(easystar, enemy, player1);
     });
-    socket.on('moveP2', (data) => {
+    socket.on('movePlayer2', data => {
       player2.sprite.body.x = data.x;
       player2.sprite.body.y = data.y;
     });
     player1.addMovement();
-    player1.addShooting(D6Dungeon.game);
+    player1.addShooting(game);
+
+    if (!game.state.rooms[currentState].enemiesLeft) {
+      game.physics.p2.clearTilemapLayerBodies(map, doors);
+      doors.destroy();
+    }
   }
 };

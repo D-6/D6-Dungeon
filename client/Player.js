@@ -1,5 +1,7 @@
-/* global Phaser */
 import socket from './socket';
+
+/* global Phaser */
+
 export default class Player {
   constructor() {
     this.health = 10;
@@ -59,22 +61,22 @@ export default class Player {
 
     if (this.keybinds.up.isDown) {
       this.sprite.body.moveUp(this.speed);
-      socket.emit('moveUp', {x: this.sprite.body.x, y: this.sprite.body.y, mgs: 'UP UP UP'});
+      socket.emit('moveUp', {x: this.sprite.body.x, y: this.sprite.body.y});
     } else if (this.keybinds.down.isDown) {
-      socket.emit('moveDown', {x: this.sprite.body.x, y: this.sprite.body.y, msg: 'DOWN DOWN DOWN'});
+      socket.emit('moveDown', {x: this.sprite.body.x, y: this.sprite.body.y});
       this.sprite.body.moveDown(this.speed);
     }
 
     if (this.keybinds.left.isDown) {
       this.sprite.body.moveLeft(this.speed);
-      socket.emit('moveLeft', {x: this.sprite.body.x, y: this.sprite.body.y, msg: 'LEFT LEFT LEFT'});
+      socket.emit('moveLeft', {x: this.sprite.body.x, y: this.sprite.body.y});
       // Flips player to face left
       if (this.sprite.scale.x < 0) {
         this.sprite.scale.x *= -1;
       }
     } else if (this.keybinds.right.isDown) {
       this.sprite.body.moveRight(this.speed);
-      socket.emit('moveRight', {x: this.sprite.body.x, y: this.sprite.body.y, msg: 'RIGHT RIGHT RIGHT'});
+      socket.emit('moveRight', {x: this.sprite.body.x, y: this.sprite.body.y});
       // Flips player to face right
       if (this.sprite.scale.x > 0) {
         this.sprite.scale.x *= -1;
@@ -98,14 +100,14 @@ export default class Player {
     enemiesCollisionGroup
   ) {
     this.bullets = game.add.physicsGroup(Phaser.Physics.P2JS);
-    this.bullets.createMultiple(10, 'bullets', 0, false, bullet => {
+    this.bullets.createMultiple(10, 'bullet', 0, false, bullet => {
       bullet.anchor.set(0.5);
       bullet.damage = 1;
       bullet.body.setCollisionGroup(bulletsCollisionGroup);
       bullet.body.collides(collidesWithBulletsArr, bulletBody => {
         bulletBody.sprite.kill();
       });
-      bullet.body.collides(enemiesCollisionGroup, bulletHitEnemy);
+      bullet.body.collides(enemiesCollisionGroup);
     });
   }
 
@@ -155,9 +157,4 @@ export default class Player {
 
 const playerHitByEnemy = (playerBody, enemyBody) => {
   console.log('playerHitByEnemy');
-};
-
-const bulletHitEnemy = (bulletBody, enemyBody) => {
-  console.log('bulletHitEnemy');
-  bulletBody.sprite.kill();
 };
