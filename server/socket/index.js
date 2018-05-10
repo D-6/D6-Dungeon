@@ -2,22 +2,41 @@ const { findClosestPlayer } = require('./enemyGenerator');
 const players = {};
 let enemies = {};
 let currentRoom = '';
+
+//importing easystar to server
 const easystarjs = require('easystarjs');
 const easystar = easystarjs.js();
+//I need a floormap to setGrid 5/9
+//Also need it to be in json format so that I can turn set the acceptable tiles
+//easystar.setGrid(floorMap);
+//easystar.setAcceptableTiles([3,4]);
+//easystar.enableDiagonals();
 const enemyPathing = io => {
-  // console.log('interval running')
   enemies[currentRoom].forEach(enemy => {
     console.log(enemy);
     const closestPlayer = findClosestPlayer(players, enemy);
-    // let enemyX = Math.floor(enemy.x / 64);
-    // let enemyY = Math.floor(enemy.y / 64);
-    // let nextEnemyX;
-    // let nextEnemyY;
+    //most of this logic was taken from enemyPathing.js in client
+    let enemyX = Math.floor(enemy.x / 64);
+    let enemyY = Math.floor(enemy.y / 64);
+    //currently setting nextX and nextY to null
+    let newPos = {
+      nextX: null,
+      nextY: null
+    }
+    let targetX = Math.floor(closestPlayer.x / 64);
+    let targetY = Math.floor(closestPlayer.y / 64);
+    easystar.findPath(enemyX, enemyY, targetX, targetY, path => {
+      if (path === null) {
+        console.log('Path not found');
+      }
 
-    // let targetX = Math.floor(target.sprite.worldPosition.x / 64);
-    // let targetY = Math.floor(target.sprite.worldPosition.y / 64);
-
-    // console.log(closestPlayer);
+      if (path && path.length) {
+        newPos.nextX = path[1].x;
+        newPos.nextEY = path[1].y;
+      }
+      io.sockets.emit('updateEnemy', newPos, enemy.name);
+    });
+    easystar.calculat();
   });
 };
 

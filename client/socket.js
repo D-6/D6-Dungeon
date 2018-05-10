@@ -16,7 +16,7 @@ const socketFunctions = socket => {
   // socket.on('fireSpecial', fireSpecial);
   // socket.on('getEnemies', getEnemies);
   // socket.on('addEnemy', addEnemy);
-  // socket.on('updateEnemy', updateEnemy);
+  socket.on('updateEnemy', updateEnemy);
   // socket.on('hitEnemy', hitEnemy);
   // socket.on('removeEnemy', removeEnemy);
   // socket.on('getItems', getItems);
@@ -33,7 +33,11 @@ const createPlayer = data => {
 const getEnemies = data => {
   D6Dungeon.game.state.enemies = data;
 };
-
+//find the enemy by the name? Idk how to do that right now 5/9
+const updateEnemy = ({newPos, name }) => {
+  D6Dungeon.game.state.enemies[name].x = newPos.x;
+  D6Dungeon.game.state.enemies[name].y = newPos.y;
+}
 socket.on('connect', () => {
   console.log('Connected!');
 });

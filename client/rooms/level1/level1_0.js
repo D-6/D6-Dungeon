@@ -132,9 +132,11 @@ export default {
   },
 
   update() {
+    //probably getting rid of this, as the enemyPathing was moved to the server and the movement has been moved to the socket.js file 5/9
     enemies.forEach(enemy => {
       if (enemy.sprite._exists) enemyPathing(easystar, enemy, player1);
     });
+    
     socket.on('movePlayer2', data => {
       player2.sprite.body.x = data.x;
       player2.sprite.body.y = data.y;
