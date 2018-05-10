@@ -105,12 +105,15 @@ module.exports = io => {
 
     socket.emit('createPlayer', players[socket.id]);
 
-    const movePlayer2 = data => {
-      const { x, y, socketId } = data;
+    const playerFire = ({ fireDirection }) => {
+      socket.broadcast.emit('player2Fire', { fireDirection });
+    };
+
+    const playerMove = ({ x, y, socketId }) => {
       players[socketId] = { ...players[socketId], x, y }; // Updates current player position
-      // socket.broadcast.emit('movePlayer2', data);
-      //players[socketId] now includes the x and y data. might have to refactor this function
-      // console.log(players[socketId]);
+
+      socket.broadcast.emit('movePlayer2', { x, y });
+
     };
 
     const setEnemies = data => {
@@ -118,14 +121,16 @@ module.exports = io => {
     };
     const setRoom = room => {
       currentRoom = room;
-      // console.log(currentRoom);
     };
     socket.on('intervalTest', () => {
       runIntervals(io);
+    }
     });
     socket.on('setRoom', setRoom);
     socket.on('setEnemies', setEnemies);
-    socket.on('playerMove', movePlayer2);
+    socket.on('playerFire', playerFire);
+    socket.on('playerMove', playerMove);
+
     socket.on('disconnect', () => {
       console.log(`Connection ${socket.id} has left the building`);
       delete players[socket.id];

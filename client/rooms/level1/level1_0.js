@@ -23,7 +23,9 @@ export default {
   create() {
     game = D6Dungeon.game;
     player1 = game.state.player1;
-    // player2 = game.state.player2;
+
+    player2 = game.state.player2;
+
     currentState = game.state.current;
     socket.emit('setRoom', currentState);
 
@@ -93,21 +95,28 @@ export default {
       ],
       enemiesCollisionGroup
     );
-    // player2.addPlayerToRoom(
-    //   game,
-    //   playersCollisionGroup,
-    //   [
-    //     bulletsCollisionGroup,
-    //     doorSensorsCollisionGroup,
-    //     playersCollisionGroup,
-    //     wallsCollisionGroup,
-    //     itemsCollisionGroup,
-    //     doorsCollisionGroup
-    //   ],
-    //   enemiesCollisionGroup
-    // );
+    player2.addPlayerToRoom(
+      game,
+      playersCollisionGroup,
+      [
+        bulletsCollisionGroup,
+        doorSensorsCollisionGroup,
+        playersCollisionGroup,
+        wallsCollisionGroup,
+        itemsCollisionGroup,
+        doorsCollisionGroup
+      ],
+      enemiesCollisionGroup
+    );
+
     // *** Bullets ***
     player1.addBullets(
+      game,
+      bulletsCollisionGroup,
+      [playersCollisionGroup, wallsCollisionGroup, doorsCollisionGroup],
+      enemiesCollisionGroup
+    );
+    player2.addBullets(
       game,
       bulletsCollisionGroup,
       [playersCollisionGroup, wallsCollisionGroup, doorsCollisionGroup],
@@ -160,12 +169,17 @@ export default {
       // enemyPathing(easystar, enemy, player1);
     });
 
-    socket.on('movePlayer2', data => {
-      player2.sprite.body.x = data.x;
-      player2.sprite.body.y = data.y;
-    });
     player1.addMovement();
     player1.addShooting(game);
+
+    socket.on('player2Fire', ({ fireDirection }) => {
+      player2.fire(game, fireDirection);
+    });
+
+    socket.on('movePlayer2', ({ x, y }) => {
+      player2.sprite.body.x = x;
+      player2.sprite.body.y = y;
+    });
 
     if (!game.state.enemies[currentState].length) {
       game.physics.p2.clearTilemapLayerBodies(map, doors);

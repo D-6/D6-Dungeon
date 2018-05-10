@@ -151,19 +151,36 @@ export default class Player {
     }
   }
 
-  fire(game) {
+  fire(game, fireDirection) {
     if (game.time.now > this.nextFire && this.bullets.countDead() > 0) {
       this.nextFire = game.time.now + this.fireRate;
 
       let bullet = this.bullets.getFirstExists(false);
 
-      if (this.keybinds.arrows.up.isDown) {
+      if (
+        (this.keybinds.arrows.up.isDown && !fireDirection) ||
+        fireDirection === 'up'
+      ) {
         bullet.reset(this.sprite.x, this.sprite.y - 50);
         bullet.body.moveUp(this.bulletSpeed);
-      } else if (this.keybinds.arrows.down.isDown) {
+
+        if (!fireDirection) {
+          socket.emit('playerFire', { fireDirection: 'up' });
+        }
+      } else if (
+        (this.keybinds.arrows.down.isDown && !fireDirection) ||
+        fireDirection === 'down'
+      ) {
         bullet.reset(this.sprite.x, this.sprite.y + 70);
         bullet.body.moveDown(this.bulletSpeed);
-      } else if (this.keybinds.arrows.left.isDown) {
+
+        if (!fireDirection) {
+          socket.emit('playerFire', { fireDirection: 'down' });
+        }
+      } else if (
+        (this.keybinds.arrows.left.isDown && !fireDirection) ||
+        fireDirection === 'left'
+      ) {
         // Flips player to face left
         if (this.sprite.scale.x < 0) {
           this.sprite.scale.x *= -1;
@@ -171,7 +188,14 @@ export default class Player {
 
         bullet.reset(this.sprite.x - 60, this.sprite.y);
         bullet.body.moveLeft(this.bulletSpeed);
-      } else if (this.keybinds.arrows.right.isDown) {
+
+        if (!fireDirection) {
+          socket.emit('playerFire', { fireDirection: 'left' });
+        }
+      } else if (
+        (this.keybinds.arrows.right.isDown && !fireDirection) ||
+        fireDirection === 'right'
+      ) {
         // Flips player to face right
         if (this.sprite.scale.x > 0) {
           this.sprite.scale.x *= -1;
@@ -179,6 +203,10 @@ export default class Player {
 
         bullet.reset(this.sprite.x + 60, this.sprite.y);
         bullet.body.moveRight(this.bulletSpeed);
+
+        if (!fireDirection) {
+          socket.emit('playerFire', { fireDirection: 'right' });
+        }
       }
     }
   }
