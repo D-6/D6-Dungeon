@@ -25,3 +25,5 @@ export const enemyPathing = (easystar, enemy, target) => {
 
   easystar.calculate();
 };
+
+

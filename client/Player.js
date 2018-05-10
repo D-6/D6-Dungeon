@@ -1,14 +1,29 @@
-/* global Phaser */
 import socket from './socket';
+
+/* global Phaser */
+
 export default class Player {
-  constructor() {
-    this.health = 10;
-    this.speed = 200;
-    this.damage = 2;
-    this.fireRate = 400;
-    this.bulletSpeed = 400;
+  constructor({
+    health,
+    speed,
+    damage,
+    fireRate,
+    bulletSpeed,
+    items,
+    socketId,
+    x,
+    y
+  }) {
+    this.health = health;
+    this.speed = speed;
+    this.damage = damage;
+    this.fireRate = fireRate;
+    this.bulletSpeed = bulletSpeed;
+    this.items = items;
+    this.socketId = socketId;
+    this.x = x;
+    this.y = y;
     this.nextFire = 0;
-    this.items = [];
   }
 
   addPlayerToRoom(
@@ -17,7 +32,7 @@ export default class Player {
     collidesWithPlayerArr,
     enemiesCollisionGroup
   ) {
-    this.sprite = game.add.sprite(608, 416, 'player');
+    this.sprite = game.add.sprite(this.x, this.y, 'player');
     this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.scale.set(4);
 
@@ -32,7 +47,7 @@ export default class Player {
       6
     );
     //remove this after testing 2player
-    this.sprite.body.kinematic = true;
+    // this.sprite.body.kinematic = true;
 
     this.sprite.body.setCollisionGroup(playersCollisionGroup);
     this.sprite.body.collides(collidesWithPlayerArr);
@@ -59,22 +74,38 @@ export default class Player {
 
     if (this.keybinds.up.isDown) {
       this.sprite.body.moveUp(this.speed);
-      socket.emit('moveUp', {x: this.sprite.body.x, y: this.sprite.body.y, mgs: 'UP UP UP'});
+      socket.emit('playerMove', {
+        x: this.sprite.body.x,
+        y: this.sprite.body.y,
+        socketId: this.socketId
+      });
     } else if (this.keybinds.down.isDown) {
-      socket.emit('moveDown', {x: this.sprite.body.x, y: this.sprite.body.y, msg: 'DOWN DOWN DOWN'});
+      socket.emit('playerMove', {
+        x: this.sprite.body.x,
+        y: this.sprite.body.y,
+        socketId: this.socketId
+      });
       this.sprite.body.moveDown(this.speed);
     }
 
     if (this.keybinds.left.isDown) {
       this.sprite.body.moveLeft(this.speed);
-      socket.emit('moveLeft', {x: this.sprite.body.x, y: this.sprite.body.y, msg: 'LEFT LEFT LEFT'});
+      socket.emit('playerMove', {
+        x: this.sprite.body.x,
+        y: this.sprite.body.y,
+        socketId: this.socketId
+      });
       // Flips player to face left
       if (this.sprite.scale.x < 0) {
         this.sprite.scale.x *= -1;
       }
     } else if (this.keybinds.right.isDown) {
       this.sprite.body.moveRight(this.speed);
-      socket.emit('moveRight', {x: this.sprite.body.x, y: this.sprite.body.y, msg: 'RIGHT RIGHT RIGHT'});
+      socket.emit('playerMove', {
+        x: this.sprite.body.x,
+        y: this.sprite.body.y,
+        socketId: this.socketId
+      });
       // Flips player to face right
       if (this.sprite.scale.x > 0) {
         this.sprite.scale.x *= -1;
@@ -98,14 +129,14 @@ export default class Player {
     enemiesCollisionGroup
   ) {
     this.bullets = game.add.physicsGroup(Phaser.Physics.P2JS);
-    this.bullets.createMultiple(10, 'bullets', 0, false, bullet => {
+    this.bullets.createMultiple(10, 'bullet', 0, false, bullet => {
       bullet.anchor.set(0.5);
       bullet.damage = 1;
       bullet.body.setCollisionGroup(bulletsCollisionGroup);
       bullet.body.collides(collidesWithBulletsArr, bulletBody => {
         bulletBody.sprite.kill();
       });
-      bullet.body.collides(enemiesCollisionGroup, bulletHitEnemy);
+      bullet.body.collides(enemiesCollisionGroup);
     });
   }
 
@@ -154,10 +185,5 @@ export default class Player {
 }
 
 const playerHitByEnemy = (playerBody, enemyBody) => {
-  console.log('playerHitByEnemy');
-};
-
-const bulletHitEnemy = (bulletBody, enemyBody) => {
-  console.log('bulletHitEnemy');
-  bulletBody.sprite.kill();
+  // console.log('playerHitByEnemy');
 };

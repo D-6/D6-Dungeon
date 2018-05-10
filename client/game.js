@@ -2,6 +2,7 @@ import PIXI from 'expose-loader?PIXI!phaser-ce/build/custom/pixi.js';
 import p2 from 'expose-loader?p2!phaser-ce/build/custom/p2.js';
 import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js';
 import socket from './socket';
+
 import Player from './Player';
 
 import preloadState from './preloadState';
@@ -26,20 +27,25 @@ const level1Arr = [
 ];
 
 class D6DungeonGame extends Phaser.Game {
-  constructor(rooms) {
+  constructor({ rooms, enemies }) {
     const gameWidth = 1216;
     const gameHeight = 832;
 
     super(gameWidth, gameHeight, Phaser.AUTO, 'game-container');
 
+    this.state.rooms = {};
+
     this.state.add('preloadState', preloadState(rooms));
     rooms.forEach((room, i) => {
       const { x, y } = room.position;
-      this.state.add(`level1_${x}-${y}`, level1Arr[i]);
+      const roomName = `level1_${x}-${y}`;
+      this.state.add(roomName, level1Arr[i]);
     });
 
-    this.state.player1 = new Player();
-    this.state.player2 = new Player();
+    this.state.enemies = enemies;
+    socket.emit('setEnemies', enemies);
+
+    // this.state.player2 = new Player();
 
     this.state.start('preloadState', true, false);
   }

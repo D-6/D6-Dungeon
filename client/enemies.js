@@ -1,17 +1,32 @@
-/* global Phaser */
-
 class Weasel {
-  constructor(game, x, y) {
+  constructor(game, name, x, y, health) {
     this.game = game;
-    this.sprite = game.add.sprite(x, y, 'weasel');
+    this.name = name;
+    this.x = x;
+    this.y = y;
+    this.health = health;
+
+    this.minSpeed = 60;
+    this.speedVariation = 60;
+    this.damage = 1;
+
+    this.createWeaselSprite();
+  }
+
+  createWeaselSprite() {
+    this.sprite = this.game.add.sprite(this.x, this.y, 'weasel');
     this.sprite.anchor.set(0.5);
     this.sprite.scale.set(4);
+    this.sprite.setHealth(this.health);
 
-    // *** Weasel - Physics ***
-    // 2nd arg is debug mode
-    game.physics.p2.enable(this.sprite, true);
+    this.game.physics.p2.enable(this.sprite, true);
     this.sprite.body.fixedRotation = true;
-    this.sprite.body.setRectangle(this.sprite.width - 3, this.sprite.height, 0, 0);
+    this.sprite.body.setRectangle(
+      this.sprite.width - 3,
+      this.sprite.height,
+      0,
+      0
+    );
   }
 }
 

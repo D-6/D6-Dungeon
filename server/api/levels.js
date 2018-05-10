@@ -2,8 +2,7 @@ const router = require('express').Router();
 const path = require('path');
 const readFilePromise = require('fs-readfile-promise');
 const { Map } = require('../map_generator/mapGen');
-
-module.exports = router;
+const { createEnemies } = require('../socket/enemyGenerator');
 
 router.get('/:level', async (req, res, next) => {
   try {
@@ -22,6 +21,8 @@ router.get('/:level', async (req, res, next) => {
       default:
         newMap = null;
     }
+
+    const enemies = createEnemies(newMap, level);
 
     const promiseArray = newMap.rooms.map(room => {
       const pathToFile = path.join(
@@ -42,9 +43,11 @@ router.get('/:level', async (req, res, next) => {
           return JSONroom;
         })
       )
-      .then(rooms => res.json(rooms))
+      .then(rooms => res.json({ rooms, enemies }))
       .catch(err => next(err));
   } catch (err) {
     next(err);
   }
 });
+
+module.exports = router;
