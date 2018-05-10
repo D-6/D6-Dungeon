@@ -13,7 +13,6 @@ const easystar = easystarjs.js();
 //easystar.enableDiagonals();
 const enemyPathing = io => {
   enemies[currentRoom].forEach(enemy => {
-    console.log(enemy);
     const closestPlayer = findClosestPlayer(players, enemy);
     //most of this logic was taken from enemyPathing.js in client
     let enemyX = Math.floor(enemy.x / 64);
@@ -22,7 +21,7 @@ const enemyPathing = io => {
     let newPos = {
       nextX: null,
       nextY: null
-    }
+    };
     let targetX = Math.floor(closestPlayer.x / 64);
     let targetY = Math.floor(closestPlayer.y / 64);
     easystar.findPath(enemyX, enemyY, targetX, targetY, path => {
@@ -32,16 +31,16 @@ const enemyPathing = io => {
 
       if (path && path.length) {
         newPos.nextX = path[1].x;
-        newPos.nextEY = path[1].y;
+        newPos.nextY = path[1].y;
       }
       io.sockets.emit('updateEnemy', newPos, enemy.name);
     });
-    easystar.calculat();
+    easystar.calculate();
   });
 };
 
 const runIntervals = io => {
-  setInterval(() => enemyPathing(io), 10000);
+  setInterval(() => enemyPathing(io), 1000);
 };
 
 module.exports = io => {
@@ -57,6 +56,7 @@ module.exports = io => {
       fireRate: 400,
       bulletSpeed: 400,
       socketId: socket.id,
+      //thing about the posx/posy naming
       posX: 608,
       posY: 416,
       items: ['Duck Bullets']
