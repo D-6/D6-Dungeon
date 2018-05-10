@@ -23,9 +23,7 @@ export default {
   create() {
     game = D6Dungeon.game;
     player1 = game.state.player1;
-
     player2 = game.state.player2;
-
     currentState = game.state.current;
     socket.emit('setRoom', currentState);
 
@@ -181,7 +179,7 @@ export default {
       player2.sprite.body.y = y;
     });
 
-    if (!game.state.enemies[currentState].length) {
+    if (!Object.keys(game.state.enemies[currentState]).length) {
       game.physics.p2.clearTilemapLayerBodies(map, doors);
       doors.destroy();
     }
