@@ -50,20 +50,31 @@ const enemyPathing = io => {
         if (path && path.length) {
           newPos.nextX = path[1].x;
           newPos.nextY = path[1].y;
+          // const distance = 1;
+          // enemy.x += newPos.nextX - enemy.x > 0 ? distance : -distance;
+          // enemy.y += newPos.nextY - enemy.y > 0 ? distance : -distance;
+          enemy.nextXTile = newPos.nextX;
+          enemy.nextYTile = newPos.nextY;
+          enemy.x = newPos.nextX * 64;
+          enemy.y = newPos.nextY * 64;
+          io.sockets.emit('updateEnemy', {
+            currentRoom,
+            enemy
+          });
         }
 
-        enemy.nextXTile = newPos.nextX;
-        enemy.nextYTile = newPos.nextY;
+        // enemy.nextXTile = newPos.nextX;
+        // enemy.nextYTile = newPos.nextY;
 
-        enemy.x = newPos.nextX * 64;
-        enemy.y = newPos.nextY * 64;
+        // enemy.x = newPos.nextX * 64;
+        // enemy.y = newPos.nextY * 64;
 
         // console.log(enemy);
 
-        io.sockets.emit('updateEnemy', {
-          currentRoom,
-          enemy
-        });
+        // io.sockets.emit('updateEnemy', {
+        //   currentRoom,
+        //   enemy
+        // });
       });
       easystar.calculate();
     }
@@ -71,7 +82,7 @@ const enemyPathing = io => {
 };
 
 const runIntervals = io => {
-  enemyPathingInterval = setInterval(() => enemyPathing(io), 500);
+  enemyPathingInterval = setInterval(() => enemyPathing(io), 50);
 };
 
 module.exports = io => {
@@ -87,7 +98,6 @@ module.exports = io => {
       fireRate: 400,
       bulletSpeed: 400,
       socketId: socket.id,
-      //thing about the posx/posy naming
       x: 608,
       y: 416,
       items: ['Duck Bullets']
