@@ -11,16 +11,16 @@ const generateEnemies = () => {
   const maxX = 1024;
   const minY = 192;
   const maxY = 640;
-  const enemyArray = [];
+  const enemyObject = {};
   for (let i = 0; i < 4; i++) {
-    const enemy = { type: 'weasel' };
-    enemy.x = getRandomPosition(minX, maxX);
-    enemy.y = getRandomPosition(minY, maxY);
-    enemy.name = `weasel${i}`;
-    enemy.health = 1;
-    enemyArray.push(enemy);
+    const enemyName = `weasel${i}`;
+    enemyObject[enemyName] = { type: 'weasel' };
+    enemyObject[enemyName].x = getRandomPosition(minX, maxX);
+    enemyObject[enemyName].y = getRandomPosition(minY, maxY);
+    enemyObject[enemyName].health = 1;
+    enemyObject[enemyName].name = enemyName;
   }
-  return enemyArray;
+  return enemyObject;
 };
 
 const createEnemies = (newMap, level) => {

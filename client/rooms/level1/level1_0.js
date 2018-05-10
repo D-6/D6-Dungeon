@@ -138,9 +138,8 @@ export default {
     //probably getting rid of this, as the enemyPathing was moved to the server and the movement has been moved to the socket.js file 5/9
     enemies.forEach(enemy => {
       if (enemy.sprite._exists) {
-        // console.log(enemy.sprite);
-        enemy.sprite.position.x = enemy.x;
-        enemy.sprite.position.y = enemy.y;
+        enemy.sprite.body.x = D6Dungeon.game.state.enemies[currentState][enemy.name].x;
+        enemy.sprite.body.y = D6Dungeon.game.state.enemies[currentState][enemy.name].y;
         // if (nextEnemyX > enemyX) enemy.sprite.body.velocity.x = enemy.speed;
         // if (nextEnemyX < enemyX) enemy.sprite.body.velocity.x = -enemy.speed;
         // if (nextEnemyY > enemyY) enemy.sprite.body.velocity.y = enemy.speed;

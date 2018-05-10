@@ -25,7 +25,8 @@ easystar.setGrid(floorMap);
 easystar.setAcceptableTiles([3]);
 easystar.enableDiagonals();
 const enemyPathing = io => {
-  enemies[currentRoom].forEach(enemy => {
+  Object.keys(enemies[currentRoom]).forEach(enemyName => {
+    const enemy = enemies[currentRoom][enemyName];
     const closestPlayer = findClosestPlayer(players, enemy);
     // console.log(closestPlayer);
     //most of this logic was taken from enemyPathing.js in client
@@ -49,13 +50,15 @@ const enemyPathing = io => {
           newPos.nextX = path[1].x;
           newPos.nextY = path[1].y;
         }
+
         enemy.x = newPos.nextX * 64;
         enemy.y = newPos.nextY * 64;
-        const newEnemy = enemy;
+
+        console.log(enemy);
 
         io.sockets.emit('updateEnemy', {
           currentRoom,
-          newEnemy
+          enemy
         });
       });
       easystar.calculate();
@@ -64,7 +67,7 @@ const enemyPathing = io => {
 };
 
 const runIntervals = io => {
-  setInterval(() => enemyPathing(io), 1000);
+  setInterval(() => enemyPathing(io), 5000);
 };
 
 module.exports = io => {
