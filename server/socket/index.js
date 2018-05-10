@@ -113,7 +113,6 @@ module.exports = io => {
       players[socketId] = { ...players[socketId], x, y }; // Updates current player position
 
       socket.broadcast.emit('movePlayer2', { x, y });
-
     };
 
     const setEnemies = data => {
@@ -124,7 +123,6 @@ module.exports = io => {
     };
     socket.on('intervalTest', () => {
       runIntervals(io);
-    }
     });
     socket.on('setRoom', setRoom);
     socket.on('setEnemies', setEnemies);
