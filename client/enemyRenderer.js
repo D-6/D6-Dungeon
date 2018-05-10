@@ -42,7 +42,7 @@ export const enemyRenderer = (
           });
 
           if (!weasel.sprite._exists) {
-            socket.emit('enemyKill', { name: weasel.name, room: currentState });
+            socket.emit('enemyKill', weasel.name);
           }
         }
       });

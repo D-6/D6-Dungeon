@@ -2,6 +2,7 @@ const { findClosestPlayer } = require('./enemyGenerator');
 const players = {};
 let enemies = {};
 let currentRoom = '';
+let enemyPathingInterval;
 
 //importing easystar to server
 const easystarjs = require('easystarjs');
@@ -51,10 +52,13 @@ const enemyPathing = io => {
           newPos.nextY = path[1].y;
         }
 
+        enemy.nextXTile = newPos.nextX;
+        enemy.nextYTile = newPos.nextY;
+
         enemy.x = newPos.nextX * 64;
         enemy.y = newPos.nextY * 64;
 
-        console.log(enemy);
+        // console.log(enemy);
 
         io.sockets.emit('updateEnemy', {
           currentRoom,
@@ -67,7 +71,7 @@ const enemyPathing = io => {
 };
 
 const runIntervals = io => {
-  setInterval(() => enemyPathing(io), 5000);
+  enemyPathingInterval = setInterval(() => enemyPathing(io), 500);
 };
 
 module.exports = io => {
@@ -115,14 +119,16 @@ module.exports = io => {
     socket.on('disconnect', () => {
       console.log(`Connection ${socket.id} has left the building`);
       delete players[socket.id];
+      if (!Object.keys(players).length) {
+        clearInterval(enemyPathingInterval);
+        enemies = {};
+        currentRoom = '';
+      }
     });
-    //get rid of room on server/client
-    socket.on('enemyKill', ({ name, room }) => {
-      enemies[room] = enemies[room].filter(enemy => {
-        return enemy.name !== name;
-      });
+
+    socket.on('enemyKill', name => {
+      delete enemies[currentRoom][name];
       socket.emit('getEnemies', enemies);
-      // console.log(enemies);
     });
   });
 };

@@ -24,7 +24,8 @@ export default {
     game = D6Dungeon.game;
     player1 = game.state.player1;
     // player2 = game.state.player2;
-    console.log(player1);
+    currentState = game.state.current;
+    socket.emit('setRoom', currentState);
 
     const [
       wallsCollisionGroup,
@@ -36,9 +37,6 @@ export default {
       itemsCollisionGroup
     ] = createCollisionGroups(game);
 
-    currentState = game.state.current;
-    //sends socket request to setRoom to set the currentRoom variable in the server
-    socket.emit('setRoom', currentState);
     map = game.add.tilemap(currentState);
     map.addTilesetImage('level_1', 'level1Image');
     const floor = map.createLayer('Floor');
@@ -138,12 +136,26 @@ export default {
     //probably getting rid of this, as the enemyPathing was moved to the server and the movement has been moved to the socket.js file 5/9
     enemies.forEach(enemy => {
       if (enemy.sprite._exists) {
-        enemy.sprite.body.x = D6Dungeon.game.state.enemies[currentState][enemy.name].x;
-        enemy.sprite.body.y = D6Dungeon.game.state.enemies[currentState][enemy.name].y;
-        // if (nextEnemyX > enemyX) enemy.sprite.body.velocity.x = enemy.speed;
-        // if (nextEnemyX < enemyX) enemy.sprite.body.velocity.x = -enemy.speed;
-        // if (nextEnemyY > enemyY) enemy.sprite.body.velocity.y = enemy.speed;
-        // if (nextEnemyY < enemyY) enemy.sprite.body.velocity.y = -enemy.speed;
+        const { nextXTile, nextYTile } = D6Dungeon.game.state.enemies[
+          currentState
+        ][enemy.name];
+        const currentXTile = enemy.sprite.position.x / 64;
+        const currentYTile = enemy.sprite.position.y / 64;
+
+        if (nextXTile > currentXTile) {
+          enemy.sprite.body.velocity.x = enemy.speed;
+        }
+        if (nextXTile < currentXTile) {
+          enemy.sprite.body.velocity.x = -enemy.speed;
+        }
+        if (nextYTile > currentYTile) {
+          enemy.sprite.body.velocity.y = enemy.speed;
+        }
+        if (nextYTile < currentYTile) {
+          enemy.sprite.body.velocity.y = -enemy.speed;
+        }
+        // enemy.sprite.body.x = D6Dungeon.game.state.enemies[currentState][enemy.name].x;
+        // enemy.sprite.body.y = D6Dungeon.game.state.enemies[currentState][enemy.name].y;
       }
       // enemyPathing(easystar, enemy, player1);
     });
