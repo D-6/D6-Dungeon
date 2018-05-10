@@ -11,16 +11,16 @@ const generateEnemies = () => {
   const maxX = 1024;
   const minY = 192;
   const maxY = 640;
-  const enemyArray = [];
+  const enemyObject = {};
   for (let i = 0; i < 4; i++) {
-    const enemy = { type: 'weasel' };
-    enemy.x = getRandomPosition(minX, maxX);
-    enemy.y = getRandomPosition(minY, maxY);
-    enemy.name = `weasel${i}`;
-    enemy.health = 1;
-    enemyArray.push(enemy);
+    const enemyName = `weasel${i}`;
+    enemyObject[enemyName] = { type: 'weasel' };
+    enemyObject[enemyName].x = getRandomPosition(minX, maxX);
+    enemyObject[enemyName].y = getRandomPosition(minY, maxY);
+    enemyObject[enemyName].health = 1;
+    enemyObject[enemyName].name = enemyName;
   }
-  return enemyArray;
+  return enemyObject;
 };
 
 const createEnemies = (newMap, level) => {
@@ -29,7 +29,7 @@ const createEnemies = (newMap, level) => {
     // if (room.type === 'start') {
     //   enemies[`level${level}_${x}-${y}`] = [];
     // } else if (room.type === 'normal') {
-      enemies[`level${level}_${x}-${y}`] = generateEnemies();
+    enemies[`level${level}_${x}-${y}`] = generateEnemies();
     // }
   });
   return enemies;
@@ -37,11 +37,13 @@ const createEnemies = (newMap, level) => {
 
 //using this, we can use findClosestPlayer as the target in the enemyPathing function
 const findClosestPlayer = (gamePlayers, enemy) => {
-  //gamePlayers has to be an array of both players
-  gamePlayers = [player1, player2];
+  const players = Object.keys(gamePlayers);
+
   let shortestDist;
   let closestPlayer = null;
-  gamePlayers.forEach(player => {
+  for (let i = 0; i < players.length; i++) {
+    let player = gamePlayers[players[i]];
+
     const dist = Math.sqrt(
       Math.pow(player.x - enemy.x, 2) + Math.pow(player.y - enemy.y, 2)
     );
@@ -52,9 +54,8 @@ const findClosestPlayer = (gamePlayers, enemy) => {
       closestPlayer = player;
       shortestDist = dist;
     }
-  });
+  }
   return closestPlayer;
 };
 
-
-module.exports = { createEnemies };
+module.exports = { createEnemies, findClosestPlayer };

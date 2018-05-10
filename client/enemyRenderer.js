@@ -8,12 +8,22 @@ export const enemyRenderer = (
   collidesWithEnemiesArr
 ) => {
   const currentState = game.state.current;
-  const roomEnemies = game.state.enemies[currentState];
+  const roomEnemiesObj = game.state.enemies[currentState];
+  const roomEnemiesArr = Object.keys(roomEnemiesObj).map(enemy => {
+    return { ...roomEnemiesObj[enemy] };
+  });
+
   let enemiesArr = [];
 
-  if (roomEnemies.length) {
-    roomEnemies.forEach(enemy => {
-      const weasel = new Weasel(game, enemy.name, enemy.x, enemy.y, enemy.health);
+  if (roomEnemiesArr.length) {
+    roomEnemiesArr.forEach(enemy => {
+      const weasel = new Weasel(
+        game,
+        enemy.name,
+        enemy.x,
+        enemy.y,
+        enemy.health
+      );
 
       weasel.speed =
         weasel.minSpeed + Math.floor(Math.random() * weasel.speedVariation);
@@ -32,7 +42,7 @@ export const enemyRenderer = (
           });
 
           if (!weasel.sprite._exists) {
-            socket.emit('enemyKill', { name: weasel.name, room: currentState });
+            socket.emit('enemyKill', weasel.name);
           }
         }
       });
