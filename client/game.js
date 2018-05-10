@@ -52,6 +52,8 @@ class D6DungeonGame extends Phaser.Game {
       fireRate: 400,
       bulletSpeed: 400,
       socketId: socket.id,
+      x: 608,
+      y: 416,
       items: ['Duck Bullets']
     });
 
