@@ -174,6 +174,9 @@ export default {
     player1.addMovement();
     player1.addShooting(game);
 
+    player2.sprite.body.velocity.x = 0;
+    player2.sprite.body.velocity.y = 0;
+
     socket.on('player2Fire', ({ fireDirection }) => {
       player2.fire(game, fireDirection);
     });
