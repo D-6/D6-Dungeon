@@ -82,7 +82,7 @@ const enemyPathing = io => {
 };
 
 const runIntervals = io => {
-  enemyPathingInterval = setInterval(() => enemyPathing(io), 50);
+  enemyPathingInterval = setInterval(() => enemyPathing(io), 300);
 };
 
 module.exports = io => {
