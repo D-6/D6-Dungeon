@@ -1,5 +1,11 @@
 const { findClosestPlayer } = require('./enemyGenerator');
+const path = require('path');
+const readFilePromise = require('fs-readfile-promise');
+const { Map } = require('../map_generator/mapGen');
+const { createEnemies } = require('../socket/enemyGenerator');
+
 const players = {};
+const maps = {};
 let enemies = {};
 let currentRoom = '';
 let enemyPathingInterval;
@@ -45,14 +51,14 @@ const enemyPathing = io => {
       if (closestPlayer) {
         let targetX = Math.floor(closestPlayer.x / 64);
         let targetY = Math.floor(closestPlayer.y / 64);
-        easystar.findPath(enemyX, enemyY, targetX, targetY, path => {
-          if (path === null) {
+        easystar.findPath(enemyX, enemyY, targetX, targetY, bestPath => {
+          if (bestPath === null) {
             console.log('Path not found');
           }
 
-          if (path && path.length) {
-            newPos.nextX = path[1].x;
-            newPos.nextY = path[1].y;
+          if (bestPath && bestPath.length) {
+            newPos.nextX = bestPath[1].x;
+            newPos.nextY = bestPath[1].y;
             // const distance = 1;
             // enemy.x += newPos.nextX - enemy.x > 0 ? distance : -distance;
             // enemy.y += newPos.nextY - enemy.y > 0 ? distance : -distance;
@@ -90,7 +96,7 @@ const runIntervals = io => {
 };
 
 module.exports = io => {
-  io.on('connection', socket => {
+  io.on('connection', async socket => {
     console.log(
       `A socket connection to the server has been made: ${socket.id}`
     );
@@ -108,6 +114,40 @@ module.exports = io => {
     };
 
     socket.emit('createPlayer', players[socket.id]);
+
+    const mapGen = async level => {
+      try {
+        const newMap = new Map(7, 8, true);
+        const mapEnemies = createEnemies(newMap, level);
+        enemies[socket.id] = mapEnemies;
+
+        const promiseArray = newMap.rooms.map(room => {
+          const pathToFile = path.join(
+            __dirname,
+            '..',
+            'map_generator',
+            'layouts',
+            room.filename
+          );
+          return readFilePromise(pathToFile, 'utf8');
+        });
+
+        const rooms = await Promise.all(promiseArray);
+
+        return rooms.map((room, i) => {
+          const JSONroom = JSON.parse(room);
+          JSONroom.position = newMap.rooms[i].position;
+          return JSONroom;
+        });
+
+        // socket.emit('createMap', { rooms, enemies })
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    maps[socket.id] = await mapGen(1);
+    console.log(maps[socket.id])
 
     const playerFire = ({ fireDirection }) => {
       socket.broadcast.emit('player2Fire', { fireDirection });
