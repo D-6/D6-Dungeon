@@ -10,7 +10,9 @@ export default class Player {
     fireRate,
     bulletSpeed,
     items,
-    socketId
+    socketId,
+    posX,
+    posY
   }) {
     this.health = health;
     this.speed = speed;
@@ -19,6 +21,8 @@ export default class Player {
     this.bulletSpeed = bulletSpeed;
     this.items = items;
     this.socketId = socketId;
+    this.posX = posX;
+    this.posY = posY;
     this.nextFire = 0;
   }
 
@@ -28,7 +32,7 @@ export default class Player {
     collidesWithPlayerArr,
     enemiesCollisionGroup
   ) {
-    this.sprite = game.add.sprite(608, 416, 'player');
+    this.sprite = game.add.sprite(this.posX, this.posY, 'player');
     this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.scale.set(4);
 

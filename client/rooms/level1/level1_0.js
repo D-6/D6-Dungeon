@@ -128,7 +128,7 @@ export default {
       wallsCollisionGroup,
       doorsCollisionGroup
     ]);
-    // socket.emit('intervalTest');
+    socket.emit('intervalTest');
   },
 
   update() {

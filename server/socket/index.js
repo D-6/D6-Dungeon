@@ -2,11 +2,23 @@ const { findClosestPlayer } = require('./enemyGenerator');
 const players = {};
 let enemies = {};
 let currentRoom = '';
+const easystarjs = require('easystarjs');
+const easystar = easystarjs.js();
 const enemyPathing = io => {
+  // console.log('interval running')
   enemies[currentRoom].forEach(enemy => {
+    console.log(enemy);
     const closestPlayer = findClosestPlayer(players, enemy);
-    console.log(closestPlayer);
-  })
+    // let enemyX = Math.floor(enemy.x / 64);
+    // let enemyY = Math.floor(enemy.y / 64);
+    // let nextEnemyX;
+    // let nextEnemyY;
+
+    // let targetX = Math.floor(target.sprite.worldPosition.x / 64);
+    // let targetY = Math.floor(target.sprite.worldPosition.y / 64);
+
+    // console.log(closestPlayer);
+  });
 };
 
 const runIntervals = io => {
@@ -26,6 +38,8 @@ module.exports = io => {
       fireRate: 400,
       bulletSpeed: 400,
       socketId: socket.id,
+      posX: 608,
+      posY: 416,
       items: ['Duck Bullets']
     };
 
@@ -33,8 +47,10 @@ module.exports = io => {
 
     const movePlayer2 = data => {
       const { x, y, socketId } = data;
-      players[socketId] = { ...players[socketId], x, y }; // Updates current player position
-      socket.broadcast.emit('movePlayer2', data);
+      players[socketId] = { ...players[socketId], posX: x, posY: y }; // Updates current player position
+      // socket.broadcast.emit('movePlayer2', data);
+      //players[socketId] now includes the x and y data. might have to refactor this function
+      // console.log(players[socketId]);
     };
 
     const setEnemies = data => {
@@ -42,7 +58,7 @@ module.exports = io => {
     };
     const setRoom = room => {
       currentRoom = room;
-      console.log(currentRoom)
+      console.log(currentRoom);
     };
     socket.on('intervalTest', () => {
       runIntervals(io);
