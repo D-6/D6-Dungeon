@@ -16,7 +16,7 @@ const socketFunctions = socket => {
   // socket.on('fireSpecial', fireSpecial);
   // socket.on('getEnemies', getEnemies);
   // socket.on('addEnemy', addEnemy);
-  // socket.on('updateEnemy', updateEnemy);
+  socket.on('updateEnemy', updateEnemy);
   // socket.on('hitEnemy', hitEnemy);
   // socket.on('removeEnemy', removeEnemy);
   // socket.on('getItems', getItems);
@@ -34,12 +34,18 @@ const getEnemies = data => {
   D6Dungeon.game.state.enemies = data;
 };
 
+const updateEnemy = ({ currentRoom, enemy }) => {
+  D6Dungeon.game.state.enemies[currentRoom][enemy.name] = enemy;
+};
+
 socket.on('connect', () => {
   console.log('Connected!');
 });
-socket.on('setIntervalTest', (arg) => {
+
+socket.on('setIntervalTest', arg => {
   console.log(arg);
 });
+
 socketFunctions(socket);
 
 export default socket;
