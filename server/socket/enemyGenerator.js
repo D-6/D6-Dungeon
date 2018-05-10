@@ -44,7 +44,7 @@ const findClosestPlayer = (gamePlayers, enemy) => {
   let closestPlayer = null;
   for (let i = 0; i < players.length; i++) {
     let player = gamePlayers[players[i]];
-    console.log(player);
+    // console.log(player);
     const dist = Math.sqrt(
       Math.pow(player.x - enemy.x, 2) + Math.pow(player.y - enemy.y, 2)
     );

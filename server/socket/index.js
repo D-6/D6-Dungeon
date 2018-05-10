@@ -5,16 +5,31 @@ let currentRoom = '';
 
 //importing easystar to server
 const easystarjs = require('easystarjs');
-const easystar = easystarjs.js();
-//I need a floormap to setGrid 5/9
-//Also need it to be in json format so that I can turn set the acceptable tiles
-//easystar.setGrid(floorMap);
-//easystar.setAcceptableTiles([3,4]);
-//easystar.enableDiagonals();
+const easystar = new easystarjs.js();
+const floorMap = [
+  [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+  [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+  [-1, -1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, -1, -1],
+  [-1, -1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, -1, -1],
+  [-1, -1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, -1, -1],
+  [-1, -1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, -1, -1],
+  [-1, -1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, -1, -1],
+  [-1, -1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, -1, -1],
+  [-1, -1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, -1, -1],
+  [-1, -1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, -1, -1],
+  [-1, -1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, -1, -1],
+  [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+  [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+];
+easystar.setGrid(floorMap);
+easystar.setAcceptableTiles([3]);
+easystar.enableDiagonals();
 const enemyPathing = io => {
   enemies[currentRoom].forEach(enemy => {
     const closestPlayer = findClosestPlayer(players, enemy);
+    // console.log(closestPlayer);
     //most of this logic was taken from enemyPathing.js in client
+    // console.log(enemy);
     let enemyX = Math.floor(enemy.x / 64);
     let enemyY = Math.floor(enemy.y / 64);
     //currently setting nextX and nextY to null
@@ -22,20 +37,29 @@ const enemyPathing = io => {
       nextX: null,
       nextY: null
     };
-    let targetX = Math.floor(closestPlayer.x / 64);
-    let targetY = Math.floor(closestPlayer.y / 64);
-    easystar.findPath(enemyX, enemyY, targetX, targetY, path => {
-      if (path === null) {
-        console.log('Path not found');
-      }
+    if (closestPlayer) {
+      let targetX = Math.floor(closestPlayer.x / 64);
+      let targetY = Math.floor(closestPlayer.y / 64);
+      easystar.findPath(enemyX, enemyY, targetX, targetY, path => {
+        if (path === null) {
+          console.log('Path not found');
+        }
 
-      if (path && path.length) {
-        newPos.nextX = path[1].x;
-        newPos.nextY = path[1].y;
-      }
-      io.sockets.emit('updateEnemy', newPos, enemy.name);
-    });
-    easystar.calculate();
+        if (path && path.length) {
+          newPos.nextX = path[1].x;
+          newPos.nextY = path[1].y;
+        }
+        enemy.x = newPos.nextX * 64;
+        enemy.y = newPos.nextY * 64;
+        const newEnemy = enemy;
+
+        io.sockets.emit('updateEnemy', {
+          currentRoom,
+          newEnemy
+        });
+      });
+      easystar.calculate();
+    }
   });
 };
 
@@ -57,8 +81,8 @@ module.exports = io => {
       bulletSpeed: 400,
       socketId: socket.id,
       //thing about the posx/posy naming
-      posX: 608,
-      posY: 416,
+      x: 608,
+      y: 416,
       items: ['Duck Bullets']
     };
 
@@ -66,7 +90,7 @@ module.exports = io => {
 
     const movePlayer2 = data => {
       const { x, y, socketId } = data;
-      players[socketId] = { ...players[socketId], posX: x, posY: y }; // Updates current player position
+      players[socketId] = { ...players[socketId], x, y }; // Updates current player position
       // socket.broadcast.emit('movePlayer2', data);
       //players[socketId] now includes the x and y data. might have to refactor this function
       // console.log(players[socketId]);
@@ -77,7 +101,7 @@ module.exports = io => {
     };
     const setRoom = room => {
       currentRoom = room;
-      console.log(currentRoom);
+      // console.log(currentRoom);
     };
     socket.on('intervalTest', () => {
       runIntervals(io);

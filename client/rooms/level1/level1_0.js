@@ -24,6 +24,7 @@ export default {
     game = D6Dungeon.game;
     player1 = game.state.player1;
     // player2 = game.state.player2;
+    console.log(player1);
 
     const [
       wallsCollisionGroup,
@@ -116,10 +117,12 @@ export default {
     );
 
     // *** Enemy pathfinding ***
-    const floorMap = floor.layer.data.map(row => row.map(col => col.index));
-    easystar.setGrid(floorMap);
-    easystar.setAcceptableTiles([3, 4]);
-    easystar.enableDiagonals();
+    // const floorMap = floor.layer.data.map(row => row.map(col => col.index));
+    // easystar.setGrid(floorMap);
+    // easystar.setAcceptableTiles([3, 4]);
+    // easystar.enableDiagonals();
+
+    // console.log(floorMap);
 
     enemies = enemyRenderer(game, enemiesCollisionGroup, [
       bulletsCollisionGroup,
@@ -134,9 +137,18 @@ export default {
   update() {
     //probably getting rid of this, as the enemyPathing was moved to the server and the movement has been moved to the socket.js file 5/9
     enemies.forEach(enemy => {
-      if (enemy.sprite._exists) enemyPathing(easystar, enemy, player1);
+      if (enemy.sprite._exists) {
+        // console.log(enemy.sprite);
+        enemy.sprite.position.x = enemy.x;
+        enemy.sprite.position.y = enemy.y;
+        // if (nextEnemyX > enemyX) enemy.sprite.body.velocity.x = enemy.speed;
+        // if (nextEnemyX < enemyX) enemy.sprite.body.velocity.x = -enemy.speed;
+        // if (nextEnemyY > enemyY) enemy.sprite.body.velocity.y = enemy.speed;
+        // if (nextEnemyY < enemyY) enemy.sprite.body.velocity.y = -enemy.speed;
+      }
+      // enemyPathing(easystar, enemy, player1);
     });
-    
+
     socket.on('movePlayer2', data => {
       player2.sprite.body.x = data.x;
       player2.sprite.body.y = data.y;
