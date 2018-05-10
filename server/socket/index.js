@@ -26,59 +26,63 @@ easystar.setGrid(floorMap);
 easystar.setAcceptableTiles([3]);
 easystar.enableDiagonals();
 const enemyPathing = io => {
-  Object.keys(enemies[currentRoom]).forEach(enemyName => {
-    const enemy = enemies[currentRoom][enemyName];
-    const closestPlayer = findClosestPlayer(players, enemy);
-    // console.log(closestPlayer);
-    //most of this logic was taken from enemyPathing.js in client
-    // console.log(enemy);
-    let enemyX = Math.floor(enemy.x / 64);
-    let enemyY = Math.floor(enemy.y / 64);
-    //currently setting nextX and nextY to null
-    let newPos = {
-      nextX: null,
-      nextY: null
-    };
-    if (closestPlayer) {
-      let targetX = Math.floor(closestPlayer.x / 64);
-      let targetY = Math.floor(closestPlayer.y / 64);
-      easystar.findPath(enemyX, enemyY, targetX, targetY, path => {
-        if (path === null) {
-          console.log('Path not found');
-        }
+  if (!enemies[currentRoom]) {
+    console.log('enemy was already killed');
+  } else {
+    Object.keys(enemies[currentRoom]).forEach(enemyName => {
+      const enemy = enemies[currentRoom][enemyName];
+      const closestPlayer = findClosestPlayer(players, enemy);
+      // console.log(closestPlayer);
+      //most of this logic was taken from enemyPathing.js in client
+      // console.log(enemy);
+      let enemyX = Math.floor(enemy.x / 64);
+      let enemyY = Math.floor(enemy.y / 64);
+      //currently setting nextX and nextY to null
+      let newPos = {
+        nextX: null,
+        nextY: null
+      };
+      if (closestPlayer) {
+        let targetX = Math.floor(closestPlayer.x / 64);
+        let targetY = Math.floor(closestPlayer.y / 64);
+        easystar.findPath(enemyX, enemyY, targetX, targetY, path => {
+          if (path === null) {
+            console.log('Path not found');
+          }
 
-        if (path && path.length) {
-          newPos.nextX = path[1].x;
-          newPos.nextY = path[1].y;
-          // const distance = 1;
-          // enemy.x += newPos.nextX - enemy.x > 0 ? distance : -distance;
-          // enemy.y += newPos.nextY - enemy.y > 0 ? distance : -distance;
-          enemy.nextXTile = newPos.nextX;
-          enemy.nextYTile = newPos.nextY;
-          enemy.x = newPos.nextX * 64;
-          enemy.y = newPos.nextY * 64;
-          io.sockets.emit('updateEnemy', {
-            currentRoom,
-            enemy
-          });
-        }
+          if (path && path.length) {
+            newPos.nextX = path[1].x;
+            newPos.nextY = path[1].y;
+            // const distance = 1;
+            // enemy.x += newPos.nextX - enemy.x > 0 ? distance : -distance;
+            // enemy.y += newPos.nextY - enemy.y > 0 ? distance : -distance;
+            enemy.nextXTile = newPos.nextX;
+            enemy.nextYTile = newPos.nextY;
+            enemy.x = newPos.nextX * 64;
+            enemy.y = newPos.nextY * 64;
+            io.sockets.emit('updateEnemy', {
+              currentRoom,
+              enemy
+            });
+          }
 
-        // enemy.nextXTile = newPos.nextX;
-        // enemy.nextYTile = newPos.nextY;
+          // enemy.nextXTile = newPos.nextX;
+          // enemy.nextYTile = newPos.nextY;
 
-        // enemy.x = newPos.nextX * 64;
-        // enemy.y = newPos.nextY * 64;
+          // enemy.x = newPos.nextX * 64;
+          // enemy.y = newPos.nextY * 64;
 
-        // console.log(enemy);
+          // console.log(enemy);
 
-        // io.sockets.emit('updateEnemy', {
-        //   currentRoom,
-        //   enemy
-        // });
-      });
-      easystar.calculate();
-    }
-  });
+          // io.sockets.emit('updateEnemy', {
+          //   currentRoom,
+          //   enemy
+          // });
+        });
+        easystar.calculate();
+      }
+    });
+  }
 };
 
 const runIntervals = io => {
