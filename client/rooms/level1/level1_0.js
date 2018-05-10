@@ -142,6 +142,10 @@ export default {
   update() {
     //probably getting rid of this, as the enemyPathing was moved to the server and the movement has been moved to the socket.js file 5/9
     enemies.forEach(enemy => {
+      if (!D6Dungeon.game.state.enemies[currentState][enemy.name]) {
+        enemy.sprite.kill();
+      }
+
       if (enemy.sprite._exists) {
         const { nextXTile, nextYTile } = D6Dungeon.game.state.enemies[
           currentState

@@ -141,7 +141,7 @@ module.exports = io => {
 
     socket.on('enemyKill', name => {
       delete enemies[currentRoom][name];
-      socket.emit('getEnemies', enemies);
+      io.emit('getEnemies', enemies);
     });
   });
 };
