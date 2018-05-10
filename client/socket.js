@@ -2,6 +2,8 @@ import io from 'socket.io-client';
 import Player from './Player';
 import D6DungeonGame from './game';
 
+/* global D6Dungeon */
+
 const socket = io(window.location.origin);
 
 const socketFunctions = socket => {

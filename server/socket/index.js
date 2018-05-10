@@ -27,31 +27,38 @@ module.exports = io => {
 
     socket.emit('createPlayer', players[socket.id]);
 
-    const movePlayer2 = data => {
-      const { x, y, socketId } = data;
+    const playerFire = ({ fireDirection }) => {
+      socket.broadcast.emit('player2Fire', { fireDirection });
+    };
+
+    const playerMove = ({ x, y, socketId }) => {
       players[socketId] = { ...players[socketId], x, y }; // Updates current player position
-      socket.broadcast.emit('movePlayer2', data);
+      socket.broadcast.emit('movePlayer2', { x, y });
     };
 
     const setEnemies = data => {
       enemies = data;
     };
-    socket.on('intervalTest', arg => {
-      runIntervals(io, arg);
-    });
-    socket.on('setEnemies', setEnemies);
-    socket.on('playerMove', movePlayer2);
-    socket.on('disconnect', () => {
-      console.log(`Connection ${socket.id} has left the building`);
-      delete players[socket.id];
-    });
 
-    socket.on('enemyKill', ({ name, room }) => {
+    const enemyKill = ({ name, room }) => {
       enemies[room] = enemies[room].filter(enemy => {
         return enemy.name !== name;
       });
       socket.emit('getEnemies', enemies);
       console.log(enemies);
+    };
+
+    socket.on('intervalTest', arg => {
+      runIntervals(io, arg);
+    });
+    socket.on('setEnemies', setEnemies);
+    socket.on('playerFire', playerFire);
+    socket.on('playerMove', playerMove);
+    socket.on('enemyKill', enemyKill);
+
+    socket.on('disconnect', () => {
+      console.log(`Connection ${socket.id} has left the building`);
+      delete players[socket.id];
     });
   });
 };
