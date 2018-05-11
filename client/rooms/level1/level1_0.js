@@ -1,15 +1,10 @@
-import easystarjs from 'easystarjs';
-const easystar = new easystarjs.js();
 import socket from '../../socket';
 import { createWallCollision } from '../../wallCollision';
 import { createDoorCollision } from '../../doorCollision';
 import { createDoorSensors } from '../../doorSensors';
 import { enemyRenderer } from '../../enemyRenderer';
-import { enemyPathing } from '../../enemyPathing';
 import { createCollisionGroups } from '../../collisionGroups';
 import { Potion } from '../../Items';
-//importing enemies to use for enemy renderer
-import { Weasel, Golem } from '../../enemies';
 
 /* global D6Dungeon */
 
