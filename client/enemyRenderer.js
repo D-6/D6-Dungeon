@@ -36,12 +36,12 @@ export const enemyRenderer = (
       weasel.sprite.body.onBeginContact.add(other => {
         if (other.sprite) {
           if (other.sprite.key === 'bullet') {
-            weasel.sprite.damage(other.sprite.damage);
+            weasel.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
 
             socket.emit('enemyDamage', {
               name: weasel.name,
-              damage: other.sprite.damage
+              damage: other.sprite.damageAmount
             });
 
             if (!weasel.sprite._exists) {

@@ -112,6 +112,7 @@ export default {
     player1.addBullets(
       game,
       'bullet',
+      player1.damage,
       bulletsCollisionGroup,
       [playersCollisionGroup, wallsCollisionGroup, doorsCollisionGroup],
       enemiesCollisionGroup
@@ -119,6 +120,7 @@ export default {
     player2.addBullets(
       game,
       'dummyBullet',
+      player2.damage,
       bulletsCollisionGroup,
       [playersCollisionGroup, wallsCollisionGroup, doorsCollisionGroup],
       enemiesCollisionGroup

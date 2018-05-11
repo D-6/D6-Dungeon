@@ -35,6 +35,7 @@ export default class Player {
     this.sprite = game.add.sprite(this.x, this.y, 'player');
     this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.scale.set(4);
+    this.sprite.setHealth(this.health);
 
     // *** Player - Physics ***
     // 2nd arg is debug mode
@@ -129,6 +130,7 @@ export default class Player {
   addBullets(
     game,
     spriteKey,
+    damage,
     bulletsCollisionGroup,
     collidesWithBulletsArr,
     enemiesCollisionGroup
@@ -136,7 +138,7 @@ export default class Player {
     this.bullets = game.add.physicsGroup(Phaser.Physics.P2JS);
     this.bullets.createMultiple(10, spriteKey, 0, false, bullet => {
       bullet.anchor.set(0.5);
-      bullet.damage = 1;
+      bullet.damageAmount = damage;
       bullet.body.setCollisionGroup(bulletsCollisionGroup);
       bullet.body.collides(collidesWithBulletsArr, bulletBody => {
         bulletBody.sprite.kill();
@@ -219,5 +221,7 @@ export default class Player {
 }
 
 const playerHitByEnemy = (playerBody, enemyBody) => {
-  // console.log('playerHitByEnemy');
+  playerBody.sprite.damage(enemyBody.sprite.damageAmount);
+  console.log('hp', playerBody.sprite.health);
+  //Need invulnerability timer
 };
