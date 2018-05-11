@@ -139,9 +139,9 @@ export default {
       }
 
       if (enemy.sprite._exists) {
-        const { nextXTile, nextYTile } = D6Dungeon.game.state.enemies[
-          gameRoom
-        ][enemy.name];
+        const { nextXTile, nextYTile } = D6Dungeon.game.state.enemies[gameRoom][
+          enemy.name
+        ];
         const currentXTile = enemy.sprite.position.x / 64;
         const currentYTile = enemy.sprite.position.y / 64;
 
@@ -160,7 +160,7 @@ export default {
       }
     });
 
-    player1.addMovement();
+    player1.addMovement(game);
     player1.addShooting(game);
 
     player2.sprite.body.velocity.x = 0;
