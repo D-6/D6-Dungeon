@@ -142,7 +142,7 @@ const placeClientInRoom = (io, socket) => {
   const parsedUrl = url.parse(socket.request.headers.referer);
   const host = parsedUrl.protocol + '//' + parsedUrl.host;
   const urlPath = parsedUrl.pathname.slice(1);
-  let gameId = urlPath;
+  let gameId = null;
 
   if (urlPath.length === 0) {
     const message = `Game URL:\n${host}/${socket.id}`;
@@ -151,12 +151,11 @@ const placeClientInRoom = (io, socket) => {
   } else if (players[urlPath]) {
     const playersInRoom = io.sockets.adapter.rooms[urlPath].length;
     if (playersInRoom === 1) {
+      gameId = urlPath;
       socket.join(urlPath);
       socket.emit('setRooms', maps[urlPath]);
       socket.emit('setEnemies', enemies[urlPath]);
-      // players[urlPath].gameId = socket.id;
       console.log(`Client successfully joined friend in room: ${urlPath}`);
-      // console.log(players[urlPath]);
     } else {
       console.log(`${urlPath} already has 2 players!  Cannot join!`);
     }
@@ -211,10 +210,12 @@ module.exports = io => {
     const newGameId = placeClientInRoom(io, socket);
 
     // Makes the player and assigns their friend's socket.id to friend
-    makeNewPlayer(socket, newGameId);
+    if (newGameId) {
+      makeNewPlayer(socket, newGameId);
 
-    if (Object.keys(players[newGameId]).length === 1) {
-      await mapAndEnemyGenerator(socket, 1);
+      if (Object.keys(players[newGameId]).length === 1) {
+        await mapAndEnemyGenerator(socket, 1);
+      }
     }
 
     const playerFire = ({ fireDirection, gameId }) => {
@@ -258,10 +259,10 @@ module.exports = io => {
         });
       }
 
-      delete players[gameId][socket.id];
-
-      // Remove other player from client game
-      socket.to(gameId).broadcast.emit('removePlayer2');
+      if (players[gameId]) {
+        delete players[gameId][socket.id];
+        socket.to(gameId).broadcast.emit('removePlayer2');
+      }
 
       const leftInRoom = io.sockets.adapter.rooms[gameId];
       if (!leftInRoom) {
