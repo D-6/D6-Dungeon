@@ -216,8 +216,10 @@ module.exports = io => {
     };
 
     const playerMove = ({ x, y, socketId, gameId }) => {
-      players[gameId][socketId] = { ...players[gameId][socketId], x, y }; // Updates current player position
-      socket.to(gameId).broadcast.emit('movePlayer2', { x, y });
+      if (players[gameId]) {
+        players[gameId][socketId] = { ...players[gameId][socketId], x, y }; // Updates current player position
+        socket.to(gameId).broadcast.emit('movePlayer2', { x, y });
+      }
     };
 
     const setRoom = ({ gameId, gameRoom }) => {
@@ -262,8 +264,10 @@ module.exports = io => {
     });
 
     socket.on('enemyKill', ({ gameId, gameRoom, name }) => {
-      delete enemies[gameId][gameRoom][name];
-      io.to(gameId).emit('setEnemies', enemies[gameId]);
+      if (enemies[gameId]) {
+        delete enemies[gameId][gameRoom][name];
+        io.to(gameId).emit('setEnemies', enemies[gameId]);
+      }
     });
   });
 };
