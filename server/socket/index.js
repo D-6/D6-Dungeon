@@ -2,6 +2,7 @@ const { findClosestPlayer } = require('./enemyGenerator');
 const path = require('path');
 const readFilePromise = require('fs-readfile-promise');
 const { Map } = require('../map_generator/mapGen');
+const url = require('url');
 const { createEnemies } = require('../socket/enemyGenerator');
 
 const players = {};
@@ -33,10 +34,10 @@ easystar.setAcceptableTiles([3]);
 easystar.enableDiagonals();
 const enemyPathing = io => {
   if (!enemies[currentRoom]) {
-    console.log('enemy was already killed');
+    // console.log('enemy was already killed');
   } else {
     Object.keys(enemies[currentRoom]).forEach(enemyName => {
-      const enemy = enemies[currentRoom][enemyName];
+      const enemy = enemies[socketRoom][currentRoom][enemyName];
       const closestPlayer = findClosestPlayer(players, enemy);
       // console.log(closestPlayer);
       //most of this logic was taken from enemyPathing.js in client
@@ -91,8 +92,83 @@ const enemyPathing = io => {
   }
 };
 
+const makeNewPlayer = (socket, friend) => {
+  players[socket.id] = {
+    health: 10,
+    speed: 200,
+    damage: 2,
+    fireRate: 400,
+    bulletSpeed: 400,
+    socketId: socket.id,
+    x: 608,
+    y: 416,
+    items: ['Duck Bullets'],
+    friend
+  };
+};
+
+const placeClientInRoom = (io, socket) => {
+  const parsedUrl = url.parse(socket.request.headers.referer);
+  const host = parsedUrl.protocol + '//' + parsedUrl.host;
+  const urlPath = parsedUrl.pathname.slice(1);
+
+  if (urlPath.length === 0) {
+    const message = `Game URL:\n${host}/${socket.id}`;
+    socket.emit('sendUrl', message);
+  } else if (players[urlPath]) {
+    const playersInRoom = io.sockets.adapter.rooms[urlPath].length;
+    if (playersInRoom === 1) {
+      socket.join(urlPath);
+      socket.emit('setRooms', maps[urlPath]);
+      socket.emit('setEnemies', enemies[urlPath]);
+      // players[urlPath].friend = socket.id;
+      console.log(`Client successfully joined friend in room: ${urlPath}`);
+      // console.log(players[urlPath]);
+    } else {
+      console.log(`${urlPath} already has 2 players!  Cannot join!`);
+    }
+  } else {
+    console.log(`Client attempted to join an invalid room: ${urlPath}`);
+  }
+  return urlPath;
+};
+
 const runIntervals = io => {
   enemyPathingInterval = setInterval(() => enemyPathing(io), 300);
+};
+
+const mapAndEnemyGenerator = async (socket, level) => {
+  try {
+    const newMap = new Map(7, 8, true);
+
+    const promiseArray = newMap.rooms.map(room => {
+      const pathToFile = path.join(
+        __dirname,
+        '..',
+        'map_generator',
+        'layouts',
+        room.filename
+      );
+      return readFilePromise(pathToFile, 'utf8');
+    });
+
+    const rooms = await Promise.all(promiseArray);
+
+    // Assign map for socket.id
+    maps[socket.id] = rooms.map((room, i) => {
+      const JSONroom = JSON.parse(room);
+      JSONroom.position = newMap.rooms[i].position;
+      return JSONroom;
+    });
+
+    // Assign enemies for socket.id
+    enemies[socket.id] = createEnemies(newMap, level);
+
+    socket.emit('setRooms', maps[socket.id]);
+    socket.emit('setEnemies', enemies[socket.id]);
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 module.exports = io => {
@@ -101,53 +177,29 @@ module.exports = io => {
       `A socket connection to the server has been made: ${socket.id}`
     );
 
-    players[socket.id] = {
-      health: 10,
-      speed: 200,
-      damage: 2,
-      fireRate: 400,
-      bulletSpeed: 400,
-      socketId: socket.id,
-      x: 608,
-      y: 416,
-      items: ['Duck Bullets']
-    };
+    // Puts client in room alone if joining '/'
+    // Puts client in room with friend if joining '/socket.id'
+    const friend = placeClientInRoom(io, socket) || null;
 
+    // console.log(io.sockets.adapter.rooms[socket.id]);
+
+    // Makes the player and assigns their friend's socket.id to friend
+    makeNewPlayer(socket, friend);
     socket.emit('createPlayer', players[socket.id]);
 
-    const mapGen = async level => {
-      try {
-        const newMap = new Map(7, 8, true);
-        const mapEnemies = createEnemies(newMap, level);
-        enemies[socket.id] = mapEnemies;
+    if (!players[socket.id].friend) {
+      await mapAndEnemyGenerator(socket, 1);
+    }
 
-        const promiseArray = newMap.rooms.map(room => {
-          const pathToFile = path.join(
-            __dirname,
-            '..',
-            'map_generator',
-            'layouts',
-            room.filename
-          );
-          return readFilePromise(pathToFile, 'utf8');
-        });
-
-        const rooms = await Promise.all(promiseArray);
-
-        return rooms.map((room, i) => {
-          const JSONroom = JSON.parse(room);
-          JSONroom.position = newMap.rooms[i].position;
-          return JSONroom;
-        });
-
-        // socket.emit('createMap', { rooms, enemies })
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    maps[socket.id] = await mapGen(1);
-    console.log(maps[socket.id])
+    // if (Object.keys(players).length === 1) {
+    //   try {
+    //     // console.log(io.of('/').connected);
+    //   } catch (err) {
+    //     console.error(err);
+    //   }
+    // } else if (Object.keys(players).length === 2) {
+    //   maps[socket.id] = 'boo';
+    // }
 
     const playerFire = ({ fireDirection }) => {
       socket.broadcast.emit('player2Fire', { fireDirection });
@@ -159,33 +211,38 @@ module.exports = io => {
       socket.broadcast.emit('movePlayer2', { x, y });
     };
 
-    const setEnemies = data => {
-      enemies = data;
-    };
+    // const setEnemies = (room, data => {
+    //   enemies[room] = data;
+    // };
+
     const setRoom = room => {
       currentRoom = room;
     };
+
     socket.on('intervalTest', () => {
       runIntervals(io);
     });
     socket.on('setRoom', setRoom);
-    socket.on('setEnemies', setEnemies);
+    // socket.on('setEnemies', setEnemies);
     socket.on('playerFire', playerFire);
     socket.on('playerMove', playerMove);
 
     socket.on('disconnect', () => {
       console.log(`Connection ${socket.id} has left the building`);
+
       delete players[socket.id];
-      if (!Object.keys(players).length) {
+
+      const leftInRoom = io.sockets.adapter.rooms[socket.id];
+      if (!leftInRoom) {
         clearInterval(enemyPathingInterval);
-        enemies = {};
+        delete enemies[socket.id];
         currentRoom = '';
       }
     });
 
-    socket.on('enemyKill', name => {
-      delete enemies[currentRoom][name];
-      io.emit('getEnemies', enemies);
+    socket.on('enemyKill', ({ gameId, gameRoom, name }) => {
+      delete enemies[gameId][gameRoom][name];
+      io.to(gameId).emit('setEnemies', enemies[gameId]);
     });
   });
 };
