@@ -25,6 +25,7 @@ export default {
     player1 = game.state.player1;
     player2 = game.state.player2;
     const { gameId } = game.state;
+    console.log(gameId);
     gameRoom = game.state.current;
     socket.emit('setRoom', { gameId, gameRoom });
 
@@ -129,7 +130,7 @@ export default {
       wallsCollisionGroup,
       doorsCollisionGroup
     ]);
-    socket.emit('intervalTest');
+    socket.emit('intervalTest', gameId);
   },
 
   update() {

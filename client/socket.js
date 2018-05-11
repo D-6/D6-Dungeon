@@ -36,8 +36,8 @@ const socketFunctions = socket => {
 
 const createPlayer = data => {
   D6Dungeon.game.state.player1 = new Player(data);
-  D6Dungeon.game.state.gameId = data.friend || data.socketId;
-  console.log(D6Dungeon.game.state.gameId);
+  D6Dungeon.game.state.gameId = data.gameId;
+  // console.log(D6Dungeon.game.state.gameId);
 };
 
 // const getEnemies = data => {
