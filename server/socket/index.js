@@ -41,6 +41,7 @@ const enemyPathing = (io, gameId) => {
     } else {
       Object.keys(currentGameEnemies).forEach(enemyName => {
         const enemy = currentGameEnemies[enemyName];
+        console.log(enemy);
         const currentGamePlayers = players[gameId];
         const closestPlayer = findClosestPlayer(currentGamePlayers, enemy);
         // console.log(closestPlayer);

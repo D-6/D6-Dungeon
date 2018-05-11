@@ -1,11 +1,12 @@
 // Import enemies here:
-import { Weasel } from './enemies';
+// import { monster, Golem } from './enemies';
 import socket from './socket';
 
 export const enemyRenderer = (
   game,
   enemiesCollisionGroup,
-  collidesWithEnemiesArr
+  collidesWithEnemiesArr,
+  Monster
 ) => {
   const gameRoom = game.state.current;
   const roomEnemiesObj = game.state.enemies[gameRoom];
@@ -17,7 +18,7 @@ export const enemyRenderer = (
 
   if (roomEnemiesArr.length) {
     roomEnemiesArr.forEach(enemy => {
-      const weasel = new Weasel(
+      const monster = new Monster(
         game,
         enemy.name,
         enemy.x,
@@ -25,33 +26,33 @@ export const enemyRenderer = (
         enemy.health
       );
 
-      weasel.speed =
-        weasel.minSpeed + Math.floor(Math.random() * weasel.speedVariation);
+      monster.speed =
+        monster.minSpeed + Math.floor(Math.random() * monster.speedVariation);
 
-      weasel.sprite.body.setCollisionGroup(enemiesCollisionGroup);
-      weasel.sprite.body.collides(collidesWithEnemiesArr);
+      monster.sprite.body.setCollisionGroup(enemiesCollisionGroup);
+      monster.sprite.body.collides(collidesWithEnemiesArr);
 
-      weasel.sprite.body.onBeginContact.add(other => {
+      monster.sprite.body.onBeginContact.add(other => {
         if (other.sprite && other.sprite.key === 'bullet') {
-          weasel.sprite.damage(other.sprite.damage);
+          monster.sprite.damage(other.sprite.damage);
           other.sprite.kill();
 
           socket.emit('enemyDamage', {
-            name: weasel.name,
+            name: monster.name,
             damage: other.sprite.damage
           });
 
-          if (!weasel.sprite._exists) {
+          if (!monster.sprite._exists) {
             socket.emit('enemyKill', {
               gameId: D6Dungeon.game.state.gameId,
               gameRoom,
-              name: weasel.name
+              name: monster.name
             });
           }
         }
       });
 
-      enemiesArr.push(weasel);
+      enemiesArr.push(monster);
     });
   }
 
