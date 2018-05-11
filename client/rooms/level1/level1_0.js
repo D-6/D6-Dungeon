@@ -111,12 +111,14 @@ export default {
     // *** Bullets ***
     player1.addBullets(
       game,
+      'bullet',
       bulletsCollisionGroup,
       [playersCollisionGroup, wallsCollisionGroup, doorsCollisionGroup],
       enemiesCollisionGroup
     );
     player2.addBullets(
       game,
+      'dummyBullet',
       bulletsCollisionGroup,
       [playersCollisionGroup, wallsCollisionGroup, doorsCollisionGroup],
       enemiesCollisionGroup

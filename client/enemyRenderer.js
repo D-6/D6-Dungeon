@@ -2,6 +2,8 @@
 import { Weasel } from './enemies';
 import socket from './socket';
 
+/* global D6Dungeon */
+
 export const enemyRenderer = (
   game,
   enemiesCollisionGroup,
@@ -32,21 +34,25 @@ export const enemyRenderer = (
       weasel.sprite.body.collides(collidesWithEnemiesArr);
 
       weasel.sprite.body.onBeginContact.add(other => {
-        if (other.sprite && other.sprite.key === 'bullet') {
-          weasel.sprite.damage(other.sprite.damage);
-          other.sprite.kill();
+        if (other.sprite) {
+          if (other.sprite.key === 'bullet') {
+            weasel.sprite.damage(other.sprite.damage);
+            other.sprite.kill();
 
-          socket.emit('enemyDamage', {
-            name: weasel.name,
-            damage: other.sprite.damage
-          });
-
-          if (!weasel.sprite._exists) {
-            socket.emit('enemyKill', {
-              gameId: D6Dungeon.game.state.gameId,
-              gameRoom,
-              name: weasel.name
+            socket.emit('enemyDamage', {
+              name: weasel.name,
+              damage: other.sprite.damage
             });
+
+            if (!weasel.sprite._exists) {
+              socket.emit('enemyKill', {
+                gameId: D6Dungeon.game.state.gameId,
+                gameRoom,
+                name: weasel.name
+              });
+            }
+          } else if (other.sprite.key === 'dummyBullet') {
+            other.sprite.kill();
           }
         }
       });
