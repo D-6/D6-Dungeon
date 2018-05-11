@@ -41,8 +41,10 @@ const createPlayer = data => {
 };
 
 const setPlayer2 = data => {
-  D6Dungeon.game.state.player2 = new Player(data);
-  console.log('got player 2 data');
+  D6Dungeon.game.state.player2 = Object.assign(
+    D6Dungeon.game.state.player2,
+    new Player(data)
+  );
 };
 
 const removePlayer2 = () => {
