@@ -39,19 +39,11 @@ export const enemyRenderer = (
             weasel.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
 
-            socket.emit('enemyDamage', {
+            socket.emit('enemyHit', {
+              health: weasel.sprite.health,
               name: weasel.name,
-              damage: other.sprite.damageAmount
-              // TODO: Create listener
+              gameId: D6Dungeon.game.state.gameId
             });
-
-            if (!weasel.sprite._exists) {
-              socket.emit('enemyKill', {
-                gameId: D6Dungeon.game.state.gameId,
-                gameRoom,
-                name: weasel.name
-              });
-            }
           } else if (other.sprite.key === 'dummyBullet') {
             other.sprite.kill();
           }

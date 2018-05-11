@@ -17,7 +17,7 @@ const generateEnemies = () => {
     enemyObject[enemyName] = { type: 'weasel' };
     enemyObject[enemyName].x = getRandomPosition(minX, maxX);
     enemyObject[enemyName].y = getRandomPosition(minY, maxY);
-    enemyObject[enemyName].health = 1;
+    enemyObject[enemyName].health = 2;
     enemyObject[enemyName].name = enemyName;
   }
   return enemyObject;
