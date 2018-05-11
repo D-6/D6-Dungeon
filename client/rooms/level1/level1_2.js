@@ -121,17 +121,13 @@ export default {
       enemiesCollisionGroup
     );
 
-    enemies = enemyRenderer(
-      game,
+    enemies = enemyRenderer(game, enemiesCollisionGroup, [
+      bulletsCollisionGroup,
       enemiesCollisionGroup,
-      [
-        bulletsCollisionGroup,
-        enemiesCollisionGroup,
-        playersCollisionGroup,
-        wallsCollisionGroup,
-        doorsCollisionGroup
-      ]
-    );
+      playersCollisionGroup,
+      wallsCollisionGroup,
+      doorsCollisionGroup
+    ]);
 
     socket.emit('intervalTest', gameId);
   },

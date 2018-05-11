@@ -257,11 +257,11 @@ module.exports = io => {
           const position = {};
           switch (direction) {
             case 'east':
-              position.x = 160;
+              position.x = 1056;
               position.y = 416;
               break;
             case 'west':
-              position.x = 1056;
+              position.x = 160;
               position.y = 416;
               break;
             case 'north':
