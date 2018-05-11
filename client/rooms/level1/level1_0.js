@@ -83,6 +83,7 @@ export default {
     // *** Player - Sprite ***
     player1.addPlayerToRoom(
       game,
+      'player1',
       playersCollisionGroup,
       [
         bulletsCollisionGroup,
@@ -96,6 +97,7 @@ export default {
     );
     player2.addPlayerToRoom(
       game,
+      'player2',
       playersCollisionGroup,
       [
         bulletsCollisionGroup,

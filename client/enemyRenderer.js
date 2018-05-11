@@ -42,6 +42,7 @@ export const enemyRenderer = (
             socket.emit('enemyDamage', {
               name: weasel.name,
               damage: other.sprite.damageAmount
+              // TODO: Create listener
             });
 
             if (!weasel.sprite._exists) {

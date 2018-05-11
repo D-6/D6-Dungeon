@@ -24,10 +24,12 @@ export default class Player {
     this.x = x;
     this.y = y;
     this.nextFire = 0;
+    this.nextHit = 0;
   }
 
   addPlayerToRoom(
     game,
+    player,
     playersCollisionGroup,
     collidesWithPlayerArr,
     enemiesCollisionGroup
@@ -50,12 +52,24 @@ export default class Player {
 
     this.sprite.body.setCollisionGroup(playersCollisionGroup);
     this.sprite.body.collides(collidesWithPlayerArr);
-    this.sprite.body.collides(enemiesCollisionGroup, playerHitByEnemy);
+    this.sprite.body.collides(
+      enemiesCollisionGroup,
+      (playerBody, enemyBody) => {
+        if (player === 'player1' && game.time.now > this.nextHit) {
+          this.nextHit = game.time.now + 1000;
+          playerBody.sprite.damage(enemyBody.sprite.damageAmount);
+          console.log('sprite', playerBody.sprite.health)
+          // TODO: Emit new hp
+        }
+      }
+    );
 
     // *** Player - Animation ***
     this.sprite.animations.add('walk', null, 10, true);
 
-    this.addKeybinds(game);
+    if (player === 'player1') {
+      this.addKeybinds(game);
+    }
   }
 
   addKeybinds(game) {
@@ -219,9 +233,3 @@ export default class Player {
     }
   }
 }
-
-const playerHitByEnemy = (playerBody, enemyBody) => {
-  playerBody.sprite.damage(enemyBody.sprite.damageAmount);
-  console.log('hp', playerBody.sprite.health);
-  //Need invulnerability timer
-};

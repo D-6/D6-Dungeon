@@ -20,8 +20,10 @@ export class Potion {
         const { player1 } = game.state;
 
         if (this.type === 'health') {
-          player1.health++;
-          console.log('HEALTH POTION! ', player1.health);
+          player1.sprite.health++;
+          console.log('HEALTH POTION! sprite', player1.sprite.health);
+          // TODO: Emit new hp
+
           this.sprite.destroy();
         }
       }

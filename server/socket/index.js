@@ -142,6 +142,7 @@ const placeClientInRoom = (io, socket) => {
       // console.log(players[urlPath]);
     } else {
       console.log(`${urlPath} already has 2 players!  Cannot join!`);
+      return null;
     }
   } else {
     console.log(`Client attempted to join an invalid room: ${urlPath}`);
@@ -194,11 +195,13 @@ module.exports = io => {
     const newGameId = placeClientInRoom(io, socket);
 
     // Makes the player and assigns their friend's socket.id to friend
-    makeNewPlayer(socket, newGameId);
-    socket.emit('createPlayer', players[newGameId][socket.id]);
+    if (newGameId) {
+      makeNewPlayer(socket, newGameId);
+      socket.emit('createPlayer', players[newGameId][socket.id]);
 
-    if (Object.keys(players[newGameId]).length === 1) {
-      await mapAndEnemyGenerator(socket, 1);
+      if (Object.keys(players[newGameId]).length === 1) {
+        await mapAndEnemyGenerator(socket, 1);
+      }
     }
 
     // if (Object.keys(players).length === 1) {
