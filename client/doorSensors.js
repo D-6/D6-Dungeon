@@ -28,7 +28,7 @@ export const createDoorSensors = (game, currentState) => {
   sensorWest.body.onBeginContact.add(other => {
     if (other.sprite.key === 'player') {
       nextRoom = level + (x - 1) + '-' + y;
-      socket.emit('roomCleared', {
+      socket.emit('nextRoomReady', {
         gameId,
         socketId,
         nextRoom,
@@ -36,10 +36,17 @@ export const createDoorSensors = (game, currentState) => {
       });
     }
   });
+
+  sensorWest.body.onEndContact.add(other => {
+    if (other.sprite.key === 'player') {
+      socket.emit('clearRoomReady', { gameId, socketId });
+    }
+  });
+
   sensorEast.body.onBeginContact.add(other => {
     if (other.sprite.key === 'player') {
       nextRoom = level + (x + 1) + '-' + y;
-      socket.emit('roomCleared', {
+      socket.emit('nextRoomReady', {
         gameId,
         socketId,
         nextRoom,
@@ -47,10 +54,17 @@ export const createDoorSensors = (game, currentState) => {
       });
     }
   });
+
+  sensorEast.body.onEndContact.add(other => {
+    if (other.sprite.key === 'player') {
+      socket.emit('clearRoomReady', { gameId, socketId });
+    }
+  });
+
   sensorNorth.body.onBeginContact.add(other => {
     if (other.sprite.key === 'player') {
       nextRoom = level + x + '-' + (y + 1);
-      socket.emit('roomCleared', {
+      socket.emit('nextRoomReady', {
         gameId,
         socketId,
         nextRoom,
@@ -58,10 +72,17 @@ export const createDoorSensors = (game, currentState) => {
       });
     }
   });
+
+  sensorNorth.body.onEndContact.add(other => {
+    if (other.sprite.key === 'player') {
+      socket.emit('clearRoomReady', { gameId, socketId });
+    }
+  });
+
   sensorSouth.body.onBeginContact.add(other => {
     if (other.sprite.key === 'player') {
       nextRoom = level + x + '-' + (y - 1);
-      socket.emit('roomCleared', {
+      socket.emit('nextRoomReady', {
         gameId,
         socketId,
         nextRoom,
@@ -70,7 +91,11 @@ export const createDoorSensors = (game, currentState) => {
     }
   });
 
-  // try to create collision group here
+  sensorSouth.body.onEndContact.add(other => {
+    if (other.sprite.key === 'player') {
+      socket.emit('clearRoomReady', { gameId, socketId });
+    }
+  });
 
   return [sensorWest, sensorEast, sensorNorth, sensorSouth];
 };

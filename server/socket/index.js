@@ -234,12 +234,14 @@ module.exports = io => {
       currentRoom[gameId] = gameRoom;
     };
 
-    const roomCleared = ({ gameId, socketId, nextRoom, direction }) => {
-      console.log(gameId, socketId, nextRoom, direction);
+    const nextRoomReady = ({ gameId, socketId, nextRoom, direction }) => {
       players[gameId][socketId].nextRoom = nextRoom;
       const allReady = Object.keys(players[gameId]).every(player => {
+        console.log(players[gameId][player].nextRoom);
         return players[gameId][player].nextRoom === nextRoom;
       });
+
+      console.log(allReady);
 
       if (allReady && Object.keys(players[gameId]).length === 2) {
         console.log('ALL READY FOR ', nextRoom);
@@ -265,7 +267,7 @@ module.exports = io => {
             position.x = 608;
             position.y = 416;
         }
-        setRoom({ gameId, nextRoom });
+        setRoom({ gameId, gameRoom: nextRoom });
         Object.keys(players[gameId]).forEach(player => {
           players[gameId][player].nextRoom = null;
         });
@@ -275,13 +277,18 @@ module.exports = io => {
       }
     };
 
+    const clearRoomReady = ({ gameId, socketId }) => {
+      players[gameId][socketId].nextRoom = null;
+    };
+
     socket.on('intervalTest', gameId => {
       runIntervals(io, gameId);
     });
     socket.on('setRoom', setRoom);
     socket.on('playerFire', playerFire);
     socket.on('playerMove', playerMove);
-    socket.on('roomCleared', roomCleared);
+    socket.on('nextRoomReady', nextRoomReady);
+    socket.on('clearRoomReady', clearRoomReady);
 
     socket.on('disconnect', () => {
       console.log(`Connection ${socket.id} has left the building`);
