@@ -7,7 +7,7 @@ const createSensor = (game, x, y) => {
   // 2nd arg is debug mode
   game.physics.p2.enable(sensor, true);
   sensor.body.static = true;
-  sensor.body.addCircle(120).sensor = true;
+  sensor.body.addCircle(95).sensor = true;
 
   return sensor;
 };

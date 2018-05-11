@@ -235,50 +235,61 @@ module.exports = io => {
     };
 
     const nextRoomReady = ({ gameId, socketId, nextRoom, direction }) => {
-      players[gameId][socketId].nextRoom = nextRoom;
-      const allReady = Object.keys(players[gameId]).every(player => {
-        console.log(players[gameId][player].nextRoom);
-        return players[gameId][player].nextRoom === nextRoom;
-      });
-
-      console.log(allReady);
-
-      if (allReady && Object.keys(players[gameId]).length === 2) {
-        console.log('ALL READY FOR ', nextRoom);
-        const position = {};
-        switch (direction) {
-          case 'east':
-            position.x = 160;
-            position.y = 416;
-            break;
-          case 'west':
-            position.x = 1056;
-            position.y = 416;
-            break;
-          case 'north':
-            position.x = 608;
-            position.y = 160;
-            break;
-          case 'south':
-            position.x = 608;
-            position.y = 672;
-            break;
-          default:
-            position.x = 608;
-            position.y = 416;
-        }
-        setRoom({ gameId, gameRoom: nextRoom });
-        Object.keys(players[gameId]).forEach(player => {
-          players[gameId][player].nextRoom = null;
+      if (players[gameId]) {
+        players[gameId][socketId].nextRoom = nextRoom;
+        const allReady = Object.keys(players[gameId]).every(player => {
+          console.log(players[gameId][player].nextRoom);
+          return players[gameId][player].nextRoom === nextRoom;
         });
-        io
-          .to(gameId)
-          .emit('newRoom', { nextRoom, x: position.x, y: position.y });
+        const enemiesDead =
+          Object.keys(enemies[gameId][currentRoom[gameId]]).length === 0;
+
+        if (enemiesDead) console.log('ALL ENEMIES DEAD!');
+
+        if (allReady) console.log('EVERYONE IS READY!');
+
+        if (
+          allReady &&
+          enemiesDead &&
+          Object.keys(players[gameId]).length === 2
+        ) {
+          console.log('ALL READY FOR ', nextRoom);
+          const position = {};
+          switch (direction) {
+            case 'east':
+              position.x = 160;
+              position.y = 416;
+              break;
+            case 'west':
+              position.x = 1056;
+              position.y = 416;
+              break;
+            case 'north':
+              position.x = 608;
+              position.y = 672;
+              break;
+            case 'south':
+              position.x = 608;
+              position.y = 160;
+              break;
+            default:
+              position.x = 608;
+              position.y = 416;
+          }
+          setRoom({ gameId, gameRoom: nextRoom });
+          Object.keys(players[gameId]).forEach(player => {
+            players[gameId][player].nextRoom = null;
+          });
+          io
+            .to(gameId)
+            .emit('newRoom', { nextRoom, x: position.x, y: position.y });
+        }
       }
     };
 
     const clearRoomReady = ({ gameId, socketId }) => {
       players[gameId][socketId].nextRoom = null;
+      console.log(players[gameId][socketId].nextRoom);
     };
 
     socket.on('intervalTest', gameId => {

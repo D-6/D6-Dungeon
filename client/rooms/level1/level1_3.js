@@ -23,6 +23,7 @@ export default {
     player2 = game.state.player2;
     const { gameId } = game.state;
     gameRoom = game.state.current;
+    console.log(gameRoom);
 
     socket.emit('setRoom', { gameId, gameRoom });
 
