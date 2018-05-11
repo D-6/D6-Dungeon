@@ -5,7 +5,6 @@ class Weasel {
     this.x = x;
     this.y = y;
     this.health = health;
-    this.moveCD = 10;
     this.minSpeed = 60;
     this.speedVariation = 60;
     this.damage = 1;
@@ -30,7 +29,6 @@ class Weasel {
   }
 }
 
-
 class Golem {
   constructor(game, name, x, y, health) {
     this.game = game;
@@ -38,9 +36,8 @@ class Golem {
     this.x = x;
     this.y = y;
     this.health = health;
-    this.moveCd = 500;
-    this.minSpeed = 200;
-    this.speedVariation = 20;
+    this.minSpeed = 60;
+    this.speedVariation = 60;
     this.damage = 1;
 
     this.createGolemSprite();

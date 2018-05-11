@@ -4,6 +4,7 @@ const baseEnemies = [
   { name: 'golem', health: 5, quantity: 1, damage: 2, interval: 10000 },
   { name: 'weasel', health: 1, quantity: 4, damage: 1, interval: 0 }
 ];
+
 const enemies = {};
 
 const getRandomPosition = (min, max) => {
@@ -35,10 +36,10 @@ const createEnemies = (newMap, level) => {
     //   enemies[`level${level}_${x}-${y}`] = [];
     // } else if (room.type === 'normal') {
     //for now the enemyname is golem, change back to weasel once boss rooms are implemented /E
-    enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[0]);
+    enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
     // }
     //else if(room.type === 'boss') {
-    // enemies[`level${level}_${x}-${y}`] = generateEnemies('golem');
+    // enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[0]);
     // }
   });
   return enemies;

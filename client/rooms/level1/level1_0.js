@@ -148,8 +148,6 @@ export default {
       }
 
       if (enemy.sprite._exists) {
-        // const interval = D6Dungeon.game.state.enemies[gameRoom][enemy.name].interval;
-
         const { nextXTile, nextYTile } = D6Dungeon.game.state.enemies[gameRoom][
           enemy.name
         ];
