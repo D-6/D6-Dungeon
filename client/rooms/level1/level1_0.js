@@ -183,10 +183,10 @@ export default {
       doors.destroy();
     }
 
-    if (player2.socketId) {
+    if (player2.socketId && !player2.sprite.visible) {
       player2.sprite.visible = true;
       player2.sprite.body.data.shapes[0].sensor = false;
-    } else {
+    } else if (!player2.socketId && player2.sprite.visible) {
       player2.sprite.visible = false;
       player2.sprite.body.data.shapes[0].sensor = true;
     }

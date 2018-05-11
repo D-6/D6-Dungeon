@@ -119,9 +119,22 @@ const makeNewPlayer = (socket, gameId) => {
     items: ['Duck Bullets'],
     gameId
   };
+
+  socket.emit('createPlayer', players[gameId][socket.id]);
+
+  const otherPlayer = Object.keys(players[gameId]).filter(
+    id => id !== socket.id
+  )[0];
+
   if (Object.keys(players[gameId]).length === 2) {
-    socket.emit('setPlayer2', players[gameId][gameId]);
-    socket.to(gameId).broadcast.emit('setPlayer2', players[gameId][socket.id]);
+    if (otherPlayer) {
+      // Send 2nd player to person who just joined
+      socket.emit('setPlayer2', players[gameId][otherPlayer]);
+      // Send 2nd player to the other person already in the game
+      socket
+        .to(gameId)
+        .broadcast.emit('setPlayer2', players[gameId][socket.id]);
+    }
   }
 };
 
@@ -199,7 +212,6 @@ module.exports = io => {
 
     // Makes the player and assigns their friend's socket.id to friend
     makeNewPlayer(socket, newGameId);
-    socket.emit('createPlayer', players[newGameId][socket.id]);
 
     if (Object.keys(players[newGameId]).length === 1) {
       await mapAndEnemyGenerator(socket, 1);
