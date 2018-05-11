@@ -100,7 +100,7 @@ const enemyPathing = (io, gameId) => {
 const runIntervals = (io, gameId) => {
   enemyPathingInterval[gameId] = setInterval(
     () => enemyPathing(io, gameId),
-    5000
+    300
   );
   // console.log(enemyPathingInterval);
 };
