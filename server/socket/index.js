@@ -117,6 +117,7 @@ const makeNewPlayer = (socket, gameId) => {
     x: 608,
     y: 416,
     items: ['Duck Bullets'],
+    nextRoom: null,
     gameId
   };
 
@@ -233,14 +234,54 @@ module.exports = io => {
       currentRoom[gameId] = gameRoom;
     };
 
+    const roomCleared = ({ gameId, socketId, nextRoom, direction }) => {
+      console.log(gameId, socketId, nextRoom, direction);
+      players[gameId][socketId].nextRoom = nextRoom;
+      const allReady = Object.keys(players[gameId]).every(player => {
+        return players[gameId][player].nextRoom === nextRoom;
+      });
+
+      if (allReady && Object.keys(players[gameId]).length === 2) {
+        console.log('ALL READY FOR ', nextRoom);
+        const position = {};
+        switch (direction) {
+          case 'east':
+            position.x = 160;
+            position.y = 416;
+            break;
+          case 'west':
+            position.x = 1056;
+            position.y = 416;
+            break;
+          case 'north':
+            position.x = 608;
+            position.y = 160;
+            break;
+          case 'south':
+            position.x = 608;
+            position.y = 672;
+            break;
+          default:
+            position.x = 608;
+            position.y = 416;
+        }
+        setRoom({ gameId, nextRoom });
+        Object.keys(players[gameId]).forEach(player => {
+          players[gameId][player].nextRoom = null;
+        });
+        io
+          .to(gameId)
+          .emit('newRoom', { nextRoom, x: position.x, y: position.y });
+      }
+    };
+
     socket.on('intervalTest', gameId => {
       runIntervals(io, gameId);
     });
-
     socket.on('setRoom', setRoom);
-    // socket.on('setEnemies', setEnemies);
     socket.on('playerFire', playerFire);
     socket.on('playerMove', playerMove);
+    socket.on('roomCleared', roomCleared);
 
     socket.on('disconnect', () => {
       console.log(`Connection ${socket.id} has left the building`);

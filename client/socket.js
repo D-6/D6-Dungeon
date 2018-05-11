@@ -33,11 +33,20 @@ const socketFunctions = socket => {
   socket.on('setEnemies', setEnemies);
   socket.on('sendUrl', sendUrl);
   socket.on('updateEnemy', updateEnemy);
+  socket.on('newRoom', newRoom);
 };
 
 const createPlayer = data => {
   D6Dungeon.game.state.player1 = new Player(data);
   D6Dungeon.game.state.gameId = data.gameId;
+};
+
+const newRoom = ({ nextRoom, x, y }) => {
+  D6Dungeon.game.state.player1.x = x;
+  D6Dungeon.game.state.player1.y = y;
+  D6Dungeon.game.state.player2.x = x;
+  D6Dungeon.game.state.player2.y = y;
+  D6Dungeon.game.state.start(nextRoom, true, false);
 };
 
 const setPlayer2 = data => {
