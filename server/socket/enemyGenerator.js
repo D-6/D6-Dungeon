@@ -32,15 +32,16 @@ const generateEnemies = baseEnemy => {
 const createEnemies = (newMap, level) => {
   newMap.rooms.forEach(room => {
     const { x, y } = room.position;
-    // if (room.type === 'start') {
-    //   enemies[`level${level}_${x}-${y}`] = [];
-    // } else if (room.type === 'normal') {
-    //for now the enemyname is golem, change back to weasel once boss rooms are implemented /E
-    enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
-    // }
-    //else if(room.type === 'boss') {
-    // enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[0]);
-    // }
+
+    if (room.type === 'start') {
+      enemies[`level${level}_${x}-${y}`] = [];
+    } else if (room.type === 'normal') {
+      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
+    }
+    else if(room.type === 'boss') {
+    enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[0]);
+    }
+
   });
   return enemies;
 };
