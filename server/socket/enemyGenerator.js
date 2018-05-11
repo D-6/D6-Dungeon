@@ -26,11 +26,11 @@ const generateEnemies = () => {
 const createEnemies = (newMap, level) => {
   newMap.rooms.forEach(room => {
     const { x, y } = room.position;
-    // if (room.type === 'start') {
-    //   enemies[`level${level}_${x}-${y}`] = [];
-    // } else if (room.type === 'normal') {
-    enemies[`level${level}_${x}-${y}`] = generateEnemies();
-    // }
+    if (room.type === 'start') {
+      enemies[`level${level}_${x}-${y}`] = [];
+    } else if (room.type === 'normal') {
+      enemies[`level${level}_${x}-${y}`] = generateEnemies();
+    }
   });
   return enemies;
 };

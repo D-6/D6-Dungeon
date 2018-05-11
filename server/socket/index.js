@@ -119,6 +119,10 @@ const makeNewPlayer = (socket, gameId) => {
     items: ['Duck Bullets'],
     gameId
   };
+  if (Object.keys(players[gameId]).length === 2) {
+    socket.emit('setPlayer2', players[gameId][gameId]);
+    socket.to(gameId).broadcast.emit('setPlayer2', players[gameId][socket.id]);
+  }
 };
 
 const placeClientInRoom = (io, socket) => {
@@ -201,16 +205,6 @@ module.exports = io => {
       await mapAndEnemyGenerator(socket, 1);
     }
 
-    // if (Object.keys(players).length === 1) {
-    //   try {
-    //     // console.log(io.of('/').connected);
-    //   } catch (err) {
-    //     console.error(err);
-    //   }
-    // } else if (Object.keys(players).length === 2) {
-    //   maps[socket.id] = 'boo';
-    // }
-
     const playerFire = ({ fireDirection, gameId }) => {
       socket.to(gameId).broadcast.emit('player2Fire', { fireDirection });
     };
@@ -243,6 +237,7 @@ module.exports = io => {
 
       if (isHost) {
         gameId = socket.id;
+        socket.to(gameId).broadcast.emit('removePlayer2');
       } else {
         gameId = Object.keys(players).find(gameId => {
           return Object.keys(players[gameId]).find(player => {
@@ -252,6 +247,9 @@ module.exports = io => {
       }
 
       delete players[gameId][socket.id];
+
+      // Remove other player from client game
+      socket.to(gameId).broadcast.emit('removePlayer2');
 
       const leftInRoom = io.sockets.adapter.rooms[gameId];
       if (!leftInRoom) {
