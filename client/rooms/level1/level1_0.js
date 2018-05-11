@@ -25,8 +25,8 @@ export default {
     player1 = game.state.player1;
     player2 = game.state.player2;
     const { gameId } = game.state;
-    console.log(gameId);
     gameRoom = game.state.current;
+
     socket.emit('setRoom', { gameId, gameRoom });
 
     const [
@@ -130,6 +130,7 @@ export default {
       wallsCollisionGroup,
       doorsCollisionGroup
     ]);
+
     socket.emit('intervalTest', gameId);
   },
 
@@ -180,6 +181,14 @@ export default {
     if (!Object.keys(game.state.enemies[gameRoom]).length) {
       game.physics.p2.clearTilemapLayerBodies(map, doors);
       doors.destroy();
+    }
+
+    if (player2.socketId && !player2.sprite.visible) {
+      player2.sprite.visible = true;
+      player2.sprite.body.data.shapes[0].sensor = false;
+    } else if (!player2.socketId && player2.sprite.visible) {
+      player2.sprite.visible = false;
+      player2.sprite.body.data.shapes[0].sensor = true;
     }
   }
 };
