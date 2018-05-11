@@ -38,8 +38,10 @@ export const createDoorSensors = (game, currentState) => {
   });
 
   sensorWest.body.onEndContact.add(other => {
-    if (other.sprite.key === 'player') {
-      socket.emit('clearRoomReady', { gameId, socketId });
+    if (other.sprite) {
+      if (other.sprite.key === 'player') {
+        socket.emit('clearRoomReady', { gameId, socketId });
+      }
     }
   });
 
@@ -56,8 +58,10 @@ export const createDoorSensors = (game, currentState) => {
   });
 
   sensorEast.body.onEndContact.add(other => {
-    if (other.sprite.key === 'player') {
-      socket.emit('clearRoomReady', { gameId, socketId });
+    if (other.sprite) {
+      if (other.sprite.key === 'player') {
+        socket.emit('clearRoomReady', { gameId, socketId });
+      }
     }
   });
 
@@ -74,8 +78,10 @@ export const createDoorSensors = (game, currentState) => {
   });
 
   sensorNorth.body.onEndContact.add(other => {
-    if (other.sprite.key === 'player') {
-      socket.emit('clearRoomReady', { gameId, socketId });
+    if (other.sprite) {
+      if (other.sprite.key === 'player') {
+        socket.emit('clearRoomReady', { gameId, socketId });
+      }
     }
   });
 
@@ -92,8 +98,10 @@ export const createDoorSensors = (game, currentState) => {
   });
 
   sensorSouth.body.onEndContact.add(other => {
-    if (other.sprite.key === 'player') {
-      socket.emit('clearRoomReady', { gameId, socketId });
+    if (other.sprite) {
+      if (other.sprite.key === 'player') {
+        socket.emit('clearRoomReady', { gameId, socketId });
+      }
     }
   });
 
