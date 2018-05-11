@@ -5,7 +5,6 @@ import { createDoorSensors } from '../../doorSensors';
 import { enemyRenderer } from '../../enemyRenderer';
 import { createCollisionGroups } from '../../collisionGroups';
 import { Potion } from '../../Items';
-//importing enemies to use for enemy renderer
 
 /* global D6Dungeon */
 

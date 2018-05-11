@@ -1,5 +1,3 @@
-const enemyTypes = ['weasel'];
-//preset values to give to create enemies, so that the generate enemies has  few more modular values. I don't know if this is the best place to store this information. /E
 const baseEnemies = [
   { name: 'golem', health: 5, quantity: 1, damage: 2, interval: 10000 },
   { name: 'weasel', health: 1, quantity: 4, damage: 1, interval: 0 }
@@ -10,7 +8,7 @@ const enemies = {};
 const getRandomPosition = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
 };
-//instead of just generating weasels, we should be putting in the enemy we want as an argument. but now I have to figure out how to decide which room get what enemy, and how to input that correctly.
+
 const generateEnemies = baseEnemy => {
   const minX = 192;
   const maxX = 1024;
@@ -35,13 +33,12 @@ const createEnemies = (newMap, level) => {
 
     if (room.type === 'start') {
       enemies[`level${level}_${x}-${y}`] = [];
+      // enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
     } else if (room.type === 'normal') {
       enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
+    } else if (room.type === 'boss') {
+      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[0]);
     }
-    else if(room.type === 'boss') {
-    enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[0]);
-    }
-
   });
   return enemies;
 };
