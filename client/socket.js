@@ -27,23 +27,29 @@ const socket = io(window.location.origin);
 
 const socketFunctions = socket => {
   socket.on('createPlayer', createPlayer);
-  // socket.on('getEnemies', getEnemies);
+  socket.on('setPlayer2', setPlayer2);
+  socket.on('removePlayer2', removePlayer2);
   socket.on('setRooms', setRooms);
-  socket.on('sendUrl', sendUrl);
   socket.on('setEnemies', setEnemies);
+  socket.on('sendUrl', sendUrl);
   socket.on('updateEnemy', updateEnemy);
 };
 
 const createPlayer = data => {
   D6Dungeon.game.state.player1 = new Player(data);
   D6Dungeon.game.state.gameId = data.gameId;
-  // console.log(D6Dungeon.game.state.gameId);
 };
 
-// const getEnemies = data => {
-//   console.log('getEnemies Run');
-//   D6Dungeon.game.state.enemies = data;
-// };
+const setPlayer2 = data => {
+  D6Dungeon.game.state.player2 = Object.assign(
+    D6Dungeon.game.state.player2,
+    new Player(data)
+  );
+};
+
+const removePlayer2 = () => {
+  D6Dungeon.game.state.player2.socketId = null;
+};
 
 const updateEnemy = ({ currentRoom, enemy }) => {
   D6Dungeon.game.state.enemies[currentRoom][enemy.name] = enemy;

@@ -36,6 +36,12 @@ export default () => ({
       16,
       16
     );
+    D6Dungeon.game.load.spritesheet(
+      'golem',
+      'assets/monster_sprites/HulkA.png',
+      16,
+      16
+    );
   },
 
   create() {

@@ -1,5 +1,5 @@
 // Import enemies here:
-import { Weasel } from './enemies';
+import { Weasel, Golem } from './enemies';
 import socket from './socket';
 
 /* global D6Dungeon */
@@ -14,34 +14,32 @@ export const enemyRenderer = (
   const roomEnemiesArr = Object.keys(roomEnemiesObj).map(enemy => {
     return { ...roomEnemiesObj[enemy] };
   });
-
   let enemiesArr = [];
 
   if (roomEnemiesArr.length) {
     roomEnemiesArr.forEach(enemy => {
-      const weasel = new Weasel(
-        game,
-        enemy.name,
-        enemy.x,
-        enemy.y,
-        enemy.health
-      );
+      let monster;
+      if (enemy.type === 'weasel') {
+        monster = new Weasel(game, enemy.name, enemy.x, enemy.y, enemy.health);
+      } else if (enemy.type === 'golem') {
+        monster = new Golem(game, enemy.name, enemy.x, enemy.y, enemy.health);
+      }
 
-      weasel.speed =
-        weasel.minSpeed + Math.floor(Math.random() * weasel.speedVariation);
+      monster.speed =
+        monster.minSpeed + Math.floor(Math.random() * monster.speedVariation);
 
-      weasel.sprite.body.setCollisionGroup(enemiesCollisionGroup);
-      weasel.sprite.body.collides(collidesWithEnemiesArr);
+      monster.sprite.body.setCollisionGroup(enemiesCollisionGroup);
+      monster.sprite.body.collides(collidesWithEnemiesArr);
 
-      weasel.sprite.body.onBeginContact.add(other => {
+      monster.sprite.body.onBeginContact.add(other => {
         if (other.sprite) {
           if (other.sprite.key === 'bullet') {
-            weasel.sprite.damage(other.sprite.damageAmount);
+            monster.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
 
             socket.emit('enemyHit', {
-              health: weasel.sprite.health,
-              name: weasel.name,
+              health: monster.sprite.health,
+              name: monster.name,
               gameId: D6Dungeon.game.state.gameId
             });
           } else if (other.sprite.key === 'dummyBullet') {
@@ -50,7 +48,7 @@ export const enemyRenderer = (
         }
       });
 
-      enemiesArr.push(weasel);
+      enemiesArr.push(monster);
     });
   }
 

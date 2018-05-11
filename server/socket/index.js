@@ -119,13 +119,30 @@ const makeNewPlayer = (socket, gameId) => {
     items: ['Duck Bullets'],
     gameId
   };
+
+  socket.emit('createPlayer', players[gameId][socket.id]);
+
+  const otherPlayer = Object.keys(players[gameId]).filter(
+    id => id !== socket.id
+  )[0];
+
+  if (Object.keys(players[gameId]).length === 2) {
+    if (otherPlayer) {
+      // Send 2nd player to person who just joined
+      socket.emit('setPlayer2', players[gameId][otherPlayer]);
+      // Send 2nd player to the other person already in the game
+      socket
+        .to(gameId)
+        .broadcast.emit('setPlayer2', players[gameId][socket.id]);
+    }
+  }
 };
 
 const placeClientInRoom = (io, socket) => {
   const parsedUrl = url.parse(socket.request.headers.referer);
   const host = parsedUrl.protocol + '//' + parsedUrl.host;
   const urlPath = parsedUrl.pathname.slice(1);
-  let gameId = urlPath;
+  let gameId = null;
 
   if (urlPath.length === 0) {
     const message = `Game URL:\n${host}/${socket.id}`;
@@ -134,12 +151,11 @@ const placeClientInRoom = (io, socket) => {
   } else if (players[urlPath]) {
     const playersInRoom = io.sockets.adapter.rooms[urlPath].length;
     if (playersInRoom === 1) {
+      gameId = urlPath;
       socket.join(urlPath);
       socket.emit('setRooms', maps[urlPath]);
       socket.emit('setEnemies', enemies[urlPath]);
-      // players[urlPath].gameId = socket.id;
       console.log(`Client successfully joined friend in room: ${urlPath}`);
-      // console.log(players[urlPath]);
     } else {
       console.log(`${urlPath} already has 2 players!  Cannot join!`);
       return null;
@@ -197,22 +213,11 @@ module.exports = io => {
     // Makes the player and assigns their friend's socket.id to friend
     if (newGameId) {
       makeNewPlayer(socket, newGameId);
-      socket.emit('createPlayer', players[newGameId][socket.id]);
 
       if (Object.keys(players[newGameId]).length === 1) {
         await mapAndEnemyGenerator(socket, 1);
       }
     }
-
-    // if (Object.keys(players).length === 1) {
-    //   try {
-    //     // console.log(io.of('/').connected);
-    //   } catch (err) {
-    //     console.error(err);
-    //   }
-    // } else if (Object.keys(players).length === 2) {
-    //   maps[socket.id] = 'boo';
-    // }
 
     const enemyHit = ({ health, name, gameId }) => {
       const enemyObj = enemies[gameId][currentRoom[gameId]][name];
@@ -268,6 +273,7 @@ module.exports = io => {
 
       if (isHost) {
         gameId = socket.id;
+        socket.to(gameId).broadcast.emit('removePlayer2');
       } else {
         gameId = Object.keys(players).find(gameId => {
           return Object.keys(players[gameId]).find(player => {
@@ -276,7 +282,10 @@ module.exports = io => {
         });
       }
 
-      delete players[gameId][socket.id];
+      if (players[gameId]) {
+        delete players[gameId][socket.id];
+        socket.to(gameId).broadcast.emit('removePlayer2');
+      }
 
       const leftInRoom = io.sockets.adapter.rooms[gameId];
       if (!leftInRoom) {
