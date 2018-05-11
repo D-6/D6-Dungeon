@@ -34,6 +34,8 @@ export default class Player {
     collidesWithPlayerArr,
     enemiesCollisionGroup
   ) {
+    const { gameId } = game.state;
+
     this.sprite = game.add.sprite(this.x, this.y, 'player');
     this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.scale.set(4);
@@ -58,8 +60,13 @@ export default class Player {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 1000;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
-          console.log('sprite', playerBody.sprite.health)
-          // TODO: Emit new hp
+          console.log('sprite', playerBody.sprite.health);
+          socket.emit('playerHit', {
+            damage: enemyBody.sprite.damageAmount,
+            health: playerBody.sprite.health,
+            gameId,
+            socketId: this.socketId
+          });
         }
       }
     );
@@ -180,7 +187,7 @@ export default class Player {
       let bullet = this.bullets.getFirstExists(false);
 
       if (
-        (this.keybinds.arrows.up.isDown && !fireDirection) ||
+        (this.keybinds && this.keybinds.arrows.up.isDown) ||
         fireDirection === 'up'
       ) {
         bullet.reset(this.sprite.x, this.sprite.y - 50);
@@ -190,7 +197,7 @@ export default class Player {
           socket.emit('playerFire', { fireDirection: 'up', gameId });
         }
       } else if (
-        (this.keybinds.arrows.down.isDown && !fireDirection) ||
+        (this.keybinds && this.keybinds.arrows.down.isDown) ||
         fireDirection === 'down'
       ) {
         bullet.reset(this.sprite.x, this.sprite.y + 70);
@@ -200,7 +207,7 @@ export default class Player {
           socket.emit('playerFire', { fireDirection: 'down', gameId });
         }
       } else if (
-        (this.keybinds.arrows.left.isDown && !fireDirection) ||
+        (this.keybinds && this.keybinds.arrows.left.isDown) ||
         fireDirection === 'left'
       ) {
         // Flips player to face left
@@ -215,7 +222,7 @@ export default class Player {
           socket.emit('playerFire', { fireDirection: 'left', gameId });
         }
       } else if (
-        (this.keybinds.arrows.right.isDown && !fireDirection) ||
+        (this.keybinds && this.keybinds.arrows.right.isDown) ||
         fireDirection === 'right'
       ) {
         // Flips player to face right

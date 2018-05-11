@@ -218,10 +218,16 @@ module.exports = io => {
       socket.to(gameId).broadcast.emit('player2Fire', { fireDirection });
     };
 
+    const playerHit = ({ damage, health, gameId, socketId }) => {
+      let playerObj = players[gameId][socketId];
+      playerObj = { ...playerObj, health };
+      socket.to(gameId).broadcast.emit('player2Hit', { damage });
+    };
+
     const playerMove = ({ x, y, socketId, gameId }) => {
       if (players[gameId]) {
         players[gameId][socketId] = { ...players[gameId][socketId], x, y }; // Updates current player position
-        socket.to(gameId).broadcast.emit('movePlayer2', { x, y });
+        socket.to(gameId).broadcast.emit('player2Move', { x, y });
       }
     };
 
@@ -234,8 +240,8 @@ module.exports = io => {
     });
 
     socket.on('setRoom', setRoom);
-    // socket.on('setEnemies', setEnemies);
     socket.on('playerFire', playerFire);
+    socket.on('playerHit', playerHit);
     socket.on('playerMove', playerMove);
 
     socket.on('disconnect', () => {
