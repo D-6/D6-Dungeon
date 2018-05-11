@@ -6,15 +6,6 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 
 export default rooms => ({
   preload() {
-    rooms.forEach(room => {
-      const { x, y } = room.position;
-      D6Dungeon.game.load.tilemap(
-        `level1_${x}-${y}`,
-        null,
-        room,
-        Phaser.Tilemap.TILED_JSON
-      );
-    });
 
     D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
     D6Dungeon.game.physics.p2.setImpactEvents(true);

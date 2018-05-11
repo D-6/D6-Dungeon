@@ -7,8 +7,8 @@ export const enemyRenderer = (
   enemiesCollisionGroup,
   collidesWithEnemiesArr
 ) => {
-  const currentState = game.state.current;
-  const roomEnemiesObj = game.state.enemies[currentState];
+  const gameRoom = game.state.current;
+  const roomEnemiesObj = game.state.enemies[gameRoom];
   const roomEnemiesArr = Object.keys(roomEnemiesObj).map(enemy => {
     return { ...roomEnemiesObj[enemy] };
   });
@@ -42,7 +42,11 @@ export const enemyRenderer = (
           });
 
           if (!weasel.sprite._exists) {
-            socket.emit('enemyKill', weasel.name);
+            socket.emit('enemyKill', {
+              gameId: D6Dungeon.game.state.gameId,
+              gameRoom,
+              name: weasel.name
+            });
           }
         }
       });

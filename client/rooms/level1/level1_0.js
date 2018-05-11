@@ -15,7 +15,7 @@ let player1;
 let player2;
 let enemies;
 let game;
-let currentState;
+let gameRoom;
 let doors;
 let map;
 
@@ -24,8 +24,8 @@ export default {
     game = D6Dungeon.game;
     player1 = game.state.player1;
     player2 = game.state.player2;
-    currentState = game.state.current;
-    socket.emit('setRoom', currentState);
+    gameRoom = game.state.current;
+    socket.emit('setRoom', gameRoom);
 
     const [
       wallsCollisionGroup,
@@ -37,7 +37,7 @@ export default {
       itemsCollisionGroup
     ] = createCollisionGroups(game);
 
-    map = game.add.tilemap(currentState);
+    map = game.add.tilemap(gameRoom);
     map.addTilesetImage('level_1', 'level1Image');
     const floor = map.createLayer('Floor');
     const walls = map.createLayer('Walls');
@@ -64,7 +64,7 @@ export default {
     });
 
     // *** Door Sensors ***
-    createDoorSensors(game, currentState).forEach(doorSensor => {
+    createDoorSensors(game, gameRoom).forEach(doorSensor => {
       doorSensor.body.setCollisionGroup(doorSensorsCollisionGroup);
       doorSensor.body.collides(playersCollisionGroup);
     });
@@ -121,14 +121,6 @@ export default {
       enemiesCollisionGroup
     );
 
-    // *** Enemy pathfinding ***
-    // const floorMap = floor.layer.data.map(row => row.map(col => col.index));
-    // easystar.setGrid(floorMap);
-    // easystar.setAcceptableTiles([3, 4]);
-    // easystar.enableDiagonals();
-
-    // console.log(floorMap);
-
     enemies = enemyRenderer(game, enemiesCollisionGroup, [
       bulletsCollisionGroup,
       enemiesCollisionGroup,
@@ -142,9 +134,13 @@ export default {
   update() {
     //probably getting rid of this, as the enemyPathing was moved to the server and the movement has been moved to the socket.js file 5/9
     enemies.forEach(enemy => {
+      if (!D6Dungeon.game.state.enemies[gameRoom][enemy.name]) {
+        enemy.sprite.kill();
+      }
+
       if (enemy.sprite._exists) {
         const { nextXTile, nextYTile } = D6Dungeon.game.state.enemies[
-          currentState
+          gameRoom
         ][enemy.name];
         const currentXTile = enemy.sprite.position.x / 64;
         const currentYTile = enemy.sprite.position.y / 64;
@@ -161,14 +157,14 @@ export default {
         if (nextYTile < currentYTile) {
           enemy.sprite.body.velocity.y = -enemy.speed;
         }
-        // enemy.sprite.body.x = D6Dungeon.game.state.enemies[currentState][enemy.name].x;
-        // enemy.sprite.body.y = D6Dungeon.game.state.enemies[currentState][enemy.name].y;
       }
-      // enemyPathing(easystar, enemy, player1);
     });
 
     player1.addMovement();
     player1.addShooting(game);
+
+    player2.sprite.body.velocity.x = 0;
+    player2.sprite.body.velocity.y = 0;
 
     socket.on('player2Fire', ({ fireDirection }) => {
       player2.fire(game, fireDirection);
@@ -179,7 +175,7 @@ export default {
       player2.sprite.body.y = y;
     });
 
-    if (!Object.keys(game.state.enemies[currentState]).length) {
+    if (!Object.keys(game.state.enemies[gameRoom]).length) {
       game.physics.p2.clearTilemapLayerBodies(map, doors);
       doors.destroy();
     }

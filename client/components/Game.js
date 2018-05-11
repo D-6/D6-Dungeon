@@ -6,8 +6,8 @@ import D6DungeonGame from '../game';
 
 class Game extends Component {
   componentDidMount = async () => {
-    const { data } = await axios.get('api/levels/1');
-    D6Dungeon.game = new D6DungeonGame(data);
+    // const { data } = await axios.get('api/levels/1');
+    D6Dungeon.game = new D6DungeonGame();
   };
 
   render() {
