@@ -19,7 +19,7 @@ class D6DungeonGame extends Phaser.Game {
     this.state.player2 = new Player({
       health: 10,
       speed: 200,
-      damage: 2,
+      damage: 1,
       fireRate: 400,
       bulletSpeed: 400,
       socketId: socket.id,

@@ -17,6 +17,7 @@ class Weasel {
     this.sprite.anchor.set(0.5);
     this.sprite.scale.set(4);
     this.sprite.setHealth(this.health);
+    this.sprite.damageAmount = this.damage;
 
     this.game.physics.p2.enable(this.sprite, true);
     this.sprite.body.fixedRotation = true;

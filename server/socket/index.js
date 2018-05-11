@@ -110,7 +110,7 @@ const makeNewPlayer = (socket, gameId) => {
   players[gameId][socket.id] = {
     health: 10,
     speed: 200,
-    damage: 2,
+    damage: 1,
     fireRate: 400,
     bulletSpeed: 400,
     socketId: socket.id,
@@ -158,6 +158,7 @@ const placeClientInRoom = (io, socket) => {
       console.log(`Client successfully joined friend in room: ${urlPath}`);
     } else {
       console.log(`${urlPath} already has 2 players!  Cannot join!`);
+      return null;
     }
   } else {
     console.log(`Client attempted to join an invalid room: ${urlPath}`);
@@ -218,14 +219,35 @@ module.exports = io => {
       }
     }
 
+    const enemyHit = ({ health, name, gameId }) => {
+      const enemyObj = enemies[gameId][currentRoom[gameId]][name];
+      enemyObj.health = health;
+
+      if (health === 0) {
+        delete enemies[gameId][currentRoom[gameId]][name];
+      }
+
+      io.to(gameId).emit('setEnemies', enemies[gameId]);
+    };
+
     const playerFire = ({ fireDirection, gameId }) => {
       socket.to(gameId).broadcast.emit('player2Fire', { fireDirection });
     };
 
+    const playerHit = ({ health, gameId, socketId }) => {
+      if (players[gameId]) {
+        const playerObj = players[gameId][socketId];
+        playerObj.health = health;
+        socket.to(gameId).broadcast.emit('player2Hit', { health });
+      }
+    };
+
     const playerMove = ({ x, y, socketId, gameId }) => {
       if (players[gameId]) {
-        players[gameId][socketId] = { ...players[gameId][socketId], x, y }; // Updates current player position
-        socket.to(gameId).broadcast.emit('movePlayer2', { x, y });
+        const playerObj = players[gameId][socketId];
+        playerObj.x = x;
+        playerObj.y = y;
+        socket.to(gameId).broadcast.emit('player2Move', { x, y });
       }
     };
 
@@ -238,8 +260,9 @@ module.exports = io => {
     });
 
     socket.on('setRoom', setRoom);
-    // socket.on('setEnemies', setEnemies);
+    socket.on('enemyHit', enemyHit);
     socket.on('playerFire', playerFire);
+    socket.on('playerHit', playerHit);
     socket.on('playerMove', playerMove);
 
     socket.on('disconnect', () => {
@@ -271,13 +294,6 @@ module.exports = io => {
         delete maps[gameId];
         delete enemies[gameId];
         delete currentRoom[gameId];
-      }
-    });
-
-    socket.on('enemyKill', ({ gameId, gameRoom, name }) => {
-      if (enemies[gameId]) {
-        delete enemies[gameId][gameRoom][name];
-        io.to(gameId).emit('setEnemies', enemies[gameId]);
       }
     });
   });

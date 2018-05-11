@@ -21,7 +21,7 @@ const level1Arr = [
   level1_7
 ];
 
-/* global D6Dungeon */
+/* global D6Dungeon, Phaser */
 
 const socket = io(window.location.origin);
 

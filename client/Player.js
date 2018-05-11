@@ -24,17 +24,22 @@ export default class Player {
     this.x = x;
     this.y = y;
     this.nextFire = 0;
+    this.nextHit = 0;
   }
 
   addPlayerToRoom(
     game,
+    player,
     playersCollisionGroup,
     collidesWithPlayerArr,
     enemiesCollisionGroup
   ) {
+    const { gameId } = game.state;
+
     this.sprite = game.add.sprite(this.x, this.y, 'player');
     this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.scale.set(4);
+    this.sprite.setHealth(this.health);
 
     // *** Player - Physics ***
     // 2nd arg is debug mode
@@ -46,17 +51,30 @@ export default class Player {
       0,
       6
     );
-    //remove this after testing 2player
-    // this.sprite.body.kinematic = true;
 
     this.sprite.body.setCollisionGroup(playersCollisionGroup);
     this.sprite.body.collides(collidesWithPlayerArr);
-    this.sprite.body.collides(enemiesCollisionGroup, playerHitByEnemy);
+    this.sprite.body.collides(
+      enemiesCollisionGroup,
+      (playerBody, enemyBody) => {
+        if (player === 'player1' && game.time.now > this.nextHit) {
+          this.nextHit = game.time.now + 1000;
+          playerBody.sprite.damage(enemyBody.sprite.damageAmount);
+          socket.emit('playerHit', {
+            health: playerBody.sprite.health,
+            gameId,
+            socketId: this.socketId
+          });
+        }
+      }
+    );
 
     // *** Player - Animation ***
     this.sprite.animations.add('walk', null, 10, true);
 
-    this.addKeybinds(game);
+    if (player === 'player1') {
+      this.addKeybinds(game);
+    }
   }
 
   addKeybinds(game) {
@@ -70,8 +88,8 @@ export default class Player {
 
   addMovement(game) {
     const { gameId } = game.state;
-    this.sprite.body.velocity.x = 0;
-    this.sprite.body.velocity.y = 0;
+    this.sprite.body.setZeroVelocity();
+    this.sprite.body.mass = 1;
 
     if (this.keybinds.up.isDown) {
       this.sprite.body.moveUp(this.speed);
@@ -122,6 +140,7 @@ export default class Player {
       this.sprite.body.velocity.y === 0
     ) {
       this.sprite.animations.stop('walk', true);
+      this.sprite.body.mass = 2000;
     } else {
       this.sprite.animations.play('walk');
     }
@@ -129,14 +148,16 @@ export default class Player {
 
   addBullets(
     game,
+    spriteKey,
+    damage,
     bulletsCollisionGroup,
     collidesWithBulletsArr,
     enemiesCollisionGroup
   ) {
     this.bullets = game.add.physicsGroup(Phaser.Physics.P2JS);
-    this.bullets.createMultiple(10, 'bullet', 0, false, bullet => {
+    this.bullets.createMultiple(10, spriteKey, 0, false, bullet => {
       bullet.anchor.set(0.5);
-      bullet.damage = 1;
+      bullet.damageAmount = damage;
       bullet.body.setCollisionGroup(bulletsCollisionGroup);
       bullet.body.collides(collidesWithBulletsArr, bulletBody => {
         bulletBody.sprite.kill();
@@ -164,7 +185,7 @@ export default class Player {
       let bullet = this.bullets.getFirstExists(false);
 
       if (
-        (this.keybinds.arrows.up.isDown && !fireDirection) ||
+        (this.keybinds && this.keybinds.arrows.up.isDown) ||
         fireDirection === 'up'
       ) {
         bullet.reset(this.sprite.x, this.sprite.y - 50);
@@ -174,7 +195,7 @@ export default class Player {
           socket.emit('playerFire', { fireDirection: 'up', gameId });
         }
       } else if (
-        (this.keybinds.arrows.down.isDown && !fireDirection) ||
+        (this.keybinds && this.keybinds.arrows.down.isDown) ||
         fireDirection === 'down'
       ) {
         bullet.reset(this.sprite.x, this.sprite.y + 70);
@@ -184,7 +205,7 @@ export default class Player {
           socket.emit('playerFire', { fireDirection: 'down', gameId });
         }
       } else if (
-        (this.keybinds.arrows.left.isDown && !fireDirection) ||
+        (this.keybinds && this.keybinds.arrows.left.isDown) ||
         fireDirection === 'left'
       ) {
         // Flips player to face left
@@ -199,7 +220,7 @@ export default class Player {
           socket.emit('playerFire', { fireDirection: 'left', gameId });
         }
       } else if (
-        (this.keybinds.arrows.right.isDown && !fireDirection) ||
+        (this.keybinds && this.keybinds.arrows.right.isDown) ||
         fireDirection === 'right'
       ) {
         // Flips player to face right
@@ -217,8 +238,3 @@ export default class Player {
     }
   }
 }
-
-const playerHitByEnemy = (playerBody, enemyBody) => {
-  // playerBody.health -= 1;
-  // console.log(playerBody.health);
-};
