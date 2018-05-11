@@ -8,8 +8,8 @@ const { createEnemies } = require('../socket/enemyGenerator');
 const players = {};
 const maps = {};
 let enemies = {};
-let currentRoom = '';
-let enemyPathingInterval;
+let currentRoom = {};
+let enemyPathingInterval = {};
 
 //importing easystar to server
 const easystarjs = require('easystarjs');
@@ -32,12 +32,14 @@ const floorMap = [
 easystar.setGrid(floorMap);
 easystar.setAcceptableTiles([3]);
 easystar.enableDiagonals();
-const enemyPathing = io => {
-  if (!enemies[currentRoom]) {
-    // console.log('enemy was already killed');
+const enemyPathing = (io, gameId) => {
+  const currentGameEnemies = enemies[gameId][currentRoom[gameId]];
+  if (!currentGameEnemies) {
+    console.log('enemy was already killed');
   } else {
-    Object.keys(enemies[currentRoom]).forEach(enemyName => {
-      const enemy = enemies[socketRoom][currentRoom][enemyName];
+    Object.keys(currentGameEnemies).forEach(enemyName => {
+      const enemy = currentGameEnemies[enemyName];
+      const currentGamePlayers = io.sockets.adapter.rooms[gameId];
       const closestPlayer = findClosestPlayer(players, enemy);
       // console.log(closestPlayer);
       //most of this logic was taken from enemyPathing.js in client
@@ -92,8 +94,17 @@ const enemyPathing = io => {
   }
 };
 
-const makeNewPlayer = (socket, friend) => {
-  players[socket.id] = {
+const runIntervals = (io, gameId) => {
+  enemyPathingInterval[gameId] = setInterval(
+    () => enemyPathing(io, gameId),
+    300
+  );
+};
+
+const makeNewPlayer = (socket, gameId) => {
+  console.log(gameId, socket.id);
+  players[gameId] = players[gameId] || {};
+  players[gameId][socket.id] = {
     health: 10,
     speed: 200,
     damage: 2,
@@ -103,7 +114,7 @@ const makeNewPlayer = (socket, friend) => {
     x: 608,
     y: 416,
     items: ['Duck Bullets'],
-    friend
+    gameId
   };
 };
 
@@ -111,9 +122,11 @@ const placeClientInRoom = (io, socket) => {
   const parsedUrl = url.parse(socket.request.headers.referer);
   const host = parsedUrl.protocol + '//' + parsedUrl.host;
   const urlPath = parsedUrl.pathname.slice(1);
+  let gameId = urlPath;
 
   if (urlPath.length === 0) {
     const message = `Game URL:\n${host}/${socket.id}`;
+    gameId = socket.id;
     socket.emit('sendUrl', message);
   } else if (players[urlPath]) {
     const playersInRoom = io.sockets.adapter.rooms[urlPath].length;
@@ -121,7 +134,7 @@ const placeClientInRoom = (io, socket) => {
       socket.join(urlPath);
       socket.emit('setRooms', maps[urlPath]);
       socket.emit('setEnemies', enemies[urlPath]);
-      // players[urlPath].friend = socket.id;
+      // players[urlPath].gameId = socket.id;
       console.log(`Client successfully joined friend in room: ${urlPath}`);
       // console.log(players[urlPath]);
     } else {
@@ -130,11 +143,7 @@ const placeClientInRoom = (io, socket) => {
   } else {
     console.log(`Client attempted to join an invalid room: ${urlPath}`);
   }
-  return urlPath;
-};
-
-const runIntervals = io => {
-  enemyPathingInterval = setInterval(() => enemyPathing(io), 300);
+  return gameId;
 };
 
 const mapAndEnemyGenerator = async (socket, level) => {
@@ -179,13 +188,13 @@ module.exports = io => {
 
     // Puts client in room alone if joining '/'
     // Puts client in room with friend if joining '/socket.id'
-    const friend = placeClientInRoom(io, socket) || null;
+    const gameId = placeClientInRoom(io, socket);
 
     // Makes the player and assigns their friend's socket.id to friend
-    makeNewPlayer(socket, friend);
-    socket.emit('createPlayer', players[socket.id]);
+    makeNewPlayer(socket, gameId);
+    socket.emit('createPlayer', players[gameId][socket.id]);
 
-    if (!players[socket.id].friend) {
+    if (Object.keys(players[gameId]).length === 1) {
       await mapAndEnemyGenerator(socket, 1);
     }
 
@@ -208,8 +217,9 @@ module.exports = io => {
       socket.to(gameId).broadcast.emit('movePlayer2', { x, y });
     };
 
-    const setRoom = room => {
-      currentRoom = room;
+    const setRoom = ({ gameId, gameRoom }) => {
+      currentRoom[gameId] = gameRoom;
+      console.log(currentRoom);
     };
 
     socket.on('intervalTest', () => {
@@ -227,9 +237,10 @@ module.exports = io => {
 
       const leftInRoom = io.sockets.adapter.rooms[socket.id];
       if (!leftInRoom) {
-        clearInterval(enemyPathingInterval);
+        clearInterval(enemyPathingInterval[socket.id]);
+        delete maps[socket.id];
         delete enemies[socket.id];
-        currentRoom = '';
+        delete currentRoom[socket.id];
       }
     });
 
