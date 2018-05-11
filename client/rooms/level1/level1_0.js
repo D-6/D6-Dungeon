@@ -8,6 +8,8 @@ import { enemyRenderer } from '../../enemyRenderer';
 import { enemyPathing } from '../../enemyPathing';
 import { createCollisionGroups } from '../../collisionGroups';
 import { Potion } from '../../Items';
+//importing enemies to use for enemy renderer
+import { Weasel, Golem } from '../../enemies';
 
 /* global D6Dungeon */
 
@@ -123,13 +125,17 @@ export default {
       enemiesCollisionGroup
     );
 
-    enemies = enemyRenderer(game, enemiesCollisionGroup, [
-      bulletsCollisionGroup,
+    enemies = enemyRenderer(
+      game,
       enemiesCollisionGroup,
-      playersCollisionGroup,
-      wallsCollisionGroup,
-      doorsCollisionGroup
-    ]);
+      [
+        bulletsCollisionGroup,
+        enemiesCollisionGroup,
+        playersCollisionGroup,
+        wallsCollisionGroup,
+        doorsCollisionGroup
+      ]
+    );
 
     socket.emit('intervalTest', gameId);
   },
@@ -145,6 +151,7 @@ export default {
         const { nextXTile, nextYTile } = D6Dungeon.game.state.enemies[gameRoom][
           enemy.name
         ];
+
         const currentXTile = enemy.sprite.position.x / 64;
         const currentYTile = enemy.sprite.position.y / 64;
 
