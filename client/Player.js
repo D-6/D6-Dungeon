@@ -68,7 +68,8 @@ export default class Player {
     this.keybinds.arrows = game.input.keyboard.createCursorKeys();
   }
 
-  addMovement() {
+  addMovement(game) {
+    const { gameId } = game.state;
     this.sprite.body.velocity.x = 0;
     this.sprite.body.velocity.y = 0;
 
@@ -77,13 +78,15 @@ export default class Player {
       socket.emit('playerMove', {
         x: this.sprite.body.x,
         y: this.sprite.body.y,
-        socketId: this.socketId
+        socketId: this.socketId,
+        gameId
       });
     } else if (this.keybinds.down.isDown) {
       socket.emit('playerMove', {
         x: this.sprite.body.x,
         y: this.sprite.body.y,
-        socketId: this.socketId
+        socketId: this.socketId,
+        gameId
       });
       this.sprite.body.moveDown(this.speed);
     }
@@ -93,7 +96,8 @@ export default class Player {
       socket.emit('playerMove', {
         x: this.sprite.body.x,
         y: this.sprite.body.y,
-        socketId: this.socketId
+        socketId: this.socketId,
+        gameId
       });
       // Flips player to face left
       if (this.sprite.scale.x < 0) {
@@ -104,7 +108,8 @@ export default class Player {
       socket.emit('playerMove', {
         x: this.sprite.body.x,
         y: this.sprite.body.y,
-        socketId: this.socketId
+        socketId: this.socketId,
+        gameId
       });
       // Flips player to face right
       if (this.sprite.scale.x > 0) {
@@ -152,6 +157,7 @@ export default class Player {
   }
 
   fire(game, fireDirection) {
+    const { gameId } = game.state;
     if (game.time.now > this.nextFire && this.bullets.countDead() > 0) {
       this.nextFire = game.time.now + this.fireRate;
 
@@ -165,7 +171,7 @@ export default class Player {
         bullet.body.moveUp(this.bulletSpeed);
 
         if (!fireDirection) {
-          socket.emit('playerFire', { fireDirection: 'up' });
+          socket.emit('playerFire', { fireDirection: 'up', gameId });
         }
       } else if (
         (this.keybinds.arrows.down.isDown && !fireDirection) ||
@@ -175,7 +181,7 @@ export default class Player {
         bullet.body.moveDown(this.bulletSpeed);
 
         if (!fireDirection) {
-          socket.emit('playerFire', { fireDirection: 'down' });
+          socket.emit('playerFire', { fireDirection: 'down', gameId });
         }
       } else if (
         (this.keybinds.arrows.left.isDown && !fireDirection) ||
@@ -190,7 +196,7 @@ export default class Player {
         bullet.body.moveLeft(this.bulletSpeed);
 
         if (!fireDirection) {
-          socket.emit('playerFire', { fireDirection: 'left' });
+          socket.emit('playerFire', { fireDirection: 'left', gameId });
         }
       } else if (
         (this.keybinds.arrows.right.isDown && !fireDirection) ||
@@ -205,7 +211,7 @@ export default class Player {
         bullet.body.moveRight(this.bulletSpeed);
 
         if (!fireDirection) {
-          socket.emit('playerFire', { fireDirection: 'right' });
+          socket.emit('playerFire', { fireDirection: 'right', gameId });
         }
       }
     }

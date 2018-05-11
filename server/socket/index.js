@@ -181,8 +181,6 @@ module.exports = io => {
     // Puts client in room with friend if joining '/socket.id'
     const friend = placeClientInRoom(io, socket) || null;
 
-    // console.log(io.sockets.adapter.rooms[socket.id]);
-
     // Makes the player and assigns their friend's socket.id to friend
     makeNewPlayer(socket, friend);
     socket.emit('createPlayer', players[socket.id]);
@@ -201,19 +199,14 @@ module.exports = io => {
     //   maps[socket.id] = 'boo';
     // }
 
-    const playerFire = ({ fireDirection }) => {
-      socket.broadcast.emit('player2Fire', { fireDirection });
+    const playerFire = ({ fireDirection, gameId }) => {
+      socket.to(gameId).broadcast.emit('player2Fire', { fireDirection });
     };
 
-    const playerMove = ({ x, y, socketId }) => {
+    const playerMove = ({ x, y, socketId, gameId }) => {
       players[socketId] = { ...players[socketId], x, y }; // Updates current player position
-
-      socket.broadcast.emit('movePlayer2', { x, y });
+      socket.to(gameId).broadcast.emit('movePlayer2', { x, y });
     };
-
-    // const setEnemies = (room, data => {
-    //   enemies[room] = data;
-    // };
 
     const setRoom = room => {
       currentRoom = room;
