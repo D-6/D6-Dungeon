@@ -218,10 +218,10 @@ module.exports = io => {
       socket.to(gameId).broadcast.emit('player2Fire', { fireDirection });
     };
 
-    const playerHit = ({ damage, health, gameId, socketId }) => {
+    const playerHit = ({ health, gameId, socketId }) => {
       let playerObj = players[gameId][socketId];
       playerObj = { ...playerObj, health };
-      socket.to(gameId).broadcast.emit('player2Hit', { damage });
+      socket.to(gameId).broadcast.emit('player2Hit', { health });
     };
 
     const playerMove = ({ x, y, socketId, gameId }) => {

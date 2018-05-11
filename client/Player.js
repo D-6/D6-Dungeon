@@ -60,9 +60,7 @@ export default class Player {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 1000;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
-          console.log('sprite', playerBody.sprite.health);
           socket.emit('playerHit', {
-            damage: enemyBody.sprite.damageAmount,
             health: playerBody.sprite.health,
             gameId,
             socketId: this.socketId

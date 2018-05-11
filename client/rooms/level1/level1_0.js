@@ -177,9 +177,12 @@ export default {
       player2.fire(game, fireDirection);
     });
 
-    socket.on('player2Hit', ({ damage }) => {
-      player2.sprite.damage(damage);
-      console.log('player2',player2.sprite.health)
+    socket.on('player2Hit', ({ health }) => {
+      player2.sprite.health = health;
+
+      if (player2.sprite.health === 0) {
+        player2.sprite.kill();
+      }
     });
 
     socket.on('player2Move', ({ x, y }) => {
