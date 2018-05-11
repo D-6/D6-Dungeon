@@ -46,8 +46,6 @@ export default class Player {
       0,
       6
     );
-    //remove this after testing 2player
-    // this.sprite.body.kinematic = true;
 
     this.sprite.body.setCollisionGroup(playersCollisionGroup);
     this.sprite.body.collides(collidesWithPlayerArr);
@@ -70,8 +68,8 @@ export default class Player {
 
   addMovement(game) {
     const { gameId } = game.state;
-    this.sprite.body.velocity.x = 0;
-    this.sprite.body.velocity.y = 0;
+    this.sprite.body.setZeroVelocity();
+    this.sprite.body.mass = 1;
 
     if (this.keybinds.up.isDown) {
       this.sprite.body.moveUp(this.speed);
@@ -122,6 +120,7 @@ export default class Player {
       this.sprite.body.velocity.y === 0
     ) {
       this.sprite.animations.stop('walk', true);
+      this.sprite.body.mass = 2000;
     } else {
       this.sprite.animations.play('walk');
     }

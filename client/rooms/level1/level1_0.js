@@ -5,7 +5,6 @@ import { createWallCollision } from '../../wallCollision';
 import { createDoorCollision } from '../../doorCollision';
 import { createDoorSensors } from '../../doorSensors';
 import { enemyRenderer } from '../../enemyRenderer';
-import { enemyPathing } from '../../enemyPathing';
 import { createCollisionGroups } from '../../collisionGroups';
 import { Potion } from '../../Items';
 
@@ -165,8 +164,8 @@ export default {
     player1.addMovement(game);
     player1.addShooting(game);
 
-    player2.sprite.body.velocity.x = 0;
-    player2.sprite.body.velocity.y = 0;
+    player2.sprite.body.setZeroVelocity();
+    player2.sprite.body.mass = 2000;
 
     socket.on('player2Fire', ({ fireDirection }) => {
       player2.fire(game, fireDirection);
