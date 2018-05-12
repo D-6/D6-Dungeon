@@ -158,7 +158,6 @@ const placeClientInRoom = (io, socket) => {
       console.log(`Client successfully joined friend in room: ${urlPath}`);
     } else {
       console.log(`${urlPath} already has 2 players!  Cannot join!`);
-      return null;
     }
   } else {
     console.log(`Client attempted to join an invalid room: ${urlPath}`);
