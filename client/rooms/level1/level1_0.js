@@ -82,6 +82,7 @@ export default {
     // *** Player - Sprite ***
     player1.addPlayerToRoom(
       game,
+      'player1',
       playersCollisionGroup,
       [
         bulletsCollisionGroup,
@@ -95,6 +96,7 @@ export default {
     );
     player2.addPlayerToRoom(
       game,
+      'player2',
       playersCollisionGroup,
       [
         bulletsCollisionGroup,
@@ -110,12 +112,16 @@ export default {
     // *** Bullets ***
     player1.addBullets(
       game,
+      'bullet',
+      player1.damage,
       bulletsCollisionGroup,
       [playersCollisionGroup, wallsCollisionGroup, doorsCollisionGroup],
       enemiesCollisionGroup
     );
     player2.addBullets(
       game,
+      'dummyBullet',
+      player2.damage,
       bulletsCollisionGroup,
       [playersCollisionGroup, wallsCollisionGroup, doorsCollisionGroup],
       enemiesCollisionGroup
@@ -165,14 +171,22 @@ export default {
     player1.addMovement(game);
     player1.addShooting(game);
 
-    player2.sprite.body.velocity.x = 0;
-    player2.sprite.body.velocity.y = 0;
+    player2.sprite.body.setZeroVelocity();
+    player2.sprite.body.mass = 2000;
 
     socket.on('player2Fire', ({ fireDirection }) => {
       player2.fire(game, fireDirection);
     });
 
-    socket.on('movePlayer2', ({ x, y }) => {
+    socket.on('player2Hit', ({ health }) => {
+      player2.sprite.health = health;
+
+      if (player2.sprite.health === 0) {
+        player2.sprite.kill();
+      }
+    });
+
+    socket.on('player2Move', ({ x, y }) => {
       player2.sprite.body.x = x;
       player2.sprite.body.y = y;
     });
@@ -182,7 +196,11 @@ export default {
       doors.destroy();
     }
 
-    if (player2.socketId && !player2.sprite.visible) {
+    if (
+      player2.sprite.health !== 0 &&
+      player2.socketId &&
+      !player2.sprite.visible
+    ) {
       player2.sprite.visible = true;
       player2.sprite.body.data.shapes[0].sensor = false;
     } else if (!player2.socketId && player2.sprite.visible) {

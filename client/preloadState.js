@@ -4,8 +4,11 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 
 /* global D6Dungeon */
 
-export default rooms => ({
+export default () => ({
   preload() {
+
+    // Won't pause on loss of focus
+    D6Dungeon.game.stage.disableVisibilityChange = true;
 
     D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
     D6Dungeon.game.physics.p2.setImpactEvents(true);
@@ -16,6 +19,7 @@ export default rooms => ({
 
     D6Dungeon.game.load.image('potion', 'assets/items/Potion_42.png');
     D6Dungeon.game.load.image('bullet', 'assets/items/Potion_42.png');
+    D6Dungeon.game.load.image('dummyBullet', 'assets/items/Potion_42.png');
 
     D6Dungeon.game.load.image(
       'wizard',
