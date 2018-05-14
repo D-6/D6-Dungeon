@@ -25,6 +25,8 @@ export default () => ({
       'assets/character_sprites/wizard_idle_1.png'
     );
 
+    D6Dungeon.game.load.spritesheet('hearts', 'assets/character_sprites/binding_hearts.png', 130, 136.25);
+
     D6Dungeon.game.load.spritesheet(
       'weasel',
       'assets/character_sprites/WeaselA.png',

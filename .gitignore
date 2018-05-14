@@ -60,6 +60,9 @@ typings/
 # Tilemaps
 /tilemaps
 
+# Generated level files
+level1_[1-9]*
+
 public/bundle.js
 public/bundle.js.map
 secrets.js

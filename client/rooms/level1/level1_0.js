@@ -117,6 +117,9 @@ export default {
       enemiesCollisionGroup
     );
 
+    // *** Player 1 - Hearts ***
+    player1.addHearts(game);
+
     enemies = enemyRenderer(game, enemiesCollisionGroup, [
       bulletsCollisionGroup,
       enemiesCollisionGroup,

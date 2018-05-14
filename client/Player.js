@@ -138,6 +138,18 @@ export default class Player {
     this.keybinds.arrows = game.input.keyboard.createCursorKeys();
   }
 
+  addHearts(game) {
+    this.hearts = [];
+    const hearts = game.add.group();
+
+    for (let i = 0; i < this.health / 2; i++) {
+      this.hearts.push(game.add.sprite(120 + 40 * i, 45, 'hearts', 0, hearts));
+    }
+
+    hearts.setAll('scale.x', 0.35);
+    hearts.setAll('scale.y', 0.35);
+  }
+
   addMovement(game) {
     const { gameId } = game.state;
     this.sprite.body.setZeroVelocity();
