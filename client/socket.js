@@ -33,6 +33,7 @@ const socketFunctions = socket => {
   socket.on('setEnemies', setEnemies);
   socket.on('sendUrl', sendUrl);
   socket.on('updateEnemy', updateEnemy);
+  socket.on('spawnItem', spawnItem);
 };
 
 const createPlayer = data => {
@@ -79,6 +80,12 @@ const setRooms = rooms => {
 
 const setEnemies = enemies => {
   D6Dungeon.game.state.enemies = enemies;
+};
+
+const spawnItem = (name) => {
+  console.log(D6Dungeon.game.state);
+  // console.log(D6Dungeon.game.state.enemies[name.currentRoom][name.name]);
+  // console.log(name.currentRoom);
 };
 
 socket.on('connect', () => {

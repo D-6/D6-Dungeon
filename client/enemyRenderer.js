@@ -1,6 +1,7 @@
 // Import enemies here:
 import { Weasel, Golem } from './enemies';
 import socket from './socket';
+import { Potion } from './Items';
 
 /* global D6Dungeon */
 
@@ -30,13 +31,24 @@ export const enemyRenderer = (
 
       monster.sprite.body.setCollisionGroup(enemiesCollisionGroup);
       monster.sprite.body.collides(collidesWithEnemiesArr);
-
       monster.sprite.body.onBeginContact.add(other => {
         if (other.sprite) {
           if (other.sprite.key === 'bullet') {
             monster.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
-
+            const generate = Math.floor(Math.random() * 4);
+            if (generate === 0) {
+              const healthPotion = new Potion(
+                'health',
+                monster.sprite.body.x,
+                monster.sprite.body.y
+              );
+              healthPotion.createPotionSprite(
+                game,
+                game.physics.p2.collisionGroups[5],
+                [game.physics.p2.collisionGroups[3]]
+              );
+            }
             socket.emit('enemyHit', {
               health: monster.sprite.health,
               name: monster.name,
@@ -47,7 +59,6 @@ export const enemyRenderer = (
           }
         }
       });
-
       enemiesArr.push(monster);
     });
   }

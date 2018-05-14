@@ -223,6 +223,7 @@ module.exports = io => {
       enemyObj.health = health;
 
       if (health === 0) {
+
         delete enemies[gameId][currentRoom[gameId]][name];
       }
 
