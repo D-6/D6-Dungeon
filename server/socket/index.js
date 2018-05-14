@@ -168,7 +168,14 @@ const placeClientInRoom = (io, socket) => {
 
 const mapAndEnemyGenerator = async (socket, level) => {
   try {
-    const newMap = new Map(7, 8, true);
+    let numRooms = 8;
+    if (level === 2) {
+      numRooms = 12;
+    } else if (level === 3) {
+      numRooms = 16;
+    }
+
+    const newMap = new Map(7, numRooms, true);
 
     const promiseArray = newMap.rooms.map(room => {
       const pathToFile = path.join(
