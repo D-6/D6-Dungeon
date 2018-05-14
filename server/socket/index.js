@@ -315,10 +315,11 @@ module.exports = io => {
             .to(gameId)
             .emit('newRoom', { nextRoom, x: position.x, y: position.y });
 
-          const lagTimer = setTimeout(() => {
-            io.to(gameId).emit('player2Move', { x: position.x, y: position.y });
-            clearTimeout(lagTimer);
-          }, 100);
+          // Attempt to get player2 to move into position quicker after a room change
+          // const lagTimer = setTimeout(() => {
+          //   io.to(gameId).emit('player2Move', { x: position.x, y: position.y });
+          //   clearTimeout(lagTimer);
+          // }, 300);
         }
       }
     };
