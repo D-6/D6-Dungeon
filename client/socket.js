@@ -61,11 +61,8 @@ const player2Hit = ({ health }) => {
 
 const player2Move = ({ x, y }) => {
   const { player2 } = D6Dungeon.game.state;
-  if (player2.sprite.body.x === x && player2.sprite.body.y === y) {
-  } else {
-    player2.sprite.body.x = x;
-    player2.sprite.body.y = y;
-  }
+  player2.sprite.body.x = x;
+  player2.sprite.body.y = y;
 };
 
 const createPlayer = data => {
