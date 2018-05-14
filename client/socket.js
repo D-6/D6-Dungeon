@@ -38,6 +38,7 @@ const socketFunctions = socket => {
   socket.on('player2Fire', player2Fire);
   socket.on('player2Hit', player2Hit);
   socket.on('player2Move', player2Move);
+  socket.on('player2Pickup', player2Pickup);
   socket.on('setPlayer2Animation', setPlayer2Animation);
 };
 
@@ -75,6 +76,17 @@ const player2Move = ({ x, y }) => {
     player2.sprite.body.x = x;
     player2.sprite.body.y = y;
   }
+};
+
+const player2Pickup = ({ bulletSpeed, damage, fireRate, speed, health }) => {
+  const { player2 } = D6Dungeon.game.state;
+  player2.bulletSpeed = bulletSpeed;
+  player2.damage = damage;
+  player2.fireRate = fireRate;
+  player2.speed = speed;
+  player2.sprite.health = health;
+  console.log(D6Dungeon.game.state.player1);
+  console.log(player2);
 };
 
 const createPlayer = data => {
