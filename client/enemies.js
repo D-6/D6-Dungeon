@@ -19,7 +19,7 @@ class Weasel {
     this.sprite.setHealth(this.health);
     this.sprite.damageAmount = this.damage;
 
-    this.game.physics.p2.enable(this.sprite, true);
+    this.game.physics.p2.enable(this.sprite, false);
     this.sprite.body.fixedRotation = true;
     this.sprite.body.setRectangle(
       this.sprite.width - 3,
@@ -51,7 +51,7 @@ class Golem {
     this.sprite.setHealth(this.health);
     this.sprite.damageAmount = this.damage;
 
-    this.game.physics.p2.enable(this.sprite, true);
+    this.game.physics.p2.enable(this.sprite, false);
     this.sprite.body.fixedRotation = true;
     this.sprite.body.setRectangle(
       this.sprite.width - 3,
