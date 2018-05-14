@@ -1,3 +1,5 @@
+import socket from './socket';
+
 export class Potion {
   constructor(type, x, y) {
     this.type = type;
@@ -17,12 +19,29 @@ export class Potion {
 
     this.sprite.body.onBeginContact.add(other => {
       if (other.sprite.key === 'player1') {
-        const { player1 } = game.state;
+        const { player1, gameId } = game.state;
+        const {
+          bulletSpeed,
+          damage,
+          fireRate,
+          speed,
+          socketId,
+          sprite
+        } = player1;
 
         if (this.type === 'health') {
-          player1.sprite.health++;
-          console.log('HEALTH POTION! sprite', player1.sprite.health);
-          // TODO: Emit new hp
+          sprite.health++;
+          console.log('HEALTH POTION! sprite', sprite.health);
+
+          socket.emit('playerPickup', {
+            bulletSpeed,
+            damage,
+            fireRate,
+            speed,
+            health: sprite.health,
+            socketId,
+            gameId
+          });
 
           this.sprite.destroy();
         }
