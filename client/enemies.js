@@ -108,19 +108,24 @@ class RedHornedBee {
     const interval =
       this.interval + Math.floor(Math.random() * this.intervalVariation);
 
-    setInterval(() => {
+    const beeFlight = setInterval(() => {
       const randomXVelocity = Math.floor(Math.random() * this.minSpeed);
       const randomXSign = Math.floor(Math.random() * 2);
       const randomYVelocity = Math.sqrt(
         this.minSpeed * this.minSpeed - randomXVelocity * randomXVelocity
       );
       const randomYSign = Math.floor(Math.random() * 2);
-      this.sprite.body.velocity.x = randomXSign
-        ? randomXVelocity
-        : -randomXVelocity;
-      this.sprite.body.velocity.y = randomYSign
-        ? randomYVelocity
-        : -randomYVelocity;
+
+      if (this.sprite.body) {
+        this.sprite.body.velocity.x = randomXSign
+          ? randomXVelocity
+          : -randomXVelocity;
+        this.sprite.body.velocity.y = randomYSign
+          ? randomYVelocity
+          : -randomYVelocity;
+      } else {
+        clearInterval(beeFlight);
+      }
     }, interval);
   }
 }
