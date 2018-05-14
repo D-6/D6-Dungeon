@@ -42,7 +42,7 @@ const socketFunctions = socket => {
 
 const setPlayer2Animation = animation => {
   const { player2 } = D6Dungeon.game.state;
-  if (player2) {
+  if (player2.sprite) {
     player2.sprite.animations.play(animation);
   }
 };
