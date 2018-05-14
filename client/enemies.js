@@ -125,9 +125,9 @@ class RedHornedBee {
           ? randomYVelocity
           : -randomYVelocity;
         if (this.sprite.body.velocity.x > 0) {
-          this.sprite.scale.x = this.scale;
-        } else {
           this.sprite.scale.x = -this.scale;
+        } else {
+          this.sprite.scale.x = this.scale;
         }
       } else {
         clearInterval(beeFlight);
