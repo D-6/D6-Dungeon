@@ -1,5 +1,5 @@
 // Import enemies here:
-import { Weasel, Golem } from './enemies';
+import { Weasel, Golem, RedHornedBee } from './enemies';
 import socket from './socket';
 
 /* global D6Dungeon */
@@ -20,9 +20,32 @@ export const enemyRenderer = (
     roomEnemiesArr.forEach(enemy => {
       let monster;
       if (enemy.type === 'weasel') {
-        monster = new Weasel(game, enemy.name, enemy.x, enemy.y, enemy.health);
+        monster = new Weasel(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
       } else if (enemy.type === 'golem') {
-        monster = new Golem(game, enemy.name, enemy.x, enemy.y, enemy.health);
+        monster = new Golem(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
+      } else if (enemy.type === 'redHornedBee') {
+        monster = new RedHornedBee(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
       }
 
       monster.speed =

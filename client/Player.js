@@ -25,6 +25,7 @@ export default class Player {
     this.y = y;
     this.nextFire = 0;
     this.nextHit = 0;
+    this.injured = false;
   }
 
   addPlayerToRoom(
@@ -74,6 +75,20 @@ export default class Player {
     );
 
     this.sprite.animations.add(
+      'injured',
+      Phaser.Animation.generateFrameNames(
+        'injured/unarmed/ghitu_',
+        0,
+        24,
+        '.png',
+        3
+      ),
+      animationSpeed,
+      false,
+      false
+    );
+
+    this.sprite.animations.add(
       'attack',
       Phaser.Animation.generateFrameNames(
         'attack/unarmed/attu_',
@@ -112,6 +127,8 @@ export default class Player {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 1000;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
+          this.sprite.animations.play('injured');
+
           socket.emit('playerHit', {
             health: playerBody.sprite.health,
             gameId,
@@ -192,7 +209,8 @@ export default class Player {
       this.keybinds.arrows.left.isUp &&
       this.keybinds.arrows.right.isUp &&
       this.keybinds.arrows.up.isUp &&
-      this.keybinds.arrows.down.isUp
+      this.keybinds.arrows.down.isUp &&
+      !this.sprite.animations._anims.injured.isPlaying
     ) {
       if (
         // Not moving
