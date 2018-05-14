@@ -34,13 +34,13 @@ const socketFunctions = socket => {
   socket.on('sendUrl', sendUrl);
   socket.on('updateEnemy', updateEnemy);
   socket.on('newRoom', newRoom);
-  socket.on('player2Fire', player2Fire);
+  // socket.on('player2Fire', player2Fire);
 
 };
 
-const player2Fire = ({ fireDirection }) => {
-  D6Dungeon.game.state.player2.fire(D6Dungeon.game, fireDirection);
-};
+// const player2Fire = ({ fireDirection }) => {
+//   D6Dungeon.game.state.player2.fire(D6Dungeon.game, fireDirection);
+// };
 
 const createPlayer = data => {
   D6Dungeon.game.state.player1 = new Player(data);
