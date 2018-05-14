@@ -25,7 +25,6 @@ export default class Player {
     this.y = y;
     this.nextFire = 0;
     this.nextHit = 0;
-    this.injured = false;
   }
 
   addPlayerToRoom(
