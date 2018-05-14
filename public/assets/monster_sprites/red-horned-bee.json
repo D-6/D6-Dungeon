@@ -1,0 +1,28 @@
+{"frames": {
+
+"sprite1.png":
+{
+	"frame": {"x":1,"y":1,"w":146,"h":123},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":7,"w":146,"h":123},
+	"sourceSize": {"w":161,"h":135}
+},
+"sprite2.png":
+{
+	"frame": {"x":1,"y":126,"w":146,"h":113},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":17,"w":146,"h":113},
+	"sourceSize": {"w":161,"h":135}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "red-horned-bee.png",
+	"format": "RGBA8888",
+	"size": {"w":148,"h":240},
+	"scale": "0.25",
+	"smartupdate": "$TexturePacker:SmartUpdate:6e02caed988720838298cd6e69adb0dd:4e5e5af652d40f74e544631468c8789a:05d8d419f707dbc1c049a443c1b9b220$"
+}
+}

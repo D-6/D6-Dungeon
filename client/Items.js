@@ -12,7 +12,7 @@ export class Potion {
     this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.scale.set(4);
 
-    game.physics.p2.enable(this.sprite, true);
+    game.physics.p2.enable(this.sprite, false);
     this.sprite.body.static = true;
     this.sprite.body.setCollisionGroup(itemsCollisionGroup);
     this.sprite.body.collides(collidesWithItemsArr);

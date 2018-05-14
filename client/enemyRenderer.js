@@ -1,5 +1,5 @@
 // Import enemies here:
-import { Weasel, Golem } from './enemies';
+import { Weasel, Golem, RedHornedBee } from './enemies';
 import socket from './socket';
 import { Potion } from './Items';
 
@@ -8,7 +8,9 @@ import { Potion } from './Items';
 export const enemyRenderer = (
   game,
   enemiesCollisionGroup,
-  collidesWithEnemiesArr
+  collidesWithEnemiesArr,
+  itemsCollisionGroup,
+  playersCollisionGroup
 ) => {
   const gameRoom = game.state.current;
   const roomEnemiesObj = game.state.enemies[gameRoom];
@@ -21,9 +23,32 @@ export const enemyRenderer = (
     roomEnemiesArr.forEach(enemy => {
       let monster;
       if (enemy.type === 'weasel') {
-        monster = new Weasel(game, enemy.name, enemy.x, enemy.y, enemy.health);
+        monster = new Weasel(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
       } else if (enemy.type === 'golem') {
-        monster = new Golem(game, enemy.name, enemy.x, enemy.y, enemy.health);
+        monster = new Golem(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
+      } else if (enemy.type === 'redHornedBee') {
+        monster = new RedHornedBee(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
       }
 
       monster.speed =
@@ -43,11 +68,9 @@ export const enemyRenderer = (
                 monster.sprite.body.x,
                 monster.sprite.body.y
               );
-              healthPotion.createPotionSprite(
-                game,
-                game.physics.p2.collisionGroups[5],
-                [game.physics.p2.collisionGroups[3]]
-              );
+              healthPotion.createPotionSprite(game, itemsCollisionGroup, [
+                playersCollisionGroup
+              ]);
             }
             socket.emit('enemyHit', {
               health: monster.sprite.health,
