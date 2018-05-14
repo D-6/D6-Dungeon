@@ -77,7 +77,7 @@ export default class Player {
     this.sprite.animations.add(
       'injured',
       Phaser.Animation.generateFrameNames(
-        'injured/unarmed/ghitu_',
+        'injured/unarmed/hitu_',
         0,
         24,
         '.png',
@@ -125,21 +125,19 @@ export default class Player {
       enemiesCollisionGroup,
       (playerBody, enemyBody) => {
         if (player === 'player1' && game.time.now > this.nextHit) {
-          this.nextHit = game.time.now + 1000;
+          this.nextHit = game.time.now + 500;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
           this.sprite.animations.play('injured');
 
           socket.emit('playerHit', {
             health: playerBody.sprite.health,
             gameId,
-            socketId: this.socketId
+            socketId: this.socketId,
+            animation: 'injured'
           });
         }
       }
     );
-
-    // *** Player - Animation ***
-    // this.sprite.animations.add('walk', null, 10, true);
 
     if (player === 'player1') {
       this.addKeybinds(game);
@@ -265,7 +263,6 @@ export default class Player {
       this.nextFire = game.time.now + this.fireRate;
 
       this.sprite.animations.play('attack');
-      // socket.emit('player2Animation', { gameId, animation: 'attack' });
 
       let bullet = this.bullets.getFirstExists(false);
 

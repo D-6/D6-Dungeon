@@ -232,11 +232,12 @@ module.exports = io => {
       socket.to(gameId).broadcast.emit('player2Fire', { fireDirection });
     };
 
-    const playerHit = ({ health, gameId, socketId }) => {
+    const playerHit = ({ health, gameId, socketId, animation }) => {
       if (players[gameId]) {
+        console.log(animation);
         const playerObj = players[gameId][socketId];
         playerObj.health = health;
-        socket.to(gameId).broadcast.emit('player2Hit', { health });
+        socket.to(gameId).broadcast.emit('player2Hit', { health, animation });
       }
     };
 
