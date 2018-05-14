@@ -65,7 +65,7 @@ const player2Move = ({ x, y }) => {
   const { player2 } = D6Dungeon.game.state;
   if (player2.sprite.body.x < x) {
     player2.sprite.scale.x = 1;
-  } else {
+  } else if (player2.sprite.body.x > x) {
     player2.sprite.scale.x = -1;
   }
   player2.sprite.body.x = x;
