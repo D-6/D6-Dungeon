@@ -174,27 +174,23 @@ export default {
     player2.sprite.body.setZeroVelocity();
     player2.sprite.body.mass = 2000;
 
-    socket.on('player2Fire', ({ fireDirection }) => {
-      player2.fire(game, fireDirection);
-    });
+    // socket.on('player2Hit', ({ health }) => {
+    //   player2.sprite.health = health;
 
-    socket.on('player2Hit', ({ health }) => {
-      player2.sprite.health = health;
+    //   if (player2.sprite.health === 0) {
+    //     player2.sprite.kill();
+    //   }
+    // });
 
-      if (player2.sprite.health === 0) {
-        player2.sprite.kill();
-      }
-    });
-
-    socket.on('player2Move', ({ x, y }) => {
-      if (player2.sprite.body.x === x && player2.sprite.body.y === y) {
-        player2.sprite.animations.play('idle');
-      } else {
-        player2.sprite.body.x = x;
-        player2.sprite.body.y = y;
-        player2.sprite.animations.play('run');
-      }
-    });
+    // socket.on('player2Move', ({ x, y }) => {
+    //   if (player2.sprite.body.x === x && player2.sprite.body.y === y) {
+    //     player2.sprite.animations.play('idle');
+    //   } else {
+    //     player2.sprite.body.x = x;
+    //     player2.sprite.body.y = y;
+    //     player2.sprite.animations.play('run');
+    //   }
+    // });
 
     if (!Object.keys(game.state.enemies[gameRoom]).length) {
       game.physics.p2.clearTilemapLayerBodies(map, doors);
