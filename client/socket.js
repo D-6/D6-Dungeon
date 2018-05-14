@@ -82,11 +82,11 @@ const createPlayer = data => {
 };
 
 const newRoom = ({ nextRoom, x, y }) => {
+  D6Dungeon.game.state.start(nextRoom, true, false);
   D6Dungeon.game.state.player1.x = x;
   D6Dungeon.game.state.player1.y = y;
-  D6Dungeon.game.state.player2.x = x;
-  D6Dungeon.game.state.player2.y = y;
-  D6Dungeon.game.state.start(nextRoom, true, false);
+  D6Dungeon.game.state.player2.sprite.body.x = x;
+  D6Dungeon.game.state.player2.sprite.body.y = y;
 };
 
 const setPlayer2 = data => {
