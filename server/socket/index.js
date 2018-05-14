@@ -76,19 +76,6 @@ const enemyPathing = (io, gameId) => {
                 enemy
               });
             }
-
-            // enemy.nextXTile = newPos.nextX;
-            // enemy.nextYTile = newPos.nextY;
-
-            // enemy.x = newPos.nextX * 64;
-            // enemy.y = newPos.nextY * 64;
-
-            // console.log(enemy);
-
-            // io.sockets.emit('updateEnemy', {
-            //   currentRoom,
-            //   enemy
-            // });
           });
           easystar.calculate();
         }

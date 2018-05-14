@@ -46,15 +46,16 @@ const createEnemies = (newMap, level) => {
 //using this, we can use findClosestPlayer as the target in the enemyPathing function
 const findClosestPlayer = (gamePlayers, enemy) => {
   const players = Object.keys(gamePlayers);
-
+  const playersAlive = players.filter(player => gamePlayers[player].health > 0);
   let shortestDist;
   let closestPlayer = null;
-  for (let i = 0; i < players.length; i++) {
-    let player = gamePlayers[players[i]];
 
+  for (let i = 0; i < playersAlive.length; i++) {
+    let player = gamePlayers[playersAlive[i]];
     const dist = Math.sqrt(
       Math.pow(player.x - enemy.x, 2) + Math.pow(player.y - enemy.y, 2)
     );
+
     if (!closestPlayer) {
       closestPlayer = player;
       shortestDist = dist;
@@ -63,6 +64,7 @@ const findClosestPlayer = (gamePlayers, enemy) => {
       shortestDist = dist;
     }
   }
+
   return closestPlayer;
 };
 
