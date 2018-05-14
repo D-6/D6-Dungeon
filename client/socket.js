@@ -145,6 +145,12 @@ const setEnemies = enemies => {
   D6Dungeon.game.state.enemies = enemies;
 };
 
+const spawnItem = (name) => {
+  console.log(D6Dungeon.game.state);
+  // console.log(D6Dungeon.game.state.enemies[name.currentRoom][name.name]);
+  // console.log(name.currentRoom);
+};
+
 socket.on('connect', () => {
   console.log('Connected!');
 });
