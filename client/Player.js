@@ -99,7 +99,7 @@ export default class Player {
     game.physics.p2.enable(this.sprite, false);
     this.sprite.body.fixedRotation = true;
     this.sprite.body.setRectangle(
-      this.sprite.width - 16,
+      this.sprite.width - 10,
       this.sprite.height - 30,
       0,
       15
