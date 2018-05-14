@@ -174,9 +174,9 @@ export default {
     player2.sprite.body.setZeroVelocity();
     player2.sprite.body.mass = 2000;
 
-    socket.on('player2Fire', ({ fireDirection }) => {
-      player2.fire(game, fireDirection);
-    });
+    // socket.on('player2Fire', ({ fireDirection }) => {
+    //   player2.fire(game, fireDirection);
+    // });
 
     socket.on('player2Hit', ({ health }) => {
       player2.sprite.health = health;

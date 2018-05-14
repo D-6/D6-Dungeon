@@ -174,9 +174,9 @@ export default {
     player2.sprite.body.setZeroVelocity();
     player2.sprite.body.mass = 2000;
 
-    socket.on('player2Fire', ({ fireDirection }) => {
-      player2.fire(game, fireDirection);
-    });
+    // socket.on('player2Fire', ({ fireDirection }) => {
+    //   player2.fire(game, fireDirection);
+    // });
 
     socket.on('player2Hit', ({ health }) => {
       player2.sprite.health = health;
@@ -187,9 +187,13 @@ export default {
     });
 
     socket.on('player2Move', ({ x, y }) => {
-      player2.sprite.animation.play('run');
-      player2.sprite.body.x = x;
-      player2.sprite.body.y = y;
+      if (player2.sprite.body.x === x && player2.sprite.body.y === y) {
+        player2.sprite.animations.play('idle');
+      } else {
+        player2.sprite.body.x = x;
+        player2.sprite.body.y = y;
+        player2.sprite.animations.play('run');
+      }
     });
 
     if (!Object.keys(game.state.enemies[gameRoom]).length) {
