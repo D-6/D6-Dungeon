@@ -8,7 +8,9 @@ import { Potion } from './Items';
 export const enemyRenderer = (
   game,
   enemiesCollisionGroup,
-  collidesWithEnemiesArr
+  collidesWithEnemiesArr,
+  itemsCollisionGroup,
+  playersCollisionGroup
 ) => {
   const gameRoom = game.state.current;
   const roomEnemiesObj = game.state.enemies[gameRoom];
@@ -66,11 +68,9 @@ export const enemyRenderer = (
                 monster.sprite.body.x,
                 monster.sprite.body.y
               );
-              healthPotion.createPotionSprite(
-                game,
-                game.physics.p2.collisionGroups[5],
-                [game.physics.p2.collisionGroups[3]]
-              );
+              healthPotion.createPotionSprite(game, itemsCollisionGroup, [
+                playersCollisionGroup
+              ]);
             }
             socket.emit('enemyHit', {
               health: monster.sprite.health,

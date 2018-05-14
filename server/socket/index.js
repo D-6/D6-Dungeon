@@ -234,7 +234,6 @@ module.exports = io => {
 
     const playerHit = ({ health, gameId, socketId, animation }) => {
       if (players[gameId]) {
-        console.log(animation);
         const playerObj = players[gameId][socketId];
         playerObj.health = health;
         socket.to(gameId).broadcast.emit('player2Hit', { health, animation });
