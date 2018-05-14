@@ -221,13 +221,15 @@ module.exports = io => {
 
     const enemyHit = ({ health, name, gameId }) => {
       const enemyObj = enemies[gameId][currentRoom[gameId]][name];
-      enemyObj.health = health;
+      if (enemyObj) {
+        enemyObj.health = health;
 
-      if (health === 0) {
-        delete enemies[gameId][currentRoom[gameId]][name];
+        if (health === 0) {
+          delete enemies[gameId][currentRoom[gameId]][name];
+        }
+
+        io.to(gameId).emit('setEnemies', enemies[gameId]);
       }
-
-      io.to(gameId).emit('setEnemies', enemies[gameId]);
     };
 
     const playerFire = ({ fireDirection, gameId }) => {
