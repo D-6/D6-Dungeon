@@ -267,21 +267,19 @@ module.exports = io => {
     const nextRoomReady = ({ gameId, socketId, nextRoom, direction }) => {
       if (players[gameId]) {
         players[gameId][socketId].nextRoom = nextRoom;
+
         const allReady = Object.keys(players[gameId]).every(player => {
           return players[gameId][player].nextRoom === nextRoom;
         });
+
         const enemiesDead =
           Object.keys(enemies[gameId][currentRoom[gameId]]).length === 0;
-
-        if (enemiesDead) console.log('ALL ENEMIES DEAD!');
-        if (allReady) console.log('EVERYONE IS READY!');
 
         if (
           allReady &&
           enemiesDead &&
           Object.keys(players[gameId]).length === 2
         ) {
-          console.log('MOVING TO NEXT ROOM!');
           const position = {};
           switch (direction) {
             case 'east':
@@ -304,10 +302,14 @@ module.exports = io => {
               position.x = 608;
               position.y = 416;
           }
+
           setRoom({ gameId, gameRoom: nextRoom });
+
           Object.keys(players[gameId]).forEach(player => {
             console.log('setting ', player, ' to null');
             players[gameId][player].nextRoom = null;
+            players[gameId][player].x = position.x;
+            players[gameId][player].y = position.y;
           });
           io
             .to(gameId)
