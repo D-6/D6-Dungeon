@@ -247,17 +247,7 @@ export default class Player {
       this.nextFire = game.time.now + this.fireRate;
 
       this.sprite.animations.play('attack');
-      socket.emit('player2Animation', { gameId, animation: 'attack' });
-
-      // Animations
-      // if (
-      //   this.sprite.body.velocity.x !== 0 ||
-      //   this.sprite.body.velocity.y !== 0
-      // ) {
-      //   this.sprite.animations.play('gun-run');
-      // } else {
-      //   this.sprite.animations.play('gun-idle');
-      // }
+      // socket.emit('player2Animation', { gameId, animation: 'attack' });
 
       let bullet = this.bullets.getFirstExists(false);
 

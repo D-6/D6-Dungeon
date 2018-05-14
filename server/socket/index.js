@@ -312,7 +312,7 @@ module.exports = io => {
     };
 
     const player2Animation = ({ gameId, animation }) => {
-      io.to(gameId).broadcast.emit('setPlayer2Animation', animation);
+      socket.to(gameId).broadcast.emit('setPlayer2Animation', animation);
     };
 
     socket.on('intervalTest', gameId => {
