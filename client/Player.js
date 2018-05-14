@@ -88,7 +88,8 @@ export default class Player {
       false
     );
 
-    // this.sprite.animations.play('idle');
+    this.sprite.animations.play('idle');
+
     this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.scale.setTo(1.2, 1.2);
     this.sprite.setHealth(this.health);
