@@ -16,7 +16,7 @@ export class Potion {
     this.sprite.body.collides(collidesWithItemsArr);
 
     this.sprite.body.onBeginContact.add(other => {
-      if (other.sprite.key === 'player') {
+      if (other.sprite.key === 'player1') {
         const { player1 } = game.state;
 
         if (this.type === 'health') {

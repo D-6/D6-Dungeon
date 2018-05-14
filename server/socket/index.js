@@ -109,7 +109,7 @@ const makeNewPlayer = (socket, gameId) => {
   players[gameId] = players[gameId] || {};
   players[gameId][socket.id] = {
     health: 10,
-    speed: 200,
+    speed: 120,
     damage: 1,
     fireRate: 400,
     bulletSpeed: 400,
@@ -259,14 +259,12 @@ module.exports = io => {
       if (players[gameId]) {
         players[gameId][socketId].nextRoom = nextRoom;
         const allReady = Object.keys(players[gameId]).every(player => {
-          console.log(players[gameId][player].nextRoom);
           return players[gameId][player].nextRoom === nextRoom;
         });
         const enemiesDead =
           Object.keys(enemies[gameId][currentRoom[gameId]]).length === 0;
 
         if (enemiesDead) console.log('ALL ENEMIES DEAD!');
-
         if (allReady) console.log('EVERYONE IS READY!');
 
         if (
@@ -274,7 +272,7 @@ module.exports = io => {
           enemiesDead &&
           Object.keys(players[gameId]).length === 2
         ) {
-          console.log('ALL READY FOR ', nextRoom);
+          console.log('MOVING TO NEXT ROOM!');
           const position = {};
           switch (direction) {
             case 'east':
@@ -299,6 +297,7 @@ module.exports = io => {
           }
           setRoom({ gameId, gameRoom: nextRoom });
           Object.keys(players[gameId]).forEach(player => {
+            console.log('setting ', player, ' to null');
             players[gameId][player].nextRoom = null;
           });
           io
@@ -309,18 +308,17 @@ module.exports = io => {
     };
 
     const clearRoomReady = ({ gameId, socketId }) => {
+      console.log(socketId, ' no longer ready!');
       players[gameId][socketId].nextRoom = null;
-      console.log(players[gameId][socketId].nextRoom);
     };
 
     socket.on('intervalTest', gameId => {
       runIntervals(io, gameId);
     });
     socket.on('setRoom', setRoom);
-<<<<<<< HEAD
-=======
+
     socket.on('enemyHit', enemyHit);
->>>>>>> multiplayer
+
     socket.on('playerFire', playerFire);
     socket.on('playerHit', playerHit);
     socket.on('playerMove', playerMove);

@@ -9,6 +9,7 @@ export default class Player {
     damage,
     fireRate,
     bulletSpeed,
+    bulletDrift = 5,
     items,
     socketId,
     x,
@@ -35,21 +36,98 @@ export default class Player {
     enemiesCollisionGroup
   ) {
     const { gameId } = game.state;
+    const animationSpeed = 150;
 
-    this.sprite = game.add.sprite(this.x, this.y, 'player');
+    this.sprite = game.add.sprite(
+      this.x,
+      this.y,
+      player,
+      'idle/unarmed/idleu_000.png'
+    );
+
+    this.sprite.animations.add(
+      'idle',
+      Phaser.Animation.generateFrameNames(
+        'idle/unarmed/idleu_',
+        0,
+        61,
+        '.png',
+        3
+      ),
+      animationSpeed,
+      true,
+      false
+    );
+
+    this.sprite.animations.add(
+      'run',
+      Phaser.Animation.generateFrameNames(
+        'run/unarmed/runu_',
+        0,
+        49,
+        '.png',
+        3
+      ),
+      animationSpeed,
+      true,
+      false
+    );
+
+    // this.sprite.animations.add(
+    //   'gun-run',
+    //   Phaser.Animation.generateFrameNames(
+    //     'attack/gun-run/attrung_',
+    //     0,
+    //     49,
+    //     '.png',
+    //     3
+    //   ),
+    //   animationSpeed,
+    //   true,
+    //   false
+    // );
+
+    // this.sprite.animations.add(
+    //   'gun-idle',
+    //   Phaser.Animation.generateFrameNames(
+    //     'attack/gun-idle/attg_',
+    //     0,
+    //     11,
+    //     '.png',
+    //     3
+    //   ),
+    //   animationSpeed,
+    //   true,
+    //   false
+    // );
+    this.sprite.animations.add(
+      'attack',
+      Phaser.Animation.generateFrameNames(
+        'attack/unarmed/attu_',
+        0,
+        24,
+        '.png',
+        3
+      ),
+      100,
+      true,
+      false
+    );
+
+    // this.sprite.animations.play('idle');
     this.sprite.anchor.setTo(0.5, 0.5);
-    this.sprite.scale.set(4);
+    this.sprite.scale.setTo(1.2, 1.2);
     this.sprite.setHealth(this.health);
 
     // *** Player - Physics ***
     // 2nd arg is debug mode
-    game.physics.p2.enable(this.sprite, true);
+    game.physics.p2.enable(this.sprite, false);
     this.sprite.body.fixedRotation = true;
     this.sprite.body.setRectangle(
-      this.sprite.width - 10,
-      this.sprite.height - 10,
+      this.sprite.width - 16,
+      this.sprite.height - 30,
       0,
-      6
+      15
     );
 
     this.sprite.body.setCollisionGroup(playersCollisionGroup);
@@ -70,7 +148,7 @@ export default class Player {
     );
 
     // *** Player - Animation ***
-    this.sprite.animations.add('walk', null, 10, true);
+    // this.sprite.animations.add('walk', null, 10, true);
 
     if (player === 'player1') {
       this.addKeybinds(game);
@@ -118,7 +196,7 @@ export default class Player {
         gameId
       });
       // Flips player to face left
-      if (this.sprite.scale.x < 0) {
+      if (this.sprite.scale.x > 0 && !this.keybinds.arrows.right.isDown) {
         this.sprite.scale.x *= -1;
       }
     } else if (this.keybinds.right.isDown) {
@@ -130,19 +208,29 @@ export default class Player {
         gameId
       });
       // Flips player to face right
-      if (this.sprite.scale.x > 0) {
+      if (this.sprite.scale.x < 0 && !this.keybinds.arrows.left.isDown) {
         this.sprite.scale.x *= -1;
       }
     }
 
     if (
-      this.sprite.body.velocity.x === 0 &&
-      this.sprite.body.velocity.y === 0
+      // Not shooting
+      this.keybinds.arrows.left.isUp &&
+      this.keybinds.arrows.right.isUp &&
+      this.keybinds.arrows.up.isUp &&
+      this.keybinds.arrows.down.isUp
     ) {
-      this.sprite.animations.stop('walk', true);
-      this.sprite.body.mass = 2000;
-    } else {
-      this.sprite.animations.play('walk');
+      if (
+        // Not moving
+        this.sprite.body.velocity.x === 0 &&
+        this.sprite.body.velocity.y === 0
+      ) {
+        this.sprite.body.mass = 2000;
+        this.sprite.animations.play('idle');
+      } else {
+        // Running
+        this.sprite.animations.play('run');
+      }
     }
   }
 
@@ -156,7 +244,7 @@ export default class Player {
   ) {
     this.bullets = game.add.physicsGroup(Phaser.Physics.P2JS);
     this.bullets.createMultiple(10, spriteKey, 0, false, bullet => {
-      bullet.anchor.set(0.5);
+      bullet.anchor.setTo(0, 0);
       bullet.damageAmount = damage;
       bullet.body.setCollisionGroup(bulletsCollisionGroup);
       bullet.body.collides(collidesWithBulletsArr, bulletBody => {
@@ -182,6 +270,18 @@ export default class Player {
     if (game.time.now > this.nextFire && this.bullets.countDead() > 0) {
       this.nextFire = game.time.now + this.fireRate;
 
+      this.sprite.animations.play('attack');
+
+      // Animations
+      // if (
+      //   this.sprite.body.velocity.x !== 0 ||
+      //   this.sprite.body.velocity.y !== 0
+      // ) {
+      //   this.sprite.animations.play('gun-run');
+      // } else {
+      //   this.sprite.animations.play('gun-idle');
+      // }
+
       let bullet = this.bullets.getFirstExists(false);
 
       if (
@@ -198,7 +298,7 @@ export default class Player {
         (this.keybinds && this.keybinds.arrows.down.isDown) ||
         fireDirection === 'down'
       ) {
-        bullet.reset(this.sprite.x, this.sprite.y + 70);
+        bullet.reset(this.sprite.x, this.sprite.y + 50);
         bullet.body.moveDown(this.bulletSpeed);
 
         if (!fireDirection) {
@@ -209,11 +309,11 @@ export default class Player {
         fireDirection === 'left'
       ) {
         // Flips player to face left
-        if (this.sprite.scale.x < 0) {
+        if (this.sprite.scale.x > 0) {
           this.sprite.scale.x *= -1;
         }
 
-        bullet.reset(this.sprite.x - 60, this.sprite.y);
+        bullet.reset(this.sprite.x - 40, this.sprite.y + 5);
         bullet.body.moveLeft(this.bulletSpeed);
 
         if (!fireDirection) {
@@ -224,11 +324,11 @@ export default class Player {
         fireDirection === 'right'
       ) {
         // Flips player to face right
-        if (this.sprite.scale.x > 0) {
+        if (this.sprite.scale.x < 0) {
           this.sprite.scale.x *= -1;
         }
 
-        bullet.reset(this.sprite.x + 60, this.sprite.y);
+        bullet.reset(this.sprite.x + 30, this.sprite.y + 5);
         bullet.body.moveRight(this.bulletSpeed);
 
         if (!fireDirection) {

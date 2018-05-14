@@ -3,10 +3,13 @@ import socket from './socket';
 const createSensor = (game, x, y) => {
   const sensor = game.add.sprite(x, y, 'wizard');
   sensor.scale.set(0.1);
+  sensor.visible = false;
+
 
   // 2nd arg is debug mode
-  game.physics.p2.enable(sensor, true);
+  game.physics.p2.enable(sensor, false);
   sensor.body.static = true;
+
   sensor.body.addCircle(95).sensor = true;
 
   return sensor;
@@ -26,7 +29,7 @@ export const createDoorSensors = (game, currentState) => {
   let nextRoom;
 
   sensorWest.body.onBeginContact.add(other => {
-    if (other.sprite.key === 'player') {
+    if (other.sprite.key === 'player1') {
       nextRoom = level + (x - 1) + '-' + y;
       socket.emit('nextRoomReady', {
         gameId,
@@ -39,14 +42,14 @@ export const createDoorSensors = (game, currentState) => {
 
   sensorWest.body.onEndContact.add(other => {
     if (other.sprite) {
-      if (other.sprite.key === 'player') {
+      if (other.sprite.key === 'player1') {
         socket.emit('clearRoomReady', { gameId, socketId });
       }
     }
   });
 
   sensorEast.body.onBeginContact.add(other => {
-    if (other.sprite.key === 'player') {
+    if (other.sprite.key === 'player1') {
       nextRoom = level + (x + 1) + '-' + y;
       socket.emit('nextRoomReady', {
         gameId,
@@ -59,14 +62,14 @@ export const createDoorSensors = (game, currentState) => {
 
   sensorEast.body.onEndContact.add(other => {
     if (other.sprite) {
-      if (other.sprite.key === 'player') {
+      if (other.sprite.key === 'player1') {
         socket.emit('clearRoomReady', { gameId, socketId });
       }
     }
   });
 
   sensorNorth.body.onBeginContact.add(other => {
-    if (other.sprite.key === 'player') {
+    if (other.sprite.key === 'player1') {
       nextRoom = level + x + '-' + (y + 1);
       socket.emit('nextRoomReady', {
         gameId,
@@ -79,14 +82,14 @@ export const createDoorSensors = (game, currentState) => {
 
   sensorNorth.body.onEndContact.add(other => {
     if (other.sprite) {
-      if (other.sprite.key === 'player') {
+      if (other.sprite.key === 'player1') {
         socket.emit('clearRoomReady', { gameId, socketId });
       }
     }
   });
 
   sensorSouth.body.onBeginContact.add(other => {
-    if (other.sprite.key === 'player') {
+    if (other.sprite.key === 'player1') {
       nextRoom = level + x + '-' + (y - 1);
       socket.emit('nextRoomReady', {
         gameId,
@@ -99,7 +102,7 @@ export const createDoorSensors = (game, currentState) => {
 
   sensorSouth.body.onEndContact.add(other => {
     if (other.sprite) {
-      if (other.sprite.key === 'player') {
+      if (other.sprite.key === 'player1') {
         socket.emit('clearRoomReady', { gameId, socketId });
       }
     }
