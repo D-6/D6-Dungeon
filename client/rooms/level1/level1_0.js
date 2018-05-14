@@ -25,8 +25,6 @@ export default {
     gameRoom = game.state.current;
     console.log(gameRoom);
 
-    socket.emit('setRoom', { gameId, gameRoom });
-
     const [
       wallsCollisionGroup,
       doorsCollisionGroup,
@@ -36,6 +34,8 @@ export default {
       bulletsCollisionGroup,
       itemsCollisionGroup
     ] = createCollisionGroups(game);
+
+    socket.emit('setRoom', { gameId, gameRoom });
 
     map = game.add.tilemap(gameRoom);
     map.addTilesetImage('level_1', 'level1Image');
@@ -68,16 +68,6 @@ export default {
       doorSensor.body.setCollisionGroup(doorSensorsCollisionGroup);
       doorSensor.body.collides(playersCollisionGroup);
     });
-
-    // *** Potions ***
-    const healthPotion = new Potion('health', 400, 400);
-    healthPotion.createPotionSprite(game, itemsCollisionGroup, [
-      playersCollisionGroup
-    ]);
-    const healthPotion2 = new Potion('health', 800, 600);
-    healthPotion2.createPotionSprite(game, itemsCollisionGroup, [
-      playersCollisionGroup
-    ]);
 
     // *** Player - Sprite ***
     player1.addPlayerToRoom(

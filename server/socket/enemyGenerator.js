@@ -33,7 +33,7 @@ const createEnemies = (newMap, level) => {
 
     if (room.type === 'start') {
       enemies[`level${level}_${x}-${y}`] = [];
-      // enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
+      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
     } else if (room.type === 'normal') {
       enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
     } else if (room.type === 'boss') {
