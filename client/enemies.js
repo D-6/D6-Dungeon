@@ -75,6 +75,7 @@ class RedHornedBee {
     this.animationSpeed = 160;
     this.interval = 500;
     this.intervalVariation = 1000;
+    this.scale = 0.2;
 
     this.createRedHornedBee();
   }
@@ -91,7 +92,7 @@ class RedHornedBee {
 
     this.sprite.animations.play('fly');
 
-    this.sprite.scale.setTo(0.2, 0.2);
+    this.sprite.scale.setTo(this.scale, this.scale);
     this.sprite.setHealth(this.health);
     this.sprite.damageAmount = this.damage;
     console.log(this.damage);
@@ -123,6 +124,11 @@ class RedHornedBee {
         this.sprite.body.velocity.y = randomYSign
           ? randomYVelocity
           : -randomYVelocity;
+        if (this.sprite.body.velocity.x > 0) {
+          this.sprite.scale.x = this.scale;
+        } else {
+          this.sprite.scale.x = -this.scale;
+        }
       } else {
         clearInterval(beeFlight);
       }
