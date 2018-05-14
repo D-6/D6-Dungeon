@@ -37,6 +37,7 @@ export default class Player {
   ) {
     const { gameId } = game.state;
     const animationSpeed = 150;
+    const attackAnimationSpeed = 100;
 
     this.sprite = game.add.sprite(
       this.x,
@@ -73,33 +74,6 @@ export default class Player {
       false
     );
 
-    // this.sprite.animations.add(
-    //   'gun-run',
-    //   Phaser.Animation.generateFrameNames(
-    //     'attack/gun-run/attrung_',
-    //     0,
-    //     49,
-    //     '.png',
-    //     3
-    //   ),
-    //   animationSpeed,
-    //   true,
-    //   false
-    // );
-
-    // this.sprite.animations.add(
-    //   'gun-idle',
-    //   Phaser.Animation.generateFrameNames(
-    //     'attack/gun-idle/attg_',
-    //     0,
-    //     11,
-    //     '.png',
-    //     3
-    //   ),
-    //   animationSpeed,
-    //   true,
-    //   false
-    // );
     this.sprite.animations.add(
       'attack',
       Phaser.Animation.generateFrameNames(
@@ -109,7 +83,7 @@ export default class Player {
         '.png',
         3
       ),
-      100,
+      attackAnimationSpeed,
       true,
       false
     );

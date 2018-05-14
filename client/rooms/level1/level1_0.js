@@ -187,8 +187,13 @@ export default {
     });
 
     socket.on('player2Move', ({ x, y }) => {
-      player2.sprite.body.x = x;
-      player2.sprite.body.y = y;
+      if (player2.sprite.body.x === x && player2.sprite.body.y === y) {
+        player2.sprite.animations.play('idle');
+      } else {
+        player2.sprite.body.x = x;
+        player2.sprite.body.y = y;
+        player2.sprite.animations.play('run');
+      }
     });
 
     if (!Object.keys(game.state.enemies[gameRoom]).length) {

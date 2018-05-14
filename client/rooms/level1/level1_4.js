@@ -187,6 +187,7 @@ export default {
     });
 
     socket.on('player2Move', ({ x, y }) => {
+      player2.sprite.animation.play('run');
       player2.sprite.body.x = x;
       player2.sprite.body.y = y;
     });
