@@ -24,6 +24,7 @@ const level1Arr = [
 /* global D6Dungeon, Phaser */
 
 const socket = io(window.location.origin);
+const player2Scale = 1.2;
 
 const socketFunctions = socket => {
   socket.on('createPlayer', createPlayer);
@@ -67,9 +68,9 @@ const player2Move = ({ x, y }) => {
   const { player2 } = D6Dungeon.game.state;
   if (player2.sprite) {
     if (player2.sprite.body.x < x) {
-      player2.sprite.scale.x = 1;
+      player2.sprite.scale.x = player2Scale;
     } else if (player2.sprite.body.x > x) {
-      player2.sprite.scale.x = -1;
+      player2.sprite.scale.x = -player2Scale;
     }
     player2.sprite.body.x = x;
     player2.sprite.body.y = y;

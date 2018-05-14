@@ -9,7 +9,6 @@ export default class Player {
     damage,
     fireRate,
     bulletSpeed,
-    bulletDrift = 5,
     items,
     socketId,
     x,
