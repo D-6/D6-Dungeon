@@ -287,7 +287,7 @@ module.exports = io => {
               break;
             case 'north':
               position.x = 608;
-              position.y = 672;
+              position.y = 662;
               break;
             case 'south':
               position.x = 608;
