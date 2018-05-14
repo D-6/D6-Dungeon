@@ -54,22 +54,26 @@ const player2Fire = ({ fireDirection }) => {
 
 const player2Hit = ({ health }) => {
   const { player2 } = D6Dungeon.game.state;
-  player2.sprite.health = health;
+  if (player2.sprite) {
+    player2.sprite.health = health;
 
-  if (player2.sprite.health === 0) {
-    player2.sprite.kill();
+    if (player2.sprite.health === 0) {
+      player2.sprite.kill();
+    }
   }
 };
 
 const player2Move = ({ x, y }) => {
   const { player2 } = D6Dungeon.game.state;
-  if (player2.sprite.body.x < x) {
-    player2.sprite.scale.x = 1;
-  } else if (player2.sprite.body.x > x) {
-    player2.sprite.scale.x = -1;
+  if (player2.sprite) {
+    if (player2.sprite.body.x < x) {
+      player2.sprite.scale.x = 1;
+    } else if (player2.sprite.body.x > x) {
+      player2.sprite.scale.x = -1;
+    }
+    player2.sprite.body.x = x;
+    player2.sprite.body.y = y;
   }
-  player2.sprite.body.x = x;
-  player2.sprite.body.y = y;
 };
 
 const createPlayer = data => {

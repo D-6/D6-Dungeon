@@ -10,7 +10,7 @@ const createSensor = (game, x, y) => {
   game.physics.p2.enable(sensor, false);
   sensor.body.static = true;
 
-  sensor.body.addCircle(95).sensor = true;
+  sensor.body.addCircle(90).sensor = true;
 
   return sensor;
 };
