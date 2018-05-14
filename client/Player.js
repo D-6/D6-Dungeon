@@ -201,9 +201,11 @@ export default class Player {
       ) {
         this.sprite.body.mass = 2000;
         this.sprite.animations.play('idle');
+        socket.emit('player2Animation', { gameId, animation: 'idle' });
       } else {
         // Running
         this.sprite.animations.play('run');
+        socket.emit('player2Animation', { gameId, animation: 'run' });
       }
     }
   }
@@ -245,6 +247,7 @@ export default class Player {
       this.nextFire = game.time.now + this.fireRate;
 
       this.sprite.animations.play('attack');
+      socket.emit('player2Animation', { gameId, animation: 'attack' });
 
       // Animations
       // if (

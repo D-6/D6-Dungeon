@@ -37,6 +37,12 @@ const socketFunctions = socket => {
   socket.on('player2Fire', player2Fire);
   socket.on('player2Hit', player2Hit);
   socket.on('player2Move', player2Move);
+  socket.on('setPlayer2Animation', setPlayer2Animation);
+};
+
+const setPlayer2Animation = animation => {
+  const { player2 } = D6Dungeon.game.state;
+  player2.sprite.animations.play(animation);
 };
 
 const player2Fire = ({ fireDirection }) => {
@@ -56,11 +62,9 @@ const player2Hit = ({ health }) => {
 const player2Move = ({ x, y }) => {
   const { player2 } = D6Dungeon.game.state;
   if (player2.sprite.body.x === x && player2.sprite.body.y === y) {
-    player2.sprite.animations.play('idle');
   } else {
     player2.sprite.body.x = x;
     player2.sprite.body.y = y;
-    player2.sprite.animations.play('run');
   }
 };
 

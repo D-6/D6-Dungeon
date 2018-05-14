@@ -171,7 +171,7 @@ export default {
     player1.addMovement(game);
     player1.addShooting(game);
 
-    // player2.sprite.body.setZeroVelocity();
+    player2.sprite.body.setZeroVelocity();
     player2.sprite.body.mass = 2000;
 
     if (!Object.keys(game.state.enemies[gameRoom]).length) {

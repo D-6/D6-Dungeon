@@ -308,23 +308,24 @@ module.exports = io => {
     };
 
     const clearRoomReady = ({ gameId, socketId }) => {
-      console.log(socketId, ' no longer ready!');
       players[gameId][socketId].nextRoom = null;
+    };
+
+    const player2Animation = ({ gameId, animation }) => {
+      io.to(gameId).broadcast.emit('setPlayer2Animation', animation);
     };
 
     socket.on('intervalTest', gameId => {
       runIntervals(io, gameId);
     });
     socket.on('setRoom', setRoom);
-
     socket.on('enemyHit', enemyHit);
-
     socket.on('playerFire', playerFire);
     socket.on('playerHit', playerHit);
     socket.on('playerMove', playerMove);
     socket.on('nextRoomReady', nextRoomReady);
     socket.on('clearRoomReady', clearRoomReady);
-
+    socket.on('player2Animation', player2Animation);
     socket.on('disconnect', () => {
       console.log(`Connection ${socket.id} has left the building`);
 
