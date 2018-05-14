@@ -283,7 +283,7 @@ export default class Player {
         (this.keybinds && this.keybinds.arrows.down.isDown) ||
         fireDirection === 'down'
       ) {
-        bullet.reset(this.sprite.x, this.sprite.y + 50);
+        bullet.reset(this.sprite.x, this.sprite.y + 55);
         bullet.body.moveDown(this.bulletSpeed);
 
         if (!fireDirection) {
