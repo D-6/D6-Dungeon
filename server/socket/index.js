@@ -249,6 +249,33 @@ module.exports = io => {
       }
     };
 
+    const playerPickup = ({
+      bulletSpeed,
+      damage,
+      fireRate,
+      speed,
+      health,
+      socketId,
+      gameId
+    }) => {
+      if (players[gameId]) {
+        const playerObj = players[gameId][socketId];
+        playerObj.bulletSpeed = bulletSpeed;
+        playerObj.damage = damage;
+        playerObj.fireRate = fireRate;
+        playerObj.speed = speed;
+        playerObj.health = health;
+
+        socket.to(gameId).broadcast.emit('player2Pickup', {
+          bulletSpeed,
+          damage,
+          fireRate,
+          speed,
+          health
+        });
+      }
+    };
+
     const setRoom = ({ gameId, gameRoom }) => {
       currentRoom[gameId] = gameRoom;
     };
@@ -329,6 +356,7 @@ module.exports = io => {
     socket.on('playerFire', playerFire);
     socket.on('playerHit', playerHit);
     socket.on('playerMove', playerMove);
+    socket.on('playerPickup', playerPickup);
     socket.on('nextRoomReady', nextRoomReady);
     socket.on('clearRoomReady', clearRoomReady);
     socket.on('player2Animation', player2Animation);
