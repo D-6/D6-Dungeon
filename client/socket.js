@@ -24,6 +24,7 @@ const level1Arr = [
 /* global D6Dungeon, Phaser */
 
 const socket = io(window.location.origin);
+const player2Scale = 1.2;
 
 const socketFunctions = socket => {
   socket.on('createPlayer', createPlayer);
@@ -33,11 +34,62 @@ const socketFunctions = socket => {
   socket.on('setEnemies', setEnemies);
   socket.on('sendUrl', sendUrl);
   socket.on('updateEnemy', updateEnemy);
+  socket.on('newRoom', newRoom);
+  socket.on('player2Fire', player2Fire);
+  socket.on('player2Hit', player2Hit);
+  socket.on('player2Move', player2Move);
+  socket.on('setPlayer2Animation', setPlayer2Animation);
+};
+
+const setPlayer2Animation = animation => {
+  const { player2 } = D6Dungeon.game.state;
+  if (player2.sprite) {
+    player2.sprite.animations.play(animation);
+  }
+};
+
+const player2Fire = ({ fireDirection }) => {
+  const { player2 } = D6Dungeon.game.state;
+  player2.fire(D6Dungeon.game, fireDirection);
+};
+
+const player2Hit = ({ health }) => {
+  const { player2 } = D6Dungeon.game.state;
+  if (player2.sprite) {
+    player2.sprite.health = health;
+
+    if (player2.sprite.health === 0) {
+      player2.sprite.kill();
+    }
+  }
+};
+
+const player2Move = ({ x, y }) => {
+  const { player2 } = D6Dungeon.game.state;
+  if (player2.sprite) {
+    if (player2.sprite.body.x < x) {
+      player2.sprite.scale.x = player2Scale;
+    } else if (player2.sprite.body.x > x) {
+      player2.sprite.scale.x = -player2Scale;
+    }
+    player2.sprite.body.x = x;
+    player2.sprite.body.y = y;
+  }
 };
 
 const createPlayer = data => {
   D6Dungeon.game.state.player1 = new Player(data);
   D6Dungeon.game.state.gameId = data.gameId;
+};
+
+const newRoom = ({ nextRoom, x, y }) => {
+  D6Dungeon.game.state.start(nextRoom, true, false);
+  D6Dungeon.game.state.player1.x = x;
+  D6Dungeon.game.state.player1.y = y;
+  D6Dungeon.game.state.player2.x = x;
+  D6Dungeon.game.state.player2.y = y;
+  D6Dungeon.game.state.player2.sprite.body.x = x;
+  D6Dungeon.game.state.player2.sprite.body.y = y;
 };
 
 const setPlayer2 = data => {

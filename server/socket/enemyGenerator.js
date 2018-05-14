@@ -52,10 +52,10 @@ const findClosestPlayer = (gamePlayers, enemy) => {
 
   for (let i = 0; i < playersAlive.length; i++) {
     let player = gamePlayers[playersAlive[i]];
+
     const dist = Math.sqrt(
       Math.pow(player.x - enemy.x, 2) + Math.pow(player.y - enemy.y, 2)
     );
-
     if (!closestPlayer) {
       closestPlayer = player;
       shortestDist = dist;
@@ -64,7 +64,6 @@ const findClosestPlayer = (gamePlayers, enemy) => {
       shortestDist = dist;
     }
   }
-
   return closestPlayer;
 };
 

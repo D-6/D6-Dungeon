@@ -3,7 +3,7 @@ export const createDoorCollision = (map, doors, game) => {
 
   // *** Doors - Physics ***
   const doorBodies = game.physics.p2.convertTilemap(map, doors);
-  doors.debug = true;
+  doors.debug = false;
 
   return doorBodies;
 };
