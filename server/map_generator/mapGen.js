@@ -1,5 +1,3 @@
-// const specialRoomTypes = ['start', 'boss', 'treasure'];
-
 class Room {
   constructor(
     position = { x: null, y: null },
@@ -23,13 +21,17 @@ class Room {
 }
 
 class Map {
-  constructor(gridSize = 9, totalRooms = 12, startMiddle = true) {
+  constructor(gridSize = 7, totalRooms = 8, startMiddle = true) {
     this.gridSize = gridSize;
     this.totalRooms = totalRooms;
     this.startMiddle = startMiddle;
     this.rooms = [];
-    this.createMap();
-    this.addDoors();
+    this.bossRoomCreated = false;
+    while (!this.bossRoomCreated) {
+      this.createMap();
+      this.addDoors();
+      this.makeSpecialRooms();
+    }
     this.makeRoomFilenames();
   }
 
@@ -51,6 +53,38 @@ class Map {
         const room = new Room(nextValidPositions[index]);
         this.addRoom(room);
       }
+    }
+  }
+
+  makeSpecialRooms() {
+    const roomsWithOneDoor = this.rooms.filter((room, i) => {
+      if (i === 0) return false; // Ignore first room
+      const totalDoors = Object.keys(room.doors).reduce((acc, door) => {
+        if (room.doors[door]) return ++acc;
+        return acc;
+      }, 0);
+      return totalDoors === 1;
+    });
+
+    if (roomsWithOneDoor.length) {
+      const randomRoomIndex = Math.floor(
+        Math.random() * roomsWithOneDoor.length
+      );
+
+      const bossRoom = roomsWithOneDoor[randomRoomIndex];
+      this.rooms.forEach(room => {
+        if (
+          room.position.x === bossRoom.position.x &&
+          room.position.y === bossRoom.position.y
+        ) {
+          room.type = 'boss';
+        }
+      });
+
+      this.bossRoomCreated = true;
+    } else {
+      // Start over
+      this.rooms = [];
     }
   }
 
@@ -141,7 +175,7 @@ class Map {
     this.rooms.forEach(room => {
       matrix[this.gridSize - 1 - room.position.y][room.position.x] = 'X';
     });
-    console.log(matrix);
+    // console.log(matrix);
   }
 
   makeRoomFilenames() {

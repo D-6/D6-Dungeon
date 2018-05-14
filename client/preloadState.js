@@ -6,7 +6,6 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 
 export default () => ({
   preload() {
-
     // Won't pause on loss of focus
     D6Dungeon.game.stage.disableVisibilityChange = true;
 
@@ -33,12 +32,33 @@ export default () => ({
       16
     );
 
-    D6Dungeon.game.load.spritesheet(
-      'player',
-      'assets/character_sprites/DuckB.png',
-      16,
-      16
+    // Player 1
+    D6Dungeon.game.load.atlasJSONHash(
+      'player1',
+      'assets/character_sprites/nerd.png',
+      'assets/character_sprites/nerd.json'
     );
+
+    // Player 2
+    D6Dungeon.game.load.atlasJSONHash(
+      'player2',
+      'assets/character_sprites/girl.png',
+      'assets/character_sprites/girl.json'
+    );
+
+    // D6Dungeon.game.load.spritesheet(
+    //   'player1',
+    //   'assets/character_sprites/DuckB.png',
+    //   16,
+    //   16
+    // );
+    // D6Dungeon.game.load.spritesheet(
+    //   'player2',
+    //   'assets/character_sprites/DuckB.png',
+    //   16,
+    //   16
+    // );
+
     D6Dungeon.game.load.spritesheet(
       'golem',
       'assets/monster_sprites/HulkA.png',

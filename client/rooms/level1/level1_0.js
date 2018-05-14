@@ -23,6 +23,7 @@ export default {
     player2 = game.state.player2;
     const { gameId } = game.state;
     gameRoom = game.state.current;
+    console.log(gameRoom);
 
     const [
       wallsCollisionGroup,
@@ -162,23 +163,6 @@ export default {
 
     player2.sprite.body.setZeroVelocity();
     player2.sprite.body.mass = 2000;
-
-    socket.on('player2Fire', ({ fireDirection }) => {
-      player2.fire(game, fireDirection);
-    });
-
-    socket.on('player2Hit', ({ health }) => {
-      player2.sprite.health = health;
-
-      if (player2.sprite.health === 0) {
-        player2.sprite.kill();
-      }
-    });
-
-    socket.on('player2Move', ({ x, y }) => {
-      player2.sprite.body.x = x;
-      player2.sprite.body.y = y;
-    });
 
     if (!Object.keys(game.state.enemies[gameRoom]).length) {
       game.physics.p2.clearTilemapLayerBodies(map, doors);

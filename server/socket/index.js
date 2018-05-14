@@ -76,19 +76,6 @@ const enemyPathing = (io, gameId) => {
                 enemy
               });
             }
-
-            // enemy.nextXTile = newPos.nextX;
-            // enemy.nextYTile = newPos.nextY;
-
-            // enemy.x = newPos.nextX * 64;
-            // enemy.y = newPos.nextY * 64;
-
-            // console.log(enemy);
-
-            // io.sockets.emit('updateEnemy', {
-            //   currentRoom,
-            //   enemy
-            // });
           });
           easystar.calculate();
         }
@@ -102,14 +89,13 @@ const runIntervals = (io, gameId) => {
     () => enemyPathing(io, gameId),
     300
   );
-  // console.log(enemyPathingInterval);
 };
 
 const makeNewPlayer = (socket, gameId) => {
   players[gameId] = players[gameId] || {};
   players[gameId][socket.id] = {
     health: 10,
-    speed: 200,
+    speed: 120,
     damage: 1,
     fireRate: 400,
     bulletSpeed: 400,
@@ -117,6 +103,7 @@ const makeNewPlayer = (socket, gameId) => {
     x: 608,
     y: 416,
     items: ['Duck Bullets'],
+    nextRoom: null,
     gameId
   };
 
@@ -167,7 +154,14 @@ const placeClientInRoom = (io, socket) => {
 
 const mapAndEnemyGenerator = async (socket, level) => {
   try {
-    const newMap = new Map(7, 8, true);
+    let numRooms = 8;
+    if (level === 2) {
+      numRooms = 12;
+    } else if (level === 3) {
+      numRooms = 16;
+    }
+
+    const newMap = new Map(7, numRooms, true);
 
     const promiseArray = newMap.rooms.map(room => {
       const pathToFile = path.join(
@@ -220,14 +214,15 @@ module.exports = io => {
 
     const enemyHit = ({ health, name, gameId }) => {
       const enemyObj = enemies[gameId][currentRoom[gameId]][name];
-      enemyObj.health = health;
+      if (enemyObj) {
+        enemyObj.health = health;
 
-      if (health === 0) {
+        if (health === 0) {
+          delete enemies[gameId][currentRoom[gameId]][name];
+        }
 
-        delete enemies[gameId][currentRoom[gameId]][name];
+        io.to(gameId).emit('setEnemies', enemies[gameId]);
       }
-
-      io.to(gameId).emit('setEnemies', enemies[gameId]);
     };
 
     const playerFire = ({ fireDirection, gameId }) => {
@@ -251,20 +246,117 @@ module.exports = io => {
       }
     };
 
+    const playerPickup = ({
+      bulletSpeed,
+      damage,
+      fireRate,
+      speed,
+      health,
+      socketId,
+      gameId
+    }) => {
+      if (players[gameId]) {
+        const playerObj = players[gameId][socketId];
+        playerObj.bulletSpeed = bulletSpeed;
+        playerObj.damage = damage;
+        playerObj.fireRate = fireRate;
+        playerObj.speed = speed;
+        playerObj.health = health;
+
+        socket.to(gameId).broadcast.emit('player2Pickup', {
+          bulletSpeed,
+          damage,
+          fireRate,
+          speed,
+          health
+        });
+      }
+    };
+
     const setRoom = ({ gameId, gameRoom }) => {
       currentRoom[gameId] = gameRoom;
+    };
+
+    const nextRoomReady = ({ gameId, socketId, nextRoom, direction }) => {
+      if (players[gameId]) {
+        players[gameId][socketId].nextRoom = nextRoom;
+
+        const allReady = Object.keys(players[gameId]).every(player => {
+          return players[gameId][player].nextRoom === nextRoom;
+        });
+
+        const enemiesDead =
+          Object.keys(enemies[gameId][currentRoom[gameId]]).length === 0;
+
+        if (
+          allReady &&
+          enemiesDead &&
+          Object.keys(players[gameId]).length === 2
+        ) {
+          const position = {};
+          switch (direction) {
+            case 'east':
+              position.x = 1056;
+              position.y = 416;
+              break;
+            case 'west':
+              position.x = 160;
+              position.y = 416;
+              break;
+            case 'north':
+              position.x = 608;
+              position.y = 662;
+              break;
+            case 'south':
+              position.x = 608;
+              position.y = 160;
+              break;
+            default:
+              position.x = 608;
+              position.y = 416;
+          }
+
+          setRoom({ gameId, gameRoom: nextRoom });
+
+          Object.keys(players[gameId]).forEach(player => {
+            console.log('setting ', player, ' to null');
+            players[gameId][player].nextRoom = null;
+            players[gameId][player].x = position.x;
+            players[gameId][player].y = position.y;
+          });
+          io
+            .to(gameId)
+            .emit('newRoom', { nextRoom, x: position.x, y: position.y });
+
+          // Attempt to get player2 to move into position quicker after a room change
+          // const lagTimer = setTimeout(() => {
+          //   io.to(gameId).emit('player2Move', { x: position.x, y: position.y });
+          //   clearTimeout(lagTimer);
+          // }, 300);
+        }
+      }
+    };
+
+    const clearRoomReady = ({ gameId, socketId }) => {
+      players[gameId][socketId].nextRoom = null;
+    };
+
+    const player2Animation = ({ gameId, animation }) => {
+      socket.to(gameId).broadcast.emit('setPlayer2Animation', animation);
     };
 
     socket.on('intervalTest', gameId => {
       runIntervals(io, gameId);
     });
-
     socket.on('setRoom', setRoom);
     socket.on('enemyHit', enemyHit);
     socket.on('playerFire', playerFire);
     socket.on('playerHit', playerHit);
     socket.on('playerMove', playerMove);
-
+    socket.on('playerPickup', playerPickup);
+    socket.on('nextRoomReady', nextRoomReady);
+    socket.on('clearRoomReady', clearRoomReady);
+    socket.on('player2Animation', player2Animation);
     socket.on('disconnect', () => {
       console.log(`Connection ${socket.id} has left the building`);
 
