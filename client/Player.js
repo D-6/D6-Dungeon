@@ -112,6 +112,19 @@ export default class Player {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 1000;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
+
+          for (let i = this.hearts.length - 1; i >= 0; i--) {
+            let heart = this.hearts.getAt(i);
+
+            if (heart.frame === 0) {
+              heart.frame = 1;
+              break;
+            } else if (heart.frame === 1) {
+              heart.frame = 2;
+              break;
+            }
+          }
+
           socket.emit('playerHit', {
             health: playerBody.sprite.health,
             gameId,
@@ -139,15 +152,14 @@ export default class Player {
   }
 
   addHearts(game) {
-    this.hearts = [];
-    const hearts = game.add.group();
+    this.hearts = game.add.group();
 
     for (let i = 0; i < this.health / 2; i++) {
-      this.hearts.push(game.add.sprite(120 + 40 * i, 45, 'hearts', 0, hearts));
+      game.add.sprite(120 + 40 * i, 45, 'hearts', 0, this.hearts);
     }
 
-    hearts.setAll('scale.x', 0.35);
-    hearts.setAll('scale.y', 0.35);
+    this.hearts.setAll('scale.x', 0.35);
+    this.hearts.setAll('scale.y', 0.35);
   }
 
   addMovement(game) {

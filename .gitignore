@@ -61,7 +61,8 @@ typings/
 /tilemaps
 
 # Generated level files
-level1_[1-9]*
+level*.js
+!level*0.js
 
 public/bundle.js
 public/bundle.js.map
