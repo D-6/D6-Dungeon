@@ -125,8 +125,10 @@ export default class Player {
       (playerBody, enemyBody) => {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 500;
+          this.health -= enemyBody.sprite.damageAmount;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
 
+          // set frames based on damageAmount
           for (let i = this.hearts.length - 1; i >= 0; i--) {
             let heart = this.hearts.getAt(i);
 
@@ -142,7 +144,7 @@ export default class Player {
           this.sprite.animations.play('injured');
 
           socket.emit('playerHit', {
-            health: playerBody.sprite.health,
+            health: this.health,
             gameId,
             socketId: this.socketId,
             animation: 'injured'
@@ -167,10 +169,11 @@ export default class Player {
 
   addHearts(game) {
     this.hearts = game.add.group();
-
+    // heart containers based on maxHealth
     for (let i = 0; i < this.health / 2; i++) {
       game.add.sprite(120 + 40 * i, 45, 'hearts', 0, this.hearts);
     }
+    // set containers to match current health
 
     this.hearts.setAll('scale.x', 0.35);
     this.hearts.setAll('scale.y', 0.35);

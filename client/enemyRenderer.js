@@ -59,6 +59,7 @@ export const enemyRenderer = (
       monster.sprite.body.onBeginContact.add(other => {
         if (other.sprite) {
           if (other.sprite.key === 'bullet') {
+            monster.health -= other.sprite.damageAmount;
             monster.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
             const generate = Math.floor(Math.random() * 4);
@@ -73,7 +74,7 @@ export const enemyRenderer = (
               ]);
             }
             socket.emit('enemyHit', {
-              health: monster.sprite.health,
+              health: monster.health,
               name: monster.name,
               gameId: D6Dungeon.game.state.gameId
             });
