@@ -1,6 +1,28 @@
 const baseEnemies = [
-  { name: 'golem', health: 5, quantity: 1, damage: 2, interval: 10000 },
-  { name: 'weasel', health: 1, quantity: 4, damage: 1, interval: 0 }
+  {
+    name: 'golem',
+    health: 5,
+    quantity: 1,
+    damage: 2,
+    interval: 10000,
+    type: 'boss'
+  },
+  {
+    name: 'weasel',
+    health: 1,
+    quantity: 4,
+    damage: 1,
+    interval: 0,
+    type: 'normal'
+  },
+  {
+    name: 'redHornedBee',
+    health: 1,
+    quantity: 16,
+    damage: 1,
+    interval: 0,
+    type: 'normal'
+  }
 ];
 
 const enemies = {};
@@ -21,6 +43,7 @@ const generateEnemies = baseEnemy => {
     enemyObject[enemyName].x = getRandomPosition(minX, maxX);
     enemyObject[enemyName].y = getRandomPosition(minY, maxY);
     enemyObject[enemyName].health = baseEnemy.health;
+    enemyObject[enemyName].damage = baseEnemy.damage;
     enemyObject[enemyName].name = enemyName;
     enemyObject[enemyName].interval = baseEnemy.interval;
   }
@@ -33,9 +56,14 @@ const createEnemies = (newMap, level) => {
 
     if (room.type === 'start') {
       enemies[`level${level}_${x}-${y}`] = [];
-      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
+      // enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[2]);
     } else if (room.type === 'normal') {
-      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
+      const normalEnemies = baseEnemies.filter(
+        enemy => enemy.type === 'normal'
+      );
+      const randomEnemy =
+        normalEnemies[Math.floor(Math.random() * normalEnemies.length)];
+      enemies[`level${level}_${x}-${y}`] = generateEnemies(randomEnemy);
     } else if (room.type === 'boss') {
       enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[0]);
     }

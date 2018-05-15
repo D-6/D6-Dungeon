@@ -74,6 +74,20 @@ export default class Player {
     );
 
     this.sprite.animations.add(
+      'injured',
+      Phaser.Animation.generateFrameNames(
+        'injured/unarmed/hitu_',
+        0,
+        24,
+        '.png',
+        3
+      ),
+      animationSpeed,
+      false,
+      false
+    );
+
+    this.sprite.animations.add(
       'attack',
       Phaser.Animation.generateFrameNames(
         'attack/unarmed/attu_',
@@ -110,7 +124,7 @@ export default class Player {
       enemiesCollisionGroup,
       (playerBody, enemyBody) => {
         if (player === 'player1' && game.time.now > this.nextHit) {
-          this.nextHit = game.time.now + 1000;
+          this.nextHit = game.time.now + 500;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
 
           for (let i = this.hearts.length - 1; i >= 0; i--) {
@@ -125,17 +139,17 @@ export default class Player {
             }
           }
 
+          this.sprite.animations.play('injured');
+
           socket.emit('playerHit', {
             health: playerBody.sprite.health,
             gameId,
-            socketId: this.socketId
+            socketId: this.socketId,
+            animation: 'injured'
           });
         }
       }
     );
-
-    // *** Player - Animation ***
-    // this.sprite.animations.add('walk', null, 10, true);
 
     if (player === 'player1') {
       this.addKeybinds(game);
@@ -216,7 +230,8 @@ export default class Player {
       this.keybinds.arrows.left.isUp &&
       this.keybinds.arrows.right.isUp &&
       this.keybinds.arrows.up.isUp &&
-      this.keybinds.arrows.down.isUp
+      this.keybinds.arrows.down.isUp &&
+      !this.sprite.animations._anims.injured.isPlaying
     ) {
       if (
         // Not moving
@@ -271,7 +286,6 @@ export default class Player {
       this.nextFire = game.time.now + this.fireRate;
 
       this.sprite.animations.play('attack');
-      // socket.emit('player2Animation', { gameId, animation: 'attack' });
 
       let bullet = this.bullets.getFirstExists(false);
 
@@ -289,7 +303,7 @@ export default class Player {
         (this.keybinds && this.keybinds.arrows.down.isDown) ||
         fireDirection === 'down'
       ) {
-        bullet.reset(this.sprite.x, this.sprite.y + 50);
+        bullet.reset(this.sprite.x, this.sprite.y + 55);
         bullet.body.moveDown(this.bulletSpeed);
 
         if (!fireDirection) {

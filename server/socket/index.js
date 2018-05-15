@@ -35,9 +35,12 @@ easystar.enableDiagonals();
 const enemyPathing = (io, gameId) => {
   if (enemies[gameId]) {
     const currentGameEnemies = enemies[gameId][currentRoom[gameId]];
+    const isRandomPather = Object.keys(currentGameEnemies).some(enemy => {
+      return enemy.includes('redHornedBee');
+    });
 
-    if (!currentGameEnemies) {
-      console.log('enemy was already killed');
+    if (!currentGameEnemies || isRandomPather) {
+      // console.log('enemy was already killed');
     } else {
       Object.keys(currentGameEnemies).forEach(enemyName => {
         const enemy = currentGameEnemies[enemyName];
@@ -229,11 +232,11 @@ module.exports = io => {
       socket.to(gameId).broadcast.emit('player2Fire', { fireDirection });
     };
 
-    const playerHit = ({ health, gameId, socketId }) => {
+    const playerHit = ({ health, gameId, socketId, animation }) => {
       if (players[gameId]) {
         const playerObj = players[gameId][socketId];
         playerObj.health = health;
-        socket.to(gameId).broadcast.emit('player2Hit', { health });
+        socket.to(gameId).broadcast.emit('player2Hit', { health, animation });
       }
     };
 

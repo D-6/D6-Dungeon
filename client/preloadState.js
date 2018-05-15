@@ -34,6 +34,12 @@ export default () => ({
       16
     );
 
+    D6Dungeon.game.load.atlasJSONHash(
+      'red-horned-bee',
+      'assets/monster_sprites/red-horned-bee.png',
+      'assets/monster_sprites/red-horned-bee.json'
+    );
+
     // Player 1
     D6Dungeon.game.load.atlasJSONHash(
       'player1',
