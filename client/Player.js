@@ -126,6 +126,19 @@ export default class Player {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 500;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
+
+          for (let i = this.hearts.length - 1; i >= 0; i--) {
+            let heart = this.hearts.getAt(i);
+
+            if (heart.frame === 0) {
+              heart.frame = 1;
+              break;
+            } else if (heart.frame === 1) {
+              heart.frame = 2;
+              break;
+            }
+          }
+
           this.sprite.animations.play('injured');
 
           socket.emit('playerHit', {
@@ -150,6 +163,17 @@ export default class Player {
     this.keybinds.left = game.input.keyboard.addKey(Phaser.Keyboard.A);
     this.keybinds.right = game.input.keyboard.addKey(Phaser.Keyboard.D);
     this.keybinds.arrows = game.input.keyboard.createCursorKeys();
+  }
+
+  addHearts(game) {
+    this.hearts = game.add.group();
+
+    for (let i = 0; i < this.health / 2; i++) {
+      game.add.sprite(120 + 40 * i, 45, 'hearts', 0, this.hearts);
+    }
+
+    this.hearts.setAll('scale.x', 0.35);
+    this.hearts.setAll('scale.y', 0.35);
   }
 
   addMovement(game) {
