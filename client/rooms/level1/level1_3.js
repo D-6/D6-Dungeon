@@ -5,7 +5,7 @@ import { createDoorSensors } from '../../doorSensors';
 import { enemyRenderer } from '../../enemyRenderer';
 import { createCollisionGroups } from '../../collisionGroups';
 import { Potion } from '../../Items';
-
+import HealthBar from '../../health';
 /* global D6Dungeon */
 
 let player1;
@@ -25,8 +25,6 @@ export default {
     gameRoom = game.state.current;
     console.log(gameRoom);
 
-    socket.emit('setRoom', { gameId, gameRoom });
-
     const [
       wallsCollisionGroup,
       doorsCollisionGroup,
@@ -37,11 +35,16 @@ export default {
       itemsCollisionGroup
     ] = createCollisionGroups(game);
 
+    socket.emit('setRoom', { gameId, gameRoom });
+
     map = game.add.tilemap(gameRoom);
     map.addTilesetImage('level_1', 'level1Image');
     const floor = map.createLayer('Floor');
     const walls = map.createLayer('Walls');
     doors = map.createLayer('Doors');
+
+    // const p1Health = HealthBar(game, { x: player1.x, y: player1.y });
+    // console.log(p1Health);
 
     const wallBodies = createWallCollision(map, walls, game);
     wallBodies.forEach(wallBody => {
@@ -68,16 +71,6 @@ export default {
       doorSensor.body.setCollisionGroup(doorSensorsCollisionGroup);
       doorSensor.body.collides(playersCollisionGroup);
     });
-
-    // *** Potions ***
-    const healthPotion = new Potion('health', 400, 400);
-    healthPotion.createPotionSprite(game, itemsCollisionGroup, [
-      playersCollisionGroup
-    ]);
-    const healthPotion2 = new Potion('health', 800, 600);
-    healthPotion2.createPotionSprite(game, itemsCollisionGroup, [
-      playersCollisionGroup
-    ]);
 
     // *** Player - Sprite ***
     player1.addPlayerToRoom(
@@ -140,6 +133,7 @@ export default {
 
   update() {
     //probably getting rid of this, as the enemyPathing was moved to the server and the movement has been moved to the socket.js file 5/9
+
     enemies.forEach(enemy => {
       if (!D6Dungeon.game.state.enemies[gameRoom][enemy.name]) {
         enemy.sprite.kill();

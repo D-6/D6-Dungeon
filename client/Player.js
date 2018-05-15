@@ -45,6 +45,14 @@ export default class Player {
       'idle/unarmed/idleu_000.png'
     );
 
+    //health text
+    let style = { font: '15px Arial', fill: '#ffffff' };
+    let health = game.add.text(0, -40, `HP: ${this.health}`, style);
+    game.physics.p2.enable(health);
+    health.body.static = true;
+    this.sprite.addChild(health);
+    console.log(this.sprite);
+
     this.sprite.animations.add(
       'idle',
       Phaser.Animation.generateFrameNames(
@@ -112,6 +120,7 @@ export default class Player {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 1000;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
+          health.setText(`HP: ${playerBody.sprite.health}`);
           socket.emit('playerHit', {
             health: playerBody.sprite.health,
             gameId,
@@ -172,6 +181,7 @@ export default class Player {
       // Flips player to face left
       if (this.sprite.scale.x > 0 && !this.keybinds.arrows.right.isDown) {
         this.sprite.scale.x *= -1;
+        this.sprite.children[0].scale.x *= -1;
       }
     } else if (this.keybinds.right.isDown) {
       this.sprite.body.moveRight(this.speed);
@@ -184,6 +194,7 @@ export default class Player {
       // Flips player to face right
       if (this.sprite.scale.x < 0 && !this.keybinds.arrows.left.isDown) {
         this.sprite.scale.x *= -1;
+        this.sprite.children[0].scale.x *= -1;
       }
     }
 
