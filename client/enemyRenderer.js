@@ -1,5 +1,5 @@
 // Import enemies here:
-import { Weasel, Golem } from './enemies';
+import { Weasel, Golem, RedHornedBee } from './enemies';
 import socket from './socket';
 import { Potion } from './Items';
 
@@ -8,7 +8,9 @@ import { Potion } from './Items';
 export const enemyRenderer = (
   game,
   enemiesCollisionGroup,
-  collidesWithEnemiesArr
+  collidesWithEnemiesArr,
+  itemsCollisionGroup,
+  playersCollisionGroup
 ) => {
   const gameRoom = game.state.current;
   const roomEnemiesObj = game.state.enemies[gameRoom];
@@ -21,9 +23,32 @@ export const enemyRenderer = (
     roomEnemiesArr.forEach(enemy => {
       let monster;
       if (enemy.type === 'weasel') {
-        monster = new Weasel(game, enemy.name, enemy.x, enemy.y, enemy.health);
+        monster = new Weasel(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
       } else if (enemy.type === 'golem') {
-        monster = new Golem(game, enemy.name, enemy.x, enemy.y, enemy.health);
+        monster = new Golem(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
+      } else if (enemy.type === 'redHornedBee') {
+        monster = new RedHornedBee(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
       }
 
       monster.speed =
@@ -37,6 +62,7 @@ export const enemyRenderer = (
             monster.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
             const generate = Math.floor(Math.random() * 4);
+<<<<<<< HEAD
             if (monster.sprite.health === 0) {
               if (generate === 0) {
                 const healthPotion = new Potion(
@@ -50,6 +76,17 @@ export const enemyRenderer = (
                   [game.physics.p2.collisionGroups[3]]
                 );
               }
+=======
+            if (generate === 0) {
+              const healthPotion = new Potion(
+                'health',
+                monster.sprite.body.x,
+                monster.sprite.body.y
+              );
+              healthPotion.createPotionSprite(game, itemsCollisionGroup, [
+                playersCollisionGroup
+              ]);
+>>>>>>> e2ce3f032b81b8ba1a008751764f93a79f6338fe
             }
             socket.emit('enemyHit', {
               health: monster.sprite.health,

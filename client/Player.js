@@ -82,6 +82,20 @@ export default class Player {
     );
 
     this.sprite.animations.add(
+      'injured',
+      Phaser.Animation.generateFrameNames(
+        'injured/unarmed/hitu_',
+        0,
+        24,
+        '.png',
+        3
+      ),
+      animationSpeed,
+      false,
+      false
+    );
+
+    this.sprite.animations.add(
       'attack',
       Phaser.Animation.generateFrameNames(
         'attack/unarmed/attu_',
@@ -118,20 +132,36 @@ export default class Player {
       enemiesCollisionGroup,
       (playerBody, enemyBody) => {
         if (player === 'player1' && game.time.now > this.nextHit) {
-          this.nextHit = game.time.now + 1000;
+          this.nextHit = game.time.now + 500;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
+<<<<<<< HEAD
           health.setText(`HP: ${playerBody.sprite.health}`);
+=======
+
+          for (let i = this.hearts.length - 1; i >= 0; i--) {
+            let heart = this.hearts.getAt(i);
+
+            if (heart.frame === 0) {
+              heart.frame = 1;
+              break;
+            } else if (heart.frame === 1) {
+              heart.frame = 2;
+              break;
+            }
+          }
+
+          this.sprite.animations.play('injured');
+
+>>>>>>> e2ce3f032b81b8ba1a008751764f93a79f6338fe
           socket.emit('playerHit', {
             health: playerBody.sprite.health,
             gameId,
-            socketId: this.socketId
+            socketId: this.socketId,
+            animation: 'injured'
           });
         }
       }
     );
-
-    // *** Player - Animation ***
-    // this.sprite.animations.add('walk', null, 10, true);
 
     if (player === 'player1') {
       this.addKeybinds(game);
@@ -145,6 +175,17 @@ export default class Player {
     this.keybinds.left = game.input.keyboard.addKey(Phaser.Keyboard.A);
     this.keybinds.right = game.input.keyboard.addKey(Phaser.Keyboard.D);
     this.keybinds.arrows = game.input.keyboard.createCursorKeys();
+  }
+
+  addHearts(game) {
+    this.hearts = game.add.group();
+
+    for (let i = 0; i < this.health / 2; i++) {
+      game.add.sprite(120 + 40 * i, 45, 'hearts', 0, this.hearts);
+    }
+
+    this.hearts.setAll('scale.x', 0.35);
+    this.hearts.setAll('scale.y', 0.35);
   }
 
   addMovement(game) {
@@ -203,7 +244,8 @@ export default class Player {
       this.keybinds.arrows.left.isUp &&
       this.keybinds.arrows.right.isUp &&
       this.keybinds.arrows.up.isUp &&
-      this.keybinds.arrows.down.isUp
+      this.keybinds.arrows.down.isUp &&
+      !this.sprite.animations._anims.injured.isPlaying
     ) {
       if (
         // Not moving
@@ -258,7 +300,6 @@ export default class Player {
       this.nextFire = game.time.now + this.fireRate;
 
       this.sprite.animations.play('attack');
-      // socket.emit('player2Animation', { gameId, animation: 'attack' });
 
       let bullet = this.bullets.getFirstExists(false);
 
@@ -276,7 +317,7 @@ export default class Player {
         (this.keybinds && this.keybinds.arrows.down.isDown) ||
         fireDirection === 'down'
       ) {
-        bullet.reset(this.sprite.x, this.sprite.y + 50);
+        bullet.reset(this.sprite.x, this.sprite.y + 55);
         bullet.body.moveDown(this.bulletSpeed);
 
         if (!fireDirection) {

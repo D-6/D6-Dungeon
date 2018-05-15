@@ -25,11 +25,19 @@ export default () => ({
       'assets/character_sprites/wizard_idle_1.png'
     );
 
+    D6Dungeon.game.load.spritesheet('hearts', 'assets/character_sprites/binding_hearts.png', 130, 136.25);
+
     D6Dungeon.game.load.spritesheet(
       'weasel',
       'assets/character_sprites/WeaselA.png',
       16,
       16
+    );
+
+    D6Dungeon.game.load.atlasJSONHash(
+      'red-horned-bee',
+      'assets/monster_sprites/red-horned-bee.png',
+      'assets/monster_sprites/red-horned-bee.json'
     );
 
     // Player 1

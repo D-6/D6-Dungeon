@@ -54,10 +54,12 @@ const player2Fire = ({ fireDirection }) => {
   player2.fire(D6Dungeon.game, fireDirection);
 };
 
-const player2Hit = ({ health }) => {
+const player2Hit = ({ health, animation }) => {
   const { player2 } = D6Dungeon.game.state;
   if (player2.sprite) {
     player2.sprite.health = health;
+    console.log(player2.sprite.animations);
+    player2.sprite.animations.play(animation);
 
     if (player2.sprite.health === 0) {
       player2.sprite.kill();
@@ -147,7 +149,7 @@ const setEnemies = enemies => {
   D6Dungeon.game.state.enemies = enemies;
 };
 
-const spawnItem = (name) => {
+const spawnItem = name => {
   console.log(D6Dungeon.game.state);
   // console.log(D6Dungeon.game.state.enemies[name.currentRoom][name.name]);
   // console.log(name.currentRoom);
