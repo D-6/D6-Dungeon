@@ -51,7 +51,6 @@ export default class Player {
     game.physics.p2.enable(health);
     health.body.static = true;
     this.sprite.addChild(health);
-    console.log(this.sprite);
 
     this.sprite.animations.add(
       'idle',
@@ -134,6 +133,7 @@ export default class Player {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 500;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
+          // console.log(health);
           health.setText(`HP: ${playerBody.sprite.health}`);
 
           for (let i = this.hearts.length - 1; i >= 0; i--) {
