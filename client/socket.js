@@ -60,8 +60,6 @@ const player2Hit = ({ health, animation }) => {
     player2.health = health;
     player2.sprite.health = health;
     player2.sprite.animations.play(animation);
-    
-    console.log(player2.sprite.health)
     player2.sprite.children[0].setText(`HP: ${player2.sprite.health}`);
 
     if (player2.health === 0) {
@@ -93,6 +91,7 @@ const player2Pickup = ({ bulletSpeed, damage, fireRate, speed, health }) => {
   player2.speed = speed;
   player2.health = health;
   player2.sprite.health = health;
+  player2.sprite.children[0].setText(`HP: ${health}`);
 };
 
 const createPlayer = data => {
