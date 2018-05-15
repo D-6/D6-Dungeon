@@ -134,9 +134,7 @@ export default class Player {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 500;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
-<<<<<<< HEAD
           health.setText(`HP: ${playerBody.sprite.health}`);
-=======
 
           for (let i = this.hearts.length - 1; i >= 0; i--) {
             let heart = this.hearts.getAt(i);
@@ -152,7 +150,6 @@ export default class Player {
 
           this.sprite.animations.play('injured');
 
->>>>>>> e2ce3f032b81b8ba1a008751764f93a79f6338fe
           socket.emit('playerHit', {
             health: playerBody.sprite.health,
             gameId,
@@ -330,6 +327,7 @@ export default class Player {
         // Flips player to face left
         if (this.sprite.scale.x > 0) {
           this.sprite.scale.x *= -1;
+          this.sprite.children[0].scale.x *= -1;
         }
 
         bullet.reset(this.sprite.x - 40, this.sprite.y + 5);
@@ -345,6 +343,7 @@ export default class Player {
         // Flips player to face right
         if (this.sprite.scale.x < 0) {
           this.sprite.scale.x *= -1;
+          this.sprite.children[0].scale.x *= -1;
         }
 
         bullet.reset(this.sprite.x + 30, this.sprite.y + 5);
