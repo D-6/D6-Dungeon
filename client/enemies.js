@@ -1,7 +1,7 @@
 /* global Phaser */
 
 class Weasel {
-  constructor(game, name, x, y, health) {
+  constructor(game, name, x, y, health, damage) {
     this.game = game;
     this.name = name;
     this.x = x;
@@ -9,7 +9,7 @@ class Weasel {
     this.health = health;
     this.minSpeed = 60;
     this.speedVariation = 60;
-    this.damage = 1;
+    this.damage = damage;
 
     this.createWeaselSprite();
   }
@@ -33,7 +33,7 @@ class Weasel {
 }
 
 class Golem {
-  constructor(game, name, x, y, health) {
+  constructor(game, name, x, y, health, damage) {
     this.game = game;
     this.name = name;
     this.x = x;
@@ -41,7 +41,7 @@ class Golem {
     this.health = health;
     this.minSpeed = 60;
     this.speedVariation = 60;
-    this.damage = 1;
+    this.damage = damage;
 
     this.createGolemSprite();
   }
