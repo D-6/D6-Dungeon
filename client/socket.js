@@ -57,12 +57,14 @@ const player2Fire = ({ fireDirection }) => {
 const player2Hit = ({ health, animation }) => {
   const { player2 } = D6Dungeon.game.state;
   if (player2.sprite) {
+    player2.health = health;
     player2.sprite.health = health;
-    console.log(player2.sprite.animations);
     player2.sprite.animations.play(animation);
+    
     console.log(player2.sprite.health)
     player2.sprite.children[0].setText(`HP: ${player2.sprite.health}`);
-    if (player2.sprite.health === 0) {
+
+    if (player2.health === 0) {
       player2.sprite.kill();
     }
   }
@@ -89,9 +91,8 @@ const player2Pickup = ({ bulletSpeed, damage, fireRate, speed, health }) => {
   player2.damage = damage;
   player2.fireRate = fireRate;
   player2.speed = speed;
+  player2.health = health;
   player2.sprite.health = health;
-  console.log(D6Dungeon.game.state.player1);
-  console.log(player2);
 };
 
 const createPlayer = data => {
