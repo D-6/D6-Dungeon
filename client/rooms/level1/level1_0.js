@@ -5,7 +5,7 @@ import { createDoorSensors } from '../../doorSensors';
 import { enemyRenderer } from '../../enemyRenderer';
 import { createCollisionGroups } from '../../collisionGroups';
 import { Potion } from '../../Items';
-
+import HealthBar from '../../health';
 /* global D6Dungeon */
 
 let player1;
@@ -42,6 +42,9 @@ export default {
     const floor = map.createLayer('Floor');
     const walls = map.createLayer('Walls');
     doors = map.createLayer('Doors');
+
+    // const p1Health = HealthBar(game, { x: player1.x, y: player1.y });
+    // console.log(p1Health);
 
     const wallBodies = createWallCollision(map, walls, game);
     wallBodies.forEach(wallBody => {
@@ -129,9 +132,7 @@ export default {
         playersCollisionGroup,
         wallsCollisionGroup,
         doorsCollisionGroup
-      ],
-      itemsCollisionGroup,
-      playersCollisionGroup
+      ]
     );
 
     socket.emit('intervalTest', gameId);

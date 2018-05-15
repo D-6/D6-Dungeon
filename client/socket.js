@@ -60,6 +60,9 @@ const player2Hit = ({ health, animation }) => {
     player2.health = health;
     player2.sprite.health = health;
     player2.sprite.animations.play(animation);
+    
+    console.log(player2.sprite.health)
+    player2.sprite.children[0].setText(`HP: ${player2.sprite.health}`);
 
     if (player2.health === 0) {
       player2.sprite.kill();
@@ -72,8 +75,10 @@ const player2Move = ({ x, y }) => {
   if (player2.sprite) {
     if (player2.sprite.body.x < x) {
       player2.sprite.scale.x = player2Scale;
+      player2.sprite.children[0].scale.x = 1;
     } else if (player2.sprite.body.x > x) {
       player2.sprite.scale.x = -player2Scale;
+      player2.sprite.children[0].scale.x = -1;
     }
     player2.sprite.body.x = x;
     player2.sprite.body.y = y;
