@@ -31,6 +31,7 @@ export class Potion {
         } = player1;
 
         if (this.type === 'health') {
+          // TODO: don't pickup if health === maxHealth
           const healAmount = 1;
           player1.health += healAmount;
           sprite.health += healAmount;

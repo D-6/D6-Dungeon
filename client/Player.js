@@ -20,7 +20,7 @@ const damageHearts = (obj, damageAmount) => {
 
 export default class Player {
   constructor({
-    health,
+    maxHealth,
     speed,
     damage,
     fireRate,
@@ -30,7 +30,8 @@ export default class Player {
     x,
     y
   }) {
-    this.health = health;
+    this.maxHealth = maxHealth;
+    this.health = maxHealth;
     this.speed = speed;
     this.damage = damage;
     this.fireRate = fireRate;
@@ -174,12 +175,13 @@ export default class Player {
 
   addHearts(game) {
     this.hearts = game.add.group();
-    // TODO: heart containers based on maxHealth
-    for (let i = 0; i < this.health / 2; i++) {
+
+    for (let i = 0; i < this.maxHealth / 2; i++) {
       game.add.sprite(120 + 40 * i, 45, 'hearts', 0, this.hearts);
     }
-    // TODO: set containers to match current health
-    // damageHearts(this, this.maxHealth - this.health);
+
+    // Set hearts to match current health
+    damageHearts(this, this.maxHealth - this.health);
 
     this.hearts.setAll('scale.x', 0.35);
     this.hearts.setAll('scale.y', 0.35);
