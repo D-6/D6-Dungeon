@@ -132,9 +132,7 @@ export default {
         playersCollisionGroup,
         wallsCollisionGroup,
         doorsCollisionGroup
-      ],
-      itemsCollisionGroup,
-      playersCollisionGroup
+      ]
     );
 
     socket.emit('intervalTest', gameId);

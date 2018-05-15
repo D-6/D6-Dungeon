@@ -8,9 +8,7 @@ import { Potion } from './Items';
 export const enemyRenderer = (
   game,
   enemiesCollisionGroup,
-  collidesWithEnemiesArr,
-  itemsCollisionGroup,
-  playersCollisionGroup
+  collidesWithEnemiesArr
 ) => {
   const gameRoom = game.state.current;
   const roomEnemiesObj = game.state.enemies[gameRoom];
