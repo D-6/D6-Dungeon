@@ -179,7 +179,7 @@ export default {
     }
 
     if (
-      player2.sprite.health !== 0 &&
+      player2.health !== 0 &&
       player2.socketId &&
       !player2.sprite.visible
     ) {
