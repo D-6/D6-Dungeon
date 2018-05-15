@@ -266,12 +266,7 @@ module.exports = io => {
         playerObj.fireRate = fireRate;
         playerObj.speed = speed;
         playerObj.health = health;
-console.log(bulletSpeed,
-  damage,
-  fireRate,
-  speed,
-  health,
-  socketId)
+
         socket.to(gameId).broadcast.emit('player2Pickup', {
           bulletSpeed,
           damage,

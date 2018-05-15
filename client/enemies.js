@@ -97,7 +97,6 @@ class RedHornedBee {
     this.sprite.scale.setTo(this.scale, this.scale);
     this.sprite.setHealth(this.health);
     this.sprite.damageAmount = this.damage;
-    console.log(this.damage);
 
     this.game.physics.p2.enable(this.sprite, false);
     this.sprite.body.fixedRotation = true;
