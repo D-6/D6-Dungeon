@@ -27,30 +27,40 @@ export class Potion {
           speed,
           socketId,
           sprite,
-          hearts
+          hearts,
+          maxHealth
         } = player1;
 
         if (this.type === 'health') {
-          // TODO: don't pickup if health === maxHealth
-          const healAmount = 1;
-          player1.health += healAmount;
-          sprite.health += healAmount;
-          console.log('HEALTH POTION! sprite', sprite.health);
+          let healAmount = 1;
 
-          for (let i = 0; i < healAmount; i++) {
-            for (let j = 0; j < hearts.length; j++) {
-              let heart = hearts.getAt(j);
+          if (player1.health + healAmount > maxHealth) {
+            healAmount = maxHealth - player1.health;
+          }
 
-              if (heart.frame === 2) {
-                heart.frame = 1;
-                break;
-              } else if (heart.frame === 1) {
-                heart.frame = 0;
-                break;
+          if (player1.health !== maxHealth) {
+            player1.health += healAmount;
+            sprite.health += healAmount;
+
+            console.log('HEALTH POTION! sprite', sprite.health);
+
+            for (let i = 0; i < healAmount; i++) {
+              for (let j = 0; j < hearts.length; j++) {
+                let heart = hearts.getAt(j);
+
+                if (heart.frame === 2) {
+                  heart.frame = 1;
+                  break;
+                } else if (heart.frame === 1) {
+                  heart.frame = 0;
+                  break;
+                }
               }
             }
           }
         }
+
+        console.log('pickup current health', sprite.health);
 
         this.sprite.destroy();
 
