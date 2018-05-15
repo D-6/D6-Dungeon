@@ -63,15 +63,19 @@ export const enemyRenderer = (
             monster.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
             const generate = Math.floor(Math.random() * 4);
-            if (generate === 0) {
-              const healthPotion = new Potion(
-                'health',
-                monster.sprite.body.x,
-                monster.sprite.body.y
-              );
-              healthPotion.createPotionSprite(game, itemsCollisionGroup, [
-                playersCollisionGroup
-              ]);
+            if (monster.sprite.health === 0) {
+              if (generate === 0) {
+                const healthPotion = new Potion(
+                  'health',
+                  monster.sprite.body.x,
+                  monster.sprite.body.y
+                );
+                healthPotion.createPotionSprite(
+                  game,
+                  game.physics.p2.collisionGroups[5],
+                  [game.physics.p2.collisionGroups[3]]
+                );
+              }
             }
             socket.emit('enemyHit', {
               health: monster.health,

@@ -77,6 +77,8 @@ const player2Move = ({ x, y }) => {
     }
     player2.sprite.body.x = x;
     player2.sprite.body.y = y;
+
+
   }
 };
 
