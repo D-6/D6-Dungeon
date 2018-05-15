@@ -31,24 +31,27 @@ export class Potion {
         } = player1;
 
         if (this.type === 'health') {
-          player1.health++;
-          sprite.health++;
+          const healAmount = 1;
+          player1.health += healAmount;
+          sprite.health += healAmount;
           console.log('HEALTH POTION! sprite', sprite.health);
 
-          for (let i = 0; i < hearts.length; i++) {
-            let heart = hearts.getAt(i);
+          for (let i = 0; i < healAmount; i++) {
+            for (let j = 0; j < hearts.length; j++) {
+              let heart = hearts.getAt(j);
 
-            if (heart.frame === 2) {
-              heart.frame = 1;
-              break;
-            } else if (heart.frame === 1) {
-              heart.frame = 0;
-              break;
+              if (heart.frame === 2) {
+                heart.frame = 1;
+                break;
+              } else if (heart.frame === 1) {
+                heart.frame = 0;
+                break;
+              }
             }
           }
-
-          this.sprite.destroy();
         }
+
+        this.sprite.destroy();
 
         socket.emit('playerPickup', {
           bulletSpeed,

@@ -2,6 +2,22 @@ import socket from './socket';
 
 /* global Phaser */
 
+const damageHearts = (obj, damageAmount) => {
+  for (let i = 0; i < damageAmount; i++) {
+    for (let j = obj.hearts.length - 1; j >= 0; j--) {
+      let heart = obj.hearts.getAt(j);
+
+      if (heart.frame === 0) {
+        heart.frame = 1;
+        break;
+      } else if (heart.frame === 1) {
+        heart.frame = 2;
+        break;
+      }
+    }
+  }
+};
+
 export default class Player {
   constructor({
     health,
@@ -128,18 +144,7 @@ export default class Player {
           this.health -= enemyBody.sprite.damageAmount;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
 
-          // set frames based on damageAmount
-          for (let i = this.hearts.length - 1; i >= 0; i--) {
-            let heart = this.hearts.getAt(i);
-
-            if (heart.frame === 0) {
-              heart.frame = 1;
-              break;
-            } else if (heart.frame === 1) {
-              heart.frame = 2;
-              break;
-            }
-          }
+          damageHearts(this, enemyBody.sprite.damageAmount);
 
           this.sprite.animations.play('injured');
 
@@ -169,11 +174,12 @@ export default class Player {
 
   addHearts(game) {
     this.hearts = game.add.group();
-    // heart containers based on maxHealth
+    // TODO: heart containers based on maxHealth
     for (let i = 0; i < this.health / 2; i++) {
       game.add.sprite(120 + 40 * i, 45, 'hearts', 0, this.hearts);
     }
-    // set containers to match current health
+    // TODO: set containers to match current health
+    // damageHearts(this, this.maxHealth - this.health);
 
     this.hearts.setAll('scale.x', 0.35);
     this.hearts.setAll('scale.y', 0.35);
