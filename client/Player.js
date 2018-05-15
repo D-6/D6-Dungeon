@@ -126,6 +126,7 @@ export default class Player {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 500;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
+          console.log('health ', playerBody.sprite.health);
 
           for (let i = this.hearts.length - 1; i >= 0; i--) {
             let heart = this.hearts.getAt(i);

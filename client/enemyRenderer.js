@@ -1,5 +1,5 @@
 // Import enemies here:
-import { Weasel, Golem, RedHornedBee } from './enemies';
+import { Weasel, Golem, RedHornedBee, ShadowBoyBoss } from './enemies';
 import socket from './socket';
 import { Potion } from './Items';
 
@@ -42,6 +42,15 @@ export const enemyRenderer = (
         );
       } else if (enemy.type === 'redHornedBee') {
         monster = new RedHornedBee(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
+      } else if (enemy.type === 'shadowBoy') {
+        monster = new ShadowBoyBoss(
           game,
           enemy.name,
           enemy.x,

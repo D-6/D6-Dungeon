@@ -40,25 +40,23 @@ const enemyPathing = (io, gameId) => {
     });
 
     if (!currentGameEnemies || isRandomPather) {
-      // console.log('enemy was already killed');
+      console.log('enemy not finding a path');
     } else {
       Object.keys(currentGameEnemies).forEach(enemyName => {
         const enemy = currentGameEnemies[enemyName];
         const currentGamePlayers = players[gameId];
         const closestPlayer = findClosestPlayer(currentGamePlayers, enemy);
-        // console.log(closestPlayer);
-        //most of this logic was taken from enemyPathing.js in client
-        // console.log(enemy);
-        let enemyX = Math.floor(enemy.x / 64);
-        let enemyY = Math.floor(enemy.y / 64);
-        //currently setting nextX and nextY to null
+
+        let enemyX = Math.round(enemy.x / 64);
+        let enemyY = Math.round(enemy.y / 64);
         let newPos = {
           nextX: null,
           nextY: null
         };
+
         if (closestPlayer) {
-          let targetX = Math.floor(closestPlayer.x / 64);
-          let targetY = Math.floor(closestPlayer.y / 64);
+          let targetX = Math.round(closestPlayer.x / 64);
+          let targetY = Math.round(closestPlayer.y / 64);
           easystar.findPath(enemyX, enemyY, targetX, targetY, bestPath => {
             if (bestPath === null) {
               console.log('Path not found');
@@ -67,9 +65,6 @@ const enemyPathing = (io, gameId) => {
             if (bestPath && bestPath.length) {
               newPos.nextX = bestPath[1].x;
               newPos.nextY = bestPath[1].y;
-              // const distance = 1;
-              // enemy.x += newPos.nextX - enemy.x > 0 ? distance : -distance;
-              // enemy.y += newPos.nextY - enemy.y > 0 ? distance : -distance;
               enemy.nextXTile = newPos.nextX;
               enemy.nextYTile = newPos.nextY;
               enemy.x = newPos.nextX * 64;
@@ -82,6 +77,13 @@ const enemyPathing = (io, gameId) => {
           });
           easystar.calculate();
         }
+        // else {
+        //   console.log(enemy);
+        //   io.to(gameId).emit('updateEnemy', {
+        //     currentRoom: currentRoom[gameId],
+        //     enemy
+        //   });
+        // }
       });
     }
   }
@@ -294,7 +296,7 @@ module.exports = io => {
         if (
           allReady &&
           enemiesDead &&
-          Object.keys(players[gameId]).length === 2
+          Object.keys(players[gameId]).length === 1
         ) {
           const position = {};
           switch (direction) {

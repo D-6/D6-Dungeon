@@ -150,18 +150,36 @@ export default {
 
         const currentXTile = enemy.sprite.position.x / 64;
         const currentYTile = enemy.sprite.position.y / 64;
+        const distanceFactor =
+          (Math.abs(currentXTile - nextXTile) +
+            Math.abs(currentYTile - nextYTile)) *
+          64;
 
-        if (nextXTile > currentXTile) {
-          enemy.sprite.body.velocity.x = enemy.speed;
-        }
-        if (nextXTile < currentXTile) {
-          enemy.sprite.body.velocity.x = -enemy.speed;
-        }
-        if (nextYTile > currentYTile) {
-          enemy.sprite.body.velocity.y = enemy.speed;
-        }
-        if (nextYTile < currentYTile) {
-          enemy.sprite.body.velocity.y = -enemy.speed;
+        if (distanceFactor > enemy.randomBehavior) {
+          if (nextXTile > currentXTile) {
+            enemy.sprite.body.velocity.x = enemy.speed;
+            enemy.sprite.scale.x = enemy.scale;
+          } else if (nextXTile < currentXTile) {
+            enemy.sprite.body.velocity.x = -enemy.speed;
+            enemy.sprite.scale.x = -enemy.scale;
+          }
+
+          if (nextYTile > currentYTile) {
+            enemy.sprite.body.velocity.y = enemy.speed;
+          } else if (nextYTile < currentYTile) {
+            enemy.sprite.body.velocity.y = -enemy.speed;
+          }
+
+          if (enemy.sprite.animations._anims.run) {
+            if (
+              nextXTile !== Math.round(currentXTile) ||
+              nextYTile !== Math.round(currentYTile)
+            ) {
+              enemy.sprite.animations.play('run');
+            } else {
+              enemy.sprite.animations.play('idle');
+            }
+          }
         }
       }
     });

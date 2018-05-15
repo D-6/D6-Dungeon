@@ -22,6 +22,14 @@ const baseEnemies = [
     damage: 1,
     interval: 0,
     type: 'normal'
+  },
+  {
+    name: 'shadowBoy',
+    health: 30,
+    quantity: 1,
+    damage: 2,
+    interval: 0,
+    type: 'boss'
   }
 ];
 
@@ -55,8 +63,9 @@ const createEnemies = (newMap, level) => {
     const { x, y } = room.position;
 
     if (room.type === 'start') {
-      enemies[`level${level}_${x}-${y}`] = [];
+      // enemies[`level${level}_${x}-${y}`] = [];
       // enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[2]);
+      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[3]);
     } else if (room.type === 'normal') {
       const normalEnemies = baseEnemies.filter(
         enemy => enemy.type === 'normal'
