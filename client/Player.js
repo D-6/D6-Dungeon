@@ -2,9 +2,25 @@ import socket from './socket';
 
 /* global Phaser */
 
+const damageHearts = (obj, damageAmount) => {
+  for (let i = 0; i < damageAmount; i++) {
+    for (let j = obj.hearts.length - 1; j >= 0; j--) {
+      let heart = obj.hearts.getAt(j);
+
+      if (heart.frame === 0) {
+        heart.frame = 1;
+        break;
+      } else if (heart.frame === 1) {
+        heart.frame = 2;
+        break;
+      }
+    }
+  }
+};
+
 export default class Player {
   constructor({
-    health,
+    maxHealth,
     speed,
     damage,
     fireRate,
@@ -14,7 +30,8 @@ export default class Player {
     x,
     y
   }) {
-    this.health = health;
+    this.maxHealth = maxHealth;
+    this.health = maxHealth;
     this.speed = speed;
     this.damage = damage;
     this.fireRate = fireRate;
@@ -132,26 +149,17 @@ export default class Player {
       (playerBody, enemyBody) => {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 500;
+          this.health -= enemyBody.sprite.damageAmount;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
           // console.log(health);
           health.setText(`HP: ${playerBody.sprite.health}`);
 
-          for (let i = this.hearts.length - 1; i >= 0; i--) {
-            let heart = this.hearts.getAt(i);
-
-            if (heart.frame === 0) {
-              heart.frame = 1;
-              break;
-            } else if (heart.frame === 1) {
-              heart.frame = 2;
-              break;
-            }
-          }
+          damageHearts(this, enemyBody.sprite.damageAmount);
 
           this.sprite.animations.play('injured');
 
           socket.emit('playerHit', {
-            health: playerBody.sprite.health,
+            health: this.health,
             gameId,
             socketId: this.socketId,
             animation: 'injured'
@@ -177,9 +185,12 @@ export default class Player {
   addHearts(game) {
     this.hearts = game.add.group();
 
-    for (let i = 0; i < this.health / 2; i++) {
+    for (let i = 0; i < this.maxHealth / 2; i++) {
       game.add.sprite(120 + 40 * i, 45, 'hearts', 0, this.hearts);
     }
+
+    // Set hearts to match current health
+    damageHearts(this, this.maxHealth - this.health);
 
     this.hearts.setAll('scale.x', 0.35);
     this.hearts.setAll('scale.y', 0.35);

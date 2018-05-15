@@ -97,7 +97,7 @@ const runIntervals = (io, gameId) => {
 const makeNewPlayer = (socket, gameId) => {
   players[gameId] = players[gameId] || {};
   players[gameId][socket.id] = {
-    health: 10,
+    maxHealth: 10,
     speed: 120,
     damage: 1,
     fireRate: 400,
@@ -265,7 +265,12 @@ module.exports = io => {
         playerObj.fireRate = fireRate;
         playerObj.speed = speed;
         playerObj.health = health;
-
+console.log(bulletSpeed,
+  damage,
+  fireRate,
+  speed,
+  health,
+  socketId)
         socket.to(gameId).broadcast.emit('player2Pickup', {
           bulletSpeed,
           damage,

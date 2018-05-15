@@ -1,3 +1,5 @@
+/* global Phaser */
+
 class Weasel {
   constructor(game, name, x, y, health) {
     this.game = game;
