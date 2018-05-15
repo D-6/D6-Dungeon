@@ -62,7 +62,6 @@ export const enemyRenderer = (
             monster.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
             const generate = Math.floor(Math.random() * 4);
-<<<<<<< HEAD
             if (monster.sprite.health === 0) {
               if (generate === 0) {
                 const healthPotion = new Potion(
@@ -76,17 +75,6 @@ export const enemyRenderer = (
                   [game.physics.p2.collisionGroups[3]]
                 );
               }
-=======
-            if (generate === 0) {
-              const healthPotion = new Potion(
-                'health',
-                monster.sprite.body.x,
-                monster.sprite.body.y
-              );
-              healthPotion.createPotionSprite(game, itemsCollisionGroup, [
-                playersCollisionGroup
-              ]);
->>>>>>> e2ce3f032b81b8ba1a008751764f93a79f6338fe
             }
             socket.emit('enemyHit', {
               health: monster.sprite.health,
