@@ -12,6 +12,8 @@ export default () => ({
     D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
     D6Dungeon.game.physics.p2.setImpactEvents(true);
 
+    D6Dungeon.game.load.audio('boss-battle', ['assets/audio/boss-battle.mp3']);
+
     // Load all sprites / enemies for the level
 
     D6Dungeon.game.load.image('level1Image', 'assets/tilemaps/level_1.png');

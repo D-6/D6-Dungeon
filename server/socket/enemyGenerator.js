@@ -29,7 +29,7 @@ const baseEnemies = [
     name: 'shadowBoy',
     health: 30,
     quantity: 1,
-    damage: 2,
+    damage: 1,
     interval: 0,
     type: 'boss',
     ignorePathing: false

@@ -165,6 +165,9 @@ class ShadowBoyBoss {
   }
 
   createShadowBoyBoss() {
+    const music = D6Dungeon.game.add.audio('boss-battle');
+    music.play();
+
     this.sprite = this.game.add.sprite(
       this.x,
       this.y,
