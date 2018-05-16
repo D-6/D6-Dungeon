@@ -1,8 +1,10 @@
-// import D6DungeonGame from './game';
 import socket from './socket';
 
+/* global Phaser */
+
+
 class Weasel {
-  constructor(game, name, x, y, health) {
+  constructor(game, name, x, y, health, damage) {
     this.game = game;
     this.name = name;
     this.x = x;
@@ -10,7 +12,7 @@ class Weasel {
     this.health = health;
     this.minSpeed = 60;
     this.speedVariation = 60;
-    this.damage = 1;
+    this.damage = damage;
     this.scale = 4;
     this.randomBehavior = 0;
 
@@ -36,7 +38,7 @@ class Weasel {
 }
 
 class Golem {
-  constructor(game, name, x, y, health) {
+  constructor(game, name, x, y, health, damage) {
     this.game = game;
     this.name = name;
     this.x = x;
@@ -44,7 +46,7 @@ class Golem {
     this.health = health;
     this.minSpeed = 60;
     this.speedVariation = 60;
-    this.damage = 1;
+    this.damage = damage;
 
     this.createGolemSprite();
   }
@@ -100,7 +102,6 @@ class RedHornedBee {
     this.sprite.scale.setTo(this.scale, this.scale);
     this.sprite.setHealth(this.health);
     this.sprite.damageAmount = this.damage;
-    console.log(this.damage);
 
     this.game.physics.p2.enable(this.sprite, false);
     this.sprite.body.fixedRotation = true;

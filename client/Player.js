@@ -2,9 +2,25 @@ import socket from './socket';
 
 /* global Phaser */
 
+const damageHearts = (obj, damageAmount) => {
+  for (let i = 0; i < damageAmount; i++) {
+    for (let j = obj.hearts.length - 1; j >= 0; j--) {
+      let heart = obj.hearts.getAt(j);
+
+      if (heart.frame === 0) {
+        heart.frame = 1;
+        break;
+      } else if (heart.frame === 1) {
+        heart.frame = 2;
+        break;
+      }
+    }
+  }
+};
+
 export default class Player {
   constructor({
-    health,
+    maxHealth,
     speed,
     damage,
     fireRate,
@@ -14,7 +30,8 @@ export default class Player {
     x,
     y
   }) {
-    this.health = health;
+    this.maxHealth = maxHealth;
+    this.health = maxHealth;
     this.speed = speed;
     this.damage = damage;
     this.fireRate = fireRate;
@@ -44,6 +61,13 @@ export default class Player {
       player,
       'idle/unarmed/idleu_000.png'
     );
+
+    // *** Player - Health Text ***
+    let style = { font: '15px Arial', fill: '#ffffff' };
+    let health = game.add.text(0, -40, `HP: ${this.health}`, style);
+    game.physics.p2.enable(health);
+    health.body.static = true;
+    this.sprite.addChild(health);
 
     this.sprite.animations.add(
       'idle',
@@ -123,28 +147,20 @@ export default class Player {
       (playerBody, enemyBody) => {
         if (player === 'player1' && game.time.now > this.nextHit) {
           this.nextHit = game.time.now + 500;
+          this.health -= enemyBody.sprite.damageAmount;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
           if (playerBody.sprite.health === 0) {
             const xScale = this.sprite.scale.x;
             this.makeDeadPlayer(game, player, xScale);
           }
+          health.setText(`HP: ${playerBody.sprite.health}`);
 
-          for (let i = this.hearts.length - 1; i >= 0; i--) {
-            let heart = this.hearts.getAt(i);
-
-            if (heart.frame === 0) {
-              heart.frame = 1;
-              break;
-            } else if (heart.frame === 1) {
-              heart.frame = 2;
-              break;
-            }
-          }
+          damageHearts(this, enemyBody.sprite.damageAmount);
 
           this.sprite.animations.play('injured');
 
           socket.emit('playerHit', {
-            health: playerBody.sprite.health,
+            health: this.health,
             gameId,
             socketId: this.socketId,
             animation: 'injured'
@@ -170,9 +186,12 @@ export default class Player {
   addHearts(game) {
     this.hearts = game.add.group();
 
-    for (let i = 0; i < this.health / 2; i++) {
+    for (let i = 0; i < this.maxHealth / 2; i++) {
       game.add.sprite(120 + 40 * i, 45, 'hearts', 0, this.hearts);
     }
+
+    // Set hearts to match current health
+    damageHearts(this, this.maxHealth - this.health);
 
     this.hearts.setAll('scale.x', 0.35);
     this.hearts.setAll('scale.y', 0.35);
@@ -212,6 +231,7 @@ export default class Player {
       // Flips player to face left
       if (this.sprite.scale.x > 0 && !this.keybinds.arrows.right.isDown) {
         this.sprite.scale.x *= -1;
+        this.sprite.children[0].scale.x *= -1;
       }
     } else if (this.keybinds.right.isDown) {
       this.sprite.body.moveRight(this.speed);
@@ -224,6 +244,7 @@ export default class Player {
       // Flips player to face right
       if (this.sprite.scale.x < 0 && !this.keybinds.arrows.left.isDown) {
         this.sprite.scale.x *= -1;
+        this.sprite.children[0].scale.x *= -1;
       }
     }
 
@@ -279,6 +300,13 @@ export default class Player {
       this.keybinds.arrows.right.isDown
     ) {
       this.fire(game);
+      this.wasFiring = true;
+    } else if (this.wasFiring) {
+      socket.emit('playerFire', {
+        fireDirection: null,
+        gameId: game.state.gameId
+      });
+      this.wasFiring = false;
     }
   }
 
@@ -318,6 +346,7 @@ export default class Player {
         // Flips player to face left
         if (this.sprite.scale.x > 0) {
           this.sprite.scale.x *= -1;
+          this.sprite.children[0].scale.x *= -1;
         }
 
         bullet.reset(this.sprite.x - 40, this.sprite.y + 5);
@@ -333,6 +362,7 @@ export default class Player {
         // Flips player to face right
         if (this.sprite.scale.x < 0) {
           this.sprite.scale.x *= -1;
+          this.sprite.children[0].scale.x *= -1;
         }
 
         bullet.reset(this.sprite.x + 30, this.sprite.y + 5);
