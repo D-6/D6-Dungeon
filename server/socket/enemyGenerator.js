@@ -78,7 +78,10 @@ const createEnemies = (newMap, level) => {
         normalEnemies[Math.floor(Math.random() * normalEnemies.length)];
       enemies[`level${level}_${x}-${y}`] = generateEnemies(randomEnemy);
     } else if (room.type === 'boss') {
-      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[0]);
+      const bossEnemies = baseEnemies.filter(enemy => enemy.boss === 'normal');
+      const bossEnemy =
+        normalEnemies[Math.floor(Math.random() * bossEnemies.length)];
+      enemies[`level${level}_${x}-${y}`] = generateEnemies(bossEnemy);
     }
   });
   return enemies;
