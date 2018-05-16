@@ -300,7 +300,7 @@ class ShadowBoyBoss {
           }, interval);
         }
       } else {
-        music.fadeOut(5000);
+        music.fadeOut(2000);
         clearInterval(fireballTimer);
       }
     }, interval);
