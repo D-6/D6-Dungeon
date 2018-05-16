@@ -166,7 +166,7 @@ class ShadowBoyBoss {
 
   createShadowBoyBoss() {
     const music = D6Dungeon.game.add.audio('boss-battle');
-    music.loopFull(0.5);
+    music.loopFull(0.2);
 
     const resumeAudio = () => {
       if (D6Dungeon.game.sound.context.state === 'suspended') {
