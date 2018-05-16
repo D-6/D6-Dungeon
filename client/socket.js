@@ -127,7 +127,7 @@ const setPlayer2Animation = animation => {
   if (player2.sprite) {
     if (animation !== 'die') {
       player2.sprite.animations.play(animation);
-    } else if (!player2.dead) {
+    } else {
       const xScale = D6Dungeon.game.state.player2.sprite.scale.x;
       player2.makeDeadPlayer(D6Dungeon.game, 'player2', xScale);
     }
