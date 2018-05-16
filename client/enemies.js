@@ -289,7 +289,7 @@ class ShadowBoyBoss {
             this.sprite.body.y = positions[index].y;
             this.sprite.scale.x = positions[index].scale;
             this.sprite.animations.play('attack');
-            const shot = this.makeShot(positions[index]);
+            this.makeShot(positions[index]);
             index++;
           }, interval / 6 - 30);
 
