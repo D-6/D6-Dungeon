@@ -42,7 +42,6 @@ export default class Player {
     this.y = y;
     this.nextFire = 0;
     this.nextHit = 0;
-    // this.dead = false;
   }
 
   addPlayerToRoom(
@@ -152,7 +151,7 @@ export default class Player {
           this.nextHit = game.time.now + 500;
           this.health -= enemyBody.sprite.damageAmount;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
-          if (playerBody.sprite.health === 0 && !this.dead) {
+          if (playerBody.sprite.health === 0) {
             const xScale = this.sprite.scale.x;
             socket.emit('player2Animation', { gameId, animation: 'die' });
             this.makeDeadPlayer(game, player, xScale);
