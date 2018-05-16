@@ -42,7 +42,7 @@ export default class Player {
     this.y = y;
     this.nextFire = 0;
     this.nextHit = 0;
-    this.dead = false;
+    // this.dead = false;
   }
 
   addPlayerToRoom(
@@ -152,6 +152,7 @@ export default class Player {
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
           if (playerBody.sprite.health === 0 && !this.dead) {
             const xScale = this.sprite.scale.x;
+            socket.emit('player2Animation', { gameId, animation: 'die' });
             this.makeDeadPlayer(game, player, xScale);
           }
           health.setText(`HP: ${playerBody.sprite.health}`);
@@ -377,8 +378,8 @@ export default class Player {
   }
 
   makeDeadPlayer(game, player, xScale) {
-    this.dead = true;
-    console.log(player, 'dead');
+    // this.dead = true;
+    // console.log(player, 'dead');
     const { gameId } = game.state;
 
     const deadPlayer = game.add.sprite(
@@ -407,6 +408,5 @@ export default class Player {
     );
 
     deadPlayer.animations.play('die');
-    socket.emit('player2Animation', { gameId, animation: 'die' });
   }
 }
