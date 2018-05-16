@@ -166,24 +166,30 @@ class ShadowBoyBoss {
   }
 
   createShadowBoyBoss() {
-    const music = D6Dungeon.game.add.audio('boss-battle');
+    const music = this.game.add.audio('boss-battle');
     music.loopFull(0.1);
 
     const resumeAudio = () => {
-      if (D6Dungeon.game.sound.context.state === 'suspended') {
-        D6Dungeon.game.sound.context.resume();
+      if (this.game.sound.context.state === 'suspended') {
+        this.game.sound.context.resume();
         music.play();
       }
     };
 
     // Resumes the Web Audio API audio context so sounds can be played
-    if (D6Dungeon.game.sound.usingWebAudio) {
-      const { player1 } = D6Dungeon.game.state;
+    if (this.game.sound.usingWebAudio) {
+      const { player1 } = this.game.state;
       player1.keybinds.up.onDown.addOnce(resumeAudio);
       player1.keybinds.down.onDown.addOnce(resumeAudio);
       player1.keybinds.left.onDown.addOnce(resumeAudio);
       player1.keybinds.right.onDown.addOnce(resumeAudio);
     }
+
+    const style = { font: '15px Arial', fill: '#ffffff' };
+    const healthText = this.game.add.text(0, -40, `HP: ${this.health}`, style);
+    this.game.physics.p2.enable(healthText);
+    healthText.body.static = true;
+    this.sprite.addChild(healthText);
 
     this.sprite = this.game.add.sprite(
       this.x,
@@ -223,7 +229,7 @@ class ShadowBoyBoss {
       'shadow-boy-boss',
       'Explode/a1.png'
     );
-    D6Dungeon.game.physics.p2.enable(explosion);
+    this.game.physics.p2.enable(explosion);
     explosion.body.static = true;
     explosion.visible = false;
     this.sprite.addChild(explosion);
@@ -261,7 +267,7 @@ class ShadowBoyBoss {
     const fireballTimer = setInterval(() => {
       if (this.sprite._exists) {
         this.ignorePathing = !this.ignorePathing;
-        const { gameId } = D6Dungeon.game.state;
+        const { gameId } = this.game.state;
 
         socket.emit('ignoreEnemyPathing', {
           gameId,
@@ -318,10 +324,10 @@ class ShadowBoyBoss {
 
     shot.damageAmount = 1;
 
-    D6Dungeon.game.physics.p2.enable(shot);
+    this.game.physics.p2.enable(shot);
     shot.body.fixedRotation = true;
 
-    const { collisionGroups } = D6Dungeon.game.physics.p2;
+    const { collisionGroups } = this.game.physics.p2;
     const enemiesCollisionGroup = collisionGroups.find(
       group => group.name === 'enemies'
     );

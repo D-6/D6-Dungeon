@@ -63,11 +63,11 @@ export default class Player {
     );
 
     // *** Player - Health Text ***
-    let style = { font: '15px Arial', fill: '#ffffff' };
-    let health = game.add.text(0, -40, `HP: ${this.health}`, style);
-    game.physics.p2.enable(health);
-    health.body.static = true;
-    this.sprite.addChild(health);
+    const style = { font: '15px Arial', fill: '#ffffff' };
+    const healthText = game.add.text(0, -40, `HP: ${this.health}`, style);
+    game.physics.p2.enable(healthText);
+    healthText.body.static = true;
+    this.sprite.addChild(healthText);
 
     this.sprite.animations.add(
       'idle',
