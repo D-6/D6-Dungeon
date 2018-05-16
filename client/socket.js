@@ -59,7 +59,13 @@ const newRoom = ({ nextRoom, x, y }) => {
 
 const player2Fire = ({ fireDirection }) => {
   const { player2 } = D6Dungeon.game.state;
-  player2.fire(D6Dungeon.game, fireDirection);
+
+  if (fireDirection) {
+    player2.fire(D6Dungeon.game, fireDirection);
+    player2.isFiring = true;
+  } else {
+    player2.isFiring = false;
+  }
 };
 
 const player2Hit = ({ health, animation }) => {
@@ -79,12 +85,10 @@ const player2Hit = ({ health, animation }) => {
 const player2Move = ({ x, y }) => {
   const { player2 } = D6Dungeon.game.state;
   if (player2.sprite) {
-    if (player2.sprite.body.x < x) {
-      console.log('right')
+    if (!player2.isFiring && player2.sprite.body.x < x) {
       player2.sprite.scale.x = player2Scale;
       player2.sprite.children[0].scale.x = 1;
-    } else if (player2.sprite.body.x > x) {
-      console.log('left')
+    } else if (!player2.isFiring && player2.sprite.body.x > x) {
       player2.sprite.scale.x = -player2Scale;
       player2.sprite.children[0].scale.x = -1;
     }

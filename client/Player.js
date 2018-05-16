@@ -299,6 +299,11 @@ export default class Player {
       this.keybinds.arrows.right.isDown
     ) {
       this.fire(game);
+      this.wasFiring = true;
+    }
+    else if (this.wasFiring) {
+      socket.emit('playerFire', { fireDirection: null, gameId: game.state.gameId });
+      this.wasFiring = false;
     }
   }
 
