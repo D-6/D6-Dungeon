@@ -28,25 +28,33 @@ const player2Scale = 1.2;
 
 const socketFunctions = socket => {
   socket.on('createPlayer', createPlayer);
-  socket.on('setPlayer2', setPlayer2);
-  socket.on('removePlayer2', removePlayer2);
-  socket.on('setRooms', setRooms);
-  socket.on('setEnemies', setEnemies);
-  socket.on('sendUrl', sendUrl);
-  socket.on('updateEnemy', updateEnemy);
   socket.on('newRoom', newRoom);
   socket.on('player2Fire', player2Fire);
   socket.on('player2Hit', player2Hit);
   socket.on('player2Move', player2Move);
   socket.on('player2Pickup', player2Pickup);
+  socket.on('removePlayer2', removePlayer2);
+  socket.on('sendUrl', sendUrl);
+  socket.on('setEnemies', setEnemies);
+  socket.on('setPlayer2', setPlayer2);
   socket.on('setPlayer2Animation', setPlayer2Animation);
+  socket.on('setRooms', setRooms);
+  socket.on('updateEnemy', updateEnemy);
 };
 
-const setPlayer2Animation = animation => {
-  const { player2 } = D6Dungeon.game.state;
-  if (player2.sprite) {
-    player2.sprite.animations.play(animation);
-  }
+const createPlayer = data => {
+  D6Dungeon.game.state.player1 = new Player(data);
+  D6Dungeon.game.state.gameId = data.gameId;
+};
+
+const newRoom = ({ nextRoom, x, y }) => {
+  D6Dungeon.game.state.start(nextRoom, true, false);
+  D6Dungeon.game.state.player1.x = x;
+  D6Dungeon.game.state.player1.y = y;
+  D6Dungeon.game.state.player2.x = x;
+  D6Dungeon.game.state.player2.y = y;
+  D6Dungeon.game.state.player2.sprite.body.x = x;
+  D6Dungeon.game.state.player2.sprite.body.y = y;
 };
 
 const player2Fire = ({ fireDirection }) => {
@@ -72,9 +80,11 @@ const player2Move = ({ x, y }) => {
   const { player2 } = D6Dungeon.game.state;
   if (player2.sprite) {
     if (player2.sprite.body.x < x) {
+      console.log('right')
       player2.sprite.scale.x = player2Scale;
       player2.sprite.children[0].scale.x = 1;
     } else if (player2.sprite.body.x > x) {
+      console.log('left')
       player2.sprite.scale.x = -player2Scale;
       player2.sprite.children[0].scale.x = -1;
     }
@@ -94,19 +104,16 @@ const player2Pickup = ({ bulletSpeed, damage, fireRate, speed, health }) => {
   player2.sprite.children[0].setText(`HP: ${health}`);
 };
 
-const createPlayer = data => {
-  D6Dungeon.game.state.player1 = new Player(data);
-  D6Dungeon.game.state.gameId = data.gameId;
+const removePlayer2 = () => {
+  D6Dungeon.game.state.player2.socketId = null;
 };
 
-const newRoom = ({ nextRoom, x, y }) => {
-  D6Dungeon.game.state.start(nextRoom, true, false);
-  D6Dungeon.game.state.player1.x = x;
-  D6Dungeon.game.state.player1.y = y;
-  D6Dungeon.game.state.player2.x = x;
-  D6Dungeon.game.state.player2.y = y;
-  D6Dungeon.game.state.player2.sprite.body.x = x;
-  D6Dungeon.game.state.player2.sprite.body.y = y;
+const sendUrl = message => {
+  console.log(message);
+};
+
+const setEnemies = enemies => {
+  D6Dungeon.game.state.enemies = enemies;
 };
 
 const setPlayer2 = data => {
@@ -116,16 +123,11 @@ const setPlayer2 = data => {
   );
 };
 
-const removePlayer2 = () => {
-  D6Dungeon.game.state.player2.socketId = null;
-};
-
-const updateEnemy = ({ currentRoom, enemy }) => {
-  D6Dungeon.game.state.enemies[currentRoom][enemy.name] = enemy;
-};
-
-const sendUrl = message => {
-  console.log(message);
+const setPlayer2Animation = animation => {
+  const { player2 } = D6Dungeon.game.state;
+  if (player2.sprite) {
+    player2.sprite.animations.play(animation);
+  }
 };
 
 const setRooms = rooms => {
@@ -146,14 +148,14 @@ const setRooms = rooms => {
   });
 };
 
-const setEnemies = enemies => {
-  D6Dungeon.game.state.enemies = enemies;
-};
-
 const spawnItem = name => {
   console.log(D6Dungeon.game.state);
   // console.log(D6Dungeon.game.state.enemies[name.currentRoom][name.name]);
   // console.log(name.currentRoom);
+};
+
+const updateEnemy = ({ currentRoom, enemy }) => {
+  D6Dungeon.game.state.enemies[currentRoom][enemy.name] = enemy;
 };
 
 socket.on('connect', () => {

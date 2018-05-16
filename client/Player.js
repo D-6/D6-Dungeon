@@ -62,7 +62,7 @@ export default class Player {
       'idle/unarmed/idleu_000.png'
     );
 
-    //health text
+    // *** Player - Health Text ***
     let style = { font: '15px Arial', fill: '#ffffff' };
     let health = game.add.text(0, -40, `HP: ${this.health}`, style);
     game.physics.p2.enable(health);
