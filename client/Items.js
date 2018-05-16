@@ -43,7 +43,6 @@ export class Potion {
             sprite.health += healAmount;
 
             console.log('HEALTH POTION! sprite', sprite.health);
-            sprite.children[0].setText(`HP: ${player1.health}`);
 
             for (let i = 0; i < healAmount; i++) {
               for (let j = 0; j < hearts.length; j++) {
