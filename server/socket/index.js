@@ -130,7 +130,7 @@ const placeClientInRoom = (io, socket) => {
   let gameId = null;
 
   if (urlPath.length === 0) {
-    const message = `Game URL:\n${host}/${socket.id}`;
+    const message = `${host}/${socket.id}`;
     gameId = socket.id;
     socket.emit('sendUrl', message);
   } else if (players[urlPath]) {
