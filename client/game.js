@@ -17,7 +17,7 @@ class D6DungeonGame extends Phaser.Game {
     this.state.add('preloadState', preloadState());
 
     this.state.player2 = new Player({
-      maxHealth: 10,
+      maxHealth: 6,
       speed: 200,
       damage: 1,
       fireRate: 400,

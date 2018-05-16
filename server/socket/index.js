@@ -35,52 +35,46 @@ easystar.enableDiagonals();
 const enemyPathing = (io, gameId) => {
   if (enemies[gameId]) {
     const currentGameEnemies = enemies[gameId][currentRoom[gameId]];
-    const isRandomPather = Object.keys(currentGameEnemies).some(enemy => {
-      return enemy.includes('redHornedBee');
-    });
 
-    if (!currentGameEnemies || isRandomPather) {
-      // console.log('enemy was already killed');
+    if (!currentGameEnemies) {
+      console.log('enemies all dead');
     } else {
       Object.keys(currentGameEnemies).forEach(enemyName => {
         const enemy = currentGameEnemies[enemyName];
-        const currentGamePlayers = players[gameId];
-        const closestPlayer = findClosestPlayer(currentGamePlayers, enemy);
-        // console.log(closestPlayer);
-        //most of this logic was taken from enemyPathing.js in client
-        // console.log(enemy);
-        let enemyX = Math.floor(enemy.x / 64);
-        let enemyY = Math.floor(enemy.y / 64);
-        //currently setting nextX and nextY to null
-        let newPos = {
-          nextX: null,
-          nextY: null
-        };
-        if (closestPlayer) {
-          let targetX = Math.floor(closestPlayer.x / 64);
-          let targetY = Math.floor(closestPlayer.y / 64);
-          easystar.findPath(enemyX, enemyY, targetX, targetY, bestPath => {
-            if (bestPath === null) {
-              console.log('Path not found');
-            }
+        if (!enemy.ignorePathing) {
+          const currentGamePlayers = players[gameId];
+          const closestPlayer = findClosestPlayer(currentGamePlayers, enemy);
 
-            if (bestPath && bestPath.length) {
-              newPos.nextX = bestPath[1].x;
-              newPos.nextY = bestPath[1].y;
-              // const distance = 1;
-              // enemy.x += newPos.nextX - enemy.x > 0 ? distance : -distance;
-              // enemy.y += newPos.nextY - enemy.y > 0 ? distance : -distance;
-              enemy.nextXTile = newPos.nextX;
-              enemy.nextYTile = newPos.nextY;
-              enemy.x = newPos.nextX * 64;
-              enemy.y = newPos.nextY * 64;
-              io.to(gameId).emit('updateEnemy', {
-                currentRoom: currentRoom[gameId],
-                enemy
-              });
-            }
-          });
-          easystar.calculate();
+          let enemyX = Math.round(enemy.x / 64);
+          let enemyY = Math.round(enemy.y / 64);
+          let newPos = {
+            nextX: null,
+            nextY: null
+          };
+
+          if (closestPlayer) {
+            let targetX = Math.round(closestPlayer.x / 64);
+            let targetY = Math.round(closestPlayer.y / 64);
+            easystar.findPath(enemyX, enemyY, targetX, targetY, bestPath => {
+              if (bestPath === null) {
+                console.log('Path not found');
+              }
+
+              if (bestPath && bestPath.length) {
+                newPos.nextX = bestPath[1].x;
+                newPos.nextY = bestPath[1].y;
+                enemy.nextXTile = newPos.nextX;
+                enemy.nextYTile = newPos.nextY;
+                enemy.x = newPos.nextX * 64;
+                enemy.y = newPos.nextY * 64;
+                io.to(gameId).emit('updateEnemy', {
+                  currentRoom: currentRoom[gameId],
+                  enemy
+                });
+              }
+            });
+            easystar.calculate();
+          }
         }
       });
     }
@@ -97,9 +91,9 @@ const runIntervals = (io, gameId) => {
 const makeNewPlayer = (socket, gameId) => {
   players[gameId] = players[gameId] || {};
   players[gameId][socket.id] = {
-    maxHealth: 10,
-    health: 10,
-    speed: 120,
+    maxHealth: 6,
+    health: 6,
+    speed: 140,
     damage: 1,
     fireRate: 400,
     bulletSpeed: 400,
@@ -285,17 +279,17 @@ module.exports = io => {
       if (players[gameId]) {
         players[gameId][socketId].nextRoom = nextRoom;
 
-        const allReady = Object.keys(players[gameId]).every(player => {
-          return players[gameId][player].nextRoom === nextRoom;
-        });
+        // const allReady = Object.keys(players[gameId]).every(player => {
+        //   return players[gameId][player].nextRoom === nextRoom;
+        // });
 
         const enemiesDead =
           Object.keys(enemies[gameId][currentRoom[gameId]]).length === 0;
 
         if (
-          allReady &&
+          // allReady &&
           enemiesDead &&
-          Object.keys(players[gameId]).length === 2
+          Object.keys(players[gameId]).length >= 1
         ) {
           const position = {};
           switch (direction) {
@@ -349,11 +343,23 @@ module.exports = io => {
       socket.to(gameId).broadcast.emit('setPlayer2Animation', animation);
     };
 
+    const ignoreEnemyPathing = ({ gameId, name, ignorePathing }) => {
+      if (enemies[gameId] && enemies[gameId][currentRoom[gameId]]) {
+        if (enemies[gameId][currentRoom[gameId]][name]) {
+          enemies[gameId][currentRoom[gameId]][
+            name
+          ].ignorePathing = ignorePathing;
+        }
+      }
+    };
+
     socket.on('intervalTest', gameId => {
       runIntervals(io, gameId);
     });
     socket.on('setRoom', setRoom);
     socket.on('enemyHit', enemyHit);
+    socket.emit('ignoreEnemyPathing');
+    socket.on('ignoreEnemyPathing', ignoreEnemyPathing);
     socket.on('playerFire', playerFire);
     socket.on('playerHit', playerHit);
     socket.on('playerMove', playerMove);

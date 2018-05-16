@@ -131,8 +131,6 @@ export default class Player {
     this.sprite.scale.setTo(1.2, 1.2);
     this.sprite.setHealth(this.health);
 
-    // *** Player - Physics ***
-    // 2nd arg is debug mode
     game.physics.p2.enable(this.sprite, false);
     this.sprite.body.fixedRotation = true;
     this.sprite.body.setRectangle(
@@ -151,7 +149,10 @@ export default class Player {
           this.nextHit = game.time.now + 500;
           this.health -= enemyBody.sprite.damageAmount;
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
-          // console.log(health);
+          if (playerBody.sprite.health === 0) {
+            const xScale = this.sprite.scale.x;
+            this.makeDeadPlayer(game, player, xScale);
+          }
           health.setText(`HP: ${playerBody.sprite.health}`);
 
           damageHearts(this, enemyBody.sprite.damageAmount);
@@ -300,9 +301,11 @@ export default class Player {
     ) {
       this.fire(game);
       this.wasFiring = true;
-    }
-    else if (this.wasFiring) {
-      socket.emit('playerFire', { fireDirection: null, gameId: game.state.gameId });
+    } else if (this.wasFiring) {
+      socket.emit('playerFire', {
+        fireDirection: null,
+        gameId: game.state.gameId
+      });
       this.wasFiring = false;
     }
   }
@@ -370,5 +373,34 @@ export default class Player {
         }
       }
     }
+  }
+
+  makeDeadPlayer(game, player, xScale) {
+    const deadPlayer = game.add.sprite(
+      this.sprite.body.x,
+      this.sprite.body.y,
+      player,
+      'die/unarmed/ko2u_000.png'
+    );
+
+    deadPlayer.anchor.setTo(0.5, 0.5);
+    deadPlayer.scale.setTo(1.2, 1.2);
+    deadPlayer.scale.x = xScale;
+
+    deadPlayer.animations.add(
+      'die',
+      Phaser.Animation.generateFrameNames(
+        'die/unarmed/ko2u_',
+        0,
+        49,
+        '.png',
+        3
+      ),
+      150,
+      false,
+      false
+    );
+
+    deadPlayer.animations.play('die');
   }
 }
