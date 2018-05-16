@@ -166,6 +166,7 @@ class ShadowBoyBoss {
 
   createShadowBoyBoss() {
     const music = D6Dungeon.game.add.audio('boss-battle');
+    music.loopFull(1);
     music.play();
 
     this.sprite = this.game.add.sprite(
@@ -284,6 +285,7 @@ class ShadowBoyBoss {
           }, interval);
         }
       } else {
+        music.fadeOut(4000);
         clearInterval(fireballTimer);
       }
     }, interval);
