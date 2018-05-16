@@ -34,7 +34,6 @@ const socketFunctions = socket => {
   socket.on('player2Move', player2Move);
   socket.on('player2Pickup', player2Pickup);
   socket.on('removePlayer2', removePlayer2);
-  socket.on('sendUrl', sendUrl);
   socket.on('setEnemies', setEnemies);
   socket.on('setPlayer2', setPlayer2);
   socket.on('setPlayer2Animation', setPlayer2Animation);
@@ -110,10 +109,6 @@ const player2Pickup = ({ bulletSpeed, damage, fireRate, speed, health }) => {
 
 const removePlayer2 = () => {
   D6Dungeon.game.state.player2.socketId = null;
-};
-
-const sendUrl = message => {
-  console.log(message);
 };
 
 const setEnemies = enemies => {
