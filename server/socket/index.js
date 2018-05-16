@@ -91,7 +91,7 @@ const runIntervals = (io, gameId) => {
 const makeNewPlayer = (socket, gameId) => {
   players[gameId] = players[gameId] || {};
   players[gameId][socket.id] = {
-    maxHealth: 10,
+    maxHealth: 6,
     health: 6,
     speed: 140,
     damage: 1,
