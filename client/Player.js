@@ -390,8 +390,6 @@ export default class Player {
   }
 
   makeDeadPlayer(game, player, xScale) {
-    const { gameId } = game.state;
-
     const deadPlayer = game.add.sprite(
       this.sprite.body.x,
       this.sprite.body.y,
