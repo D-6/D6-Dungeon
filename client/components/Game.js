@@ -29,7 +29,6 @@ class Game extends Component {
         {this.state.send}
         <Link to={this.state.url}>{this.state.url}</Link>
         </p>
-
       </div>
     );
   }
