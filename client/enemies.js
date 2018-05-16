@@ -185,18 +185,19 @@ class ShadowBoyBoss {
       player1.keybinds.right.onDown.addOnce(resumeAudio);
     }
 
-    const style = { font: '15px Arial', fill: '#ffffff' };
-    const healthText = this.game.add.text(0, -40, `HP: ${this.health}`, style);
-    this.game.physics.p2.enable(healthText);
-    healthText.body.static = true;
-    this.sprite.addChild(healthText);
-
     this.sprite = this.game.add.sprite(
       this.x,
       this.y,
       'shadow-boy-boss',
       'Idle/frame-1.png'
     );
+
+    // *** ShadowBoyBoss - Health Text ***
+    const style = { font: '15px Arial', fill: '#ffffff' };
+    const healthText = this.game.add.text(0, -65, `HP: ${this.health}`, style);
+    this.game.physics.p2.enable(healthText);
+    healthText.body.static = true;
+    this.sprite.addChild(healthText);
 
     this.sprite.animations.add(
       'idle',
@@ -295,6 +296,7 @@ class ShadowBoyBoss {
             this.sprite.body.x = positions[index].x;
             this.sprite.body.y = positions[index].y;
             this.sprite.scale.x = positions[index].scale;
+            this.sprite.children[0].scale.x = positions[index].scale;
             this.sprite.animations.play('attack');
             this.makeShot(positions[index]);
             index++;

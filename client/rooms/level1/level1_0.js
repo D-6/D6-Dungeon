@@ -159,9 +159,23 @@ export default {
           if (nextX > currentX) {
             enemy.sprite.body.velocity.x = enemy.speed;
             enemy.sprite.scale.x = enemy.scale;
+
+            if (
+              enemy.sprite.children[0] &&
+              enemy.sprite.children[0].scale.x < 0
+            ) {
+              enemy.sprite.children[0].scale.x = enemy.scale;
+            }
           } else if (nextX < currentX) {
             enemy.sprite.body.velocity.x = -enemy.speed;
             enemy.sprite.scale.x = -enemy.scale;
+
+            if (
+              enemy.sprite.children[0] &&
+              enemy.sprite.children[0].scale.x > 0
+            ) {
+              enemy.sprite.children[0].scale.x = -enemy.scale;
+            }
           }
 
           if (nextY > currentY) {
