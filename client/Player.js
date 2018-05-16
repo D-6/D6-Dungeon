@@ -378,7 +378,7 @@ export default class Player {
 
   makeDeadPlayer(game, player, xScale) {
     this.dead = true;
-    console.log('dying animation');
+    console.log(player, 'dead');
     const { gameId } = game.state;
 
     const deadPlayer = game.add.sprite(
