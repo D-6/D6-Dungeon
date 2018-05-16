@@ -273,6 +273,9 @@ module.exports = io => {
 
     const setRoom = ({ gameId, gameRoom }) => {
       currentRoom[gameId] = gameRoom;
+      let floorX = gameRoom[7];
+      let floorY = 6 - gameRoom[9];
+      socket.emit('updateMap', { x: floorX, y: floorY });
     };
 
     const nextRoomReady = ({ gameId, socketId, nextRoom, direction }) => {
@@ -377,8 +380,8 @@ module.exports = io => {
         gameId = socket.id;
         socket.to(gameId).broadcast.emit('removePlayer2');
       } else {
-        gameId = Object.keys(players).find(gameId => {
-          return Object.keys(players[gameId]).find(player => {
+        gameId = Object.keys(players).find(playId => {
+          return Object.keys(players[playId]).find(player => {
             return player === socket.id;
           });
         });
