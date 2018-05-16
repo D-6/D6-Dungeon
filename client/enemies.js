@@ -147,7 +147,7 @@ class ShadowBoyBoss {
     this.name = name;
     this.x = x;
     this.y = y;
-    this.health = 1;
+    this.health = health;
     this.damage = damage;
     this.minSpeed = 200;
     this.speedVariation = 0;
