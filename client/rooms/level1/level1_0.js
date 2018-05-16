@@ -141,6 +141,10 @@ export default {
       }
 
       if (enemy.sprite._exists) {
+        if (enemy.sprite.children[0]) {
+          enemy.sprite.children[0].setText(`HP: ${enemy.health}`);
+        }
+
         const { nextXTile, nextYTile } = D6Dungeon.game.state.enemies[gameRoom][
           enemy.name
         ];
