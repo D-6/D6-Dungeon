@@ -21,13 +21,16 @@ class Game extends Component {
       });
     });
   };
+  handleclick = (link) => {
+    link.preventDefault();
+  }
   render() {
     return (
       <div>
         <div id="game-container" />
         <p>
         {this.state.send}
-        <Link to={this.state.url}>{this.state.url}</Link>
+        <Link to={this.state.url} onClick={this.handleclick}>{this.state.url}</Link>
         </p>
       </div>
     );
