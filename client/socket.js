@@ -125,7 +125,12 @@ const setPlayer2 = data => {
 const setPlayer2Animation = animation => {
   const { player2 } = D6Dungeon.game.state;
   if (player2.sprite) {
-    player2.sprite.animations.play(animation);
+    if (animation !== 'die') {
+      player2.sprite.animations.play(animation);
+    } else {
+      const xScale = D6Dungeon.game.state.player2.sprite.scale.x;
+      player2.makeDeadPlayer(D6Dungeon.game, 'player2', xScale);
+    }
   }
 };
 
@@ -145,12 +150,6 @@ const setRooms = rooms => {
       Phaser.Tilemap.TILED_JSON
     );
   });
-};
-
-const spawnItem = name => {
-  console.log(D6Dungeon.game.state);
-  // console.log(D6Dungeon.game.state.enemies[name.currentRoom][name.name]);
-  // console.log(name.currentRoom);
 };
 
 const updateEnemy = ({ currentRoom, enemy }) => {

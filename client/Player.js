@@ -153,6 +153,7 @@ export default class Player {
           playerBody.sprite.damage(enemyBody.sprite.damageAmount);
           if (playerBody.sprite.health === 0) {
             const xScale = this.sprite.scale.x;
+            socket.emit('player2Animation', { gameId, animation: 'die' });
             this.makeDeadPlayer(game, player, xScale);
           }
 
