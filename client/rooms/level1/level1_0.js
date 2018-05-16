@@ -123,17 +123,13 @@ export default {
     // *** Player 1 - Hearts ***
     player1.addHearts(game);
 
-    enemies = enemyRenderer(
-      game,
+    enemies = enemyRenderer(game, enemiesCollisionGroup, [
+      bulletsCollisionGroup,
       enemiesCollisionGroup,
-      [
-        bulletsCollisionGroup,
-        enemiesCollisionGroup,
-        playersCollisionGroup,
-        wallsCollisionGroup,
-        doorsCollisionGroup
-      ]
-    );
+      playersCollisionGroup,
+      wallsCollisionGroup,
+      doorsCollisionGroup
+    ]);
 
     socket.emit('intervalTest', gameId);
   },
@@ -199,11 +195,7 @@ export default {
       doors.destroy();
     }
 
-    if (
-      player2.health !== 0 &&
-      player2.socketId &&
-      !player2.sprite.visible
-    ) {
+    if (player2.health > 0 && player2.socketId && !player2.sprite.visible) {
       player2.sprite.visible = true;
       player2.sprite.body.data.shapes[0].sensor = false;
     } else if (!player2.socketId && player2.sprite.visible) {
