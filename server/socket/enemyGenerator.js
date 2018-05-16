@@ -13,7 +13,8 @@ const baseEnemies = [
     quantity: 4,
     damage: 1,
     interval: 0,
-    type: 'normal'
+    type: 'normal',
+    ignorePathing: false
   },
   {
     name: 'redHornedBee',
@@ -21,7 +22,8 @@ const baseEnemies = [
     quantity: 16,
     damage: 1,
     interval: 0,
-    type: 'normal'
+    type: 'normal',
+    ignorePathing: true
   },
   {
     name: 'shadowBoy',
@@ -29,7 +31,8 @@ const baseEnemies = [
     quantity: 1,
     damage: 2,
     interval: 0,
-    type: 'boss'
+    type: 'boss',
+    ignorePathing: false
   }
 ];
 
@@ -52,6 +55,7 @@ const generateEnemies = baseEnemy => {
     enemyObject[enemyName].y = getRandomPosition(minY, maxY);
     enemyObject[enemyName].health = baseEnemy.health;
     enemyObject[enemyName].damage = baseEnemy.damage;
+    enemyObject[enemyName].ignorePathing = baseEnemy.ignorePathing;
     enemyObject[enemyName].name = enemyName;
     enemyObject[enemyName].interval = baseEnemy.interval;
   }

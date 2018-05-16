@@ -148,37 +148,42 @@ export default {
           enemy.name
         ];
 
-        const currentXTile = enemy.sprite.position.x / 64;
-        const currentYTile = enemy.sprite.position.y / 64;
-        const distanceFactor =
-          (Math.abs(currentXTile - nextXTile) +
-            Math.abs(currentYTile - nextYTile)) *
-          64;
+        // console.log(nextXTile);
 
-        if (distanceFactor > enemy.randomBehavior) {
-          if (nextXTile > currentXTile) {
+        const nextX = nextXTile * 64;
+        const nextY = nextYTile * 64;
+        const currentX = enemy.sprite.position.x;
+        const currentY = enemy.sprite.position.y;
+
+        const distanceFactor = Math.sqrt(
+          Math.pow(Math.abs(currentX - nextX), 2) +
+            Math.pow(Math.abs(currentY - nextY), 2)
+        );
+
+        if (distanceFactor > enemy.randomBehavior && !enemy.ignorePathing) {
+          if (nextX > currentX) {
             enemy.sprite.body.velocity.x = enemy.speed;
             enemy.sprite.scale.x = enemy.scale;
-          } else if (nextXTile < currentXTile) {
+          } else if (nextX < currentX) {
             enemy.sprite.body.velocity.x = -enemy.speed;
             enemy.sprite.scale.x = -enemy.scale;
           }
 
-          if (nextYTile > currentYTile) {
+          if (nextY > currentY) {
             enemy.sprite.body.velocity.y = enemy.speed;
-          } else if (nextYTile < currentYTile) {
+          } else if (nextY < currentY) {
             enemy.sprite.body.velocity.y = -enemy.speed;
           }
+        }
 
-          if (enemy.sprite.animations._anims.run) {
-            if (
-              nextXTile !== Math.round(currentXTile) ||
-              nextYTile !== Math.round(currentYTile)
-            ) {
-              enemy.sprite.animations.play('run');
-            } else {
-              enemy.sprite.animations.play('idle');
-            }
+        if (
+          enemy.sprite.animations._anims.run &&
+          !enemy.sprite.animations._anims.attack.isPlaying
+        ) {
+          if (!enemy.sprite.body.velocity.x && !enemy.sprite.body.velocity.y) {
+            enemy.sprite.animations.play('idle');
+          } else {
+            enemy.sprite.animations.play('run');
           }
         }
       }

@@ -35,55 +35,47 @@ easystar.enableDiagonals();
 const enemyPathing = (io, gameId) => {
   if (enemies[gameId]) {
     const currentGameEnemies = enemies[gameId][currentRoom[gameId]];
-    const isRandomPather = Object.keys(currentGameEnemies).some(enemy => {
-      return enemy.includes('redHornedBee');
-    });
 
-    if (!currentGameEnemies || isRandomPather) {
-      console.log('enemy not finding a path');
+    if (!currentGameEnemies) {
+      console.log('enemies all dead');
     } else {
       Object.keys(currentGameEnemies).forEach(enemyName => {
         const enemy = currentGameEnemies[enemyName];
-        const currentGamePlayers = players[gameId];
-        const closestPlayer = findClosestPlayer(currentGamePlayers, enemy);
+        if (!enemy.ignorePathing) {
+          const currentGamePlayers = players[gameId];
+          const closestPlayer = findClosestPlayer(currentGamePlayers, enemy);
 
-        let enemyX = Math.round(enemy.x / 64);
-        let enemyY = Math.round(enemy.y / 64);
-        let newPos = {
-          nextX: null,
-          nextY: null
-        };
+          let enemyX = Math.round(enemy.x / 64);
+          let enemyY = Math.round(enemy.y / 64);
+          let newPos = {
+            nextX: null,
+            nextY: null
+          };
 
-        if (closestPlayer) {
-          let targetX = Math.round(closestPlayer.x / 64);
-          let targetY = Math.round(closestPlayer.y / 64);
-          easystar.findPath(enemyX, enemyY, targetX, targetY, bestPath => {
-            if (bestPath === null) {
-              console.log('Path not found');
-            }
+          if (closestPlayer) {
+            let targetX = Math.round(closestPlayer.x / 64);
+            let targetY = Math.round(closestPlayer.y / 64);
+            easystar.findPath(enemyX, enemyY, targetX, targetY, bestPath => {
+              if (bestPath === null) {
+                console.log('Path not found');
+              }
 
-            if (bestPath && bestPath.length) {
-              newPos.nextX = bestPath[1].x;
-              newPos.nextY = bestPath[1].y;
-              enemy.nextXTile = newPos.nextX;
-              enemy.nextYTile = newPos.nextY;
-              enemy.x = newPos.nextX * 64;
-              enemy.y = newPos.nextY * 64;
-              io.to(gameId).emit('updateEnemy', {
-                currentRoom: currentRoom[gameId],
-                enemy
-              });
-            }
-          });
-          easystar.calculate();
+              if (bestPath && bestPath.length) {
+                newPos.nextX = bestPath[1].x;
+                newPos.nextY = bestPath[1].y;
+                enemy.nextXTile = newPos.nextX;
+                enemy.nextYTile = newPos.nextY;
+                enemy.x = newPos.nextX * 64;
+                enemy.y = newPos.nextY * 64;
+                io.to(gameId).emit('updateEnemy', {
+                  currentRoom: currentRoom[gameId],
+                  enemy
+                });
+              }
+            });
+            easystar.calculate();
+          }
         }
-        // else {
-        //   console.log(enemy);
-        //   io.to(gameId).emit('updateEnemy', {
-        //     currentRoom: currentRoom[gameId],
-        //     enemy
-        //   });
-        // }
       });
     }
   }
@@ -350,11 +342,21 @@ module.exports = io => {
       socket.to(gameId).broadcast.emit('setPlayer2Animation', animation);
     };
 
+    const ignoreEnemyPathing = ({ gameId, name, ignorePathing }) => {
+      if (enemies[gameId] && enemies[gameId][currentRoom[gameId]][name]) {
+        enemies[gameId][currentRoom[gameId]][
+          name
+        ].ignorePathing = ignorePathing;
+      }
+    };
+
     socket.on('intervalTest', gameId => {
       runIntervals(io, gameId);
     });
     socket.on('setRoom', setRoom);
     socket.on('enemyHit', enemyHit);
+    socket.emit('ignoreEnemyPathing');
+    socket.on('ignoreEnemyPathing', ignoreEnemyPathing);
     socket.on('playerFire', playerFire);
     socket.on('playerHit', playerHit);
     socket.on('playerMove', playerMove);

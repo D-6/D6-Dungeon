@@ -47,7 +47,8 @@ export const enemyRenderer = (
           enemy.x,
           enemy.y,
           enemy.health,
-          enemy.damage
+          enemy.damage,
+          enemy.ignorePathing
         );
       } else if (enemy.type === 'shadowBoy') {
         monster = new ShadowBoyBoss(
@@ -56,7 +57,8 @@ export const enemyRenderer = (
           enemy.x,
           enemy.y,
           enemy.health,
-          enemy.damage
+          enemy.damage,
+          enemy.ignorePathing
         );
       }
 
@@ -91,6 +93,15 @@ export const enemyRenderer = (
           }
         }
       });
+
+      if (monster.sprite.children.length) {
+        monster.sprite.children.forEach(child => {
+          child.body.setCollisionGroup(enemiesCollisionGroup);
+          child.body.collides(collidesWithEnemiesArr);
+          console.log(child);
+        });
+      }
+
       enemiesArr.push(monster);
     });
   }

@@ -1,3 +1,6 @@
+// import D6DungeonGame from './game';
+import socket from './socket';
+
 class Weasel {
   constructor(game, name, x, y, health) {
     this.game = game;
@@ -65,7 +68,7 @@ class Golem {
 }
 
 class RedHornedBee {
-  constructor(game, name, x, y, health, damage) {
+  constructor(game, name, x, y, health, damage, ignorePathing) {
     this.game = game;
     this.name = name;
     this.x = x;
@@ -139,7 +142,7 @@ class RedHornedBee {
 }
 
 class ShadowBoyBoss {
-  constructor(game, name, x, y, health, damage) {
+  constructor(game, name, x, y, health, damage, ignorePathing) {
     this.game = game;
     this.name = name;
     this.x = x;
@@ -149,19 +152,25 @@ class ShadowBoyBoss {
     this.minSpeed = 200;
     this.speedVariation = 0;
     this.animationSpeed = 14;
-    this.interval = 500;
-    this.intervalVariation = 1000;
+    this.interval = 5000;
+    this.intervalVariation = 0;
     this.scale = 1;
+    this.ignorePathing = ignorePathing;
 
     // Makes the enemy run around more instead of going straight for the player
     // More than 140 makes the enemy not run for the player sometimes
-    this.randomBehavior = 135;
+    this.randomBehavior = 100;
 
     this.createShadowBoyBoss();
   }
 
   createShadowBoyBoss() {
-    this.sprite = this.game.add.sprite(this.x, this.y, 'shadow-boy-boss');
+    this.sprite = this.game.add.sprite(
+      this.x,
+      this.y,
+      'shadow-boy-boss',
+      'Idle/frame-1.png'
+    );
 
     this.sprite.animations.add(
       'idle',
@@ -183,16 +192,39 @@ class ShadowBoyBoss {
       'attack',
       Phaser.Animation.generateFrameNames('Shooting/frame-', 1, 3, '.png', 1),
       this.animationSpeed,
-      true,
+      false,
       false
     );
+
+    // Explosion child
+    const explosion = this.game.add.sprite(
+      0,
+      0,
+      'shadow-boy-boss',
+      'Explode/a1.png'
+    );
+    D6Dungeon.game.physics.p2.enable(explosion);
+    explosion.body.static = true;
+    explosion.visible = false;
+    this.sprite.addChild(explosion);
+
+    explosion.animations.add(
+      'explode',
+      Phaser.Animation.generateFrameNames('Explode/a', 1, 5, '.png', 1),
+      45,
+      false,
+      false
+    );
+
+    explosion.animations._anims.explode.onComplete.add(() => {
+      explosion.visible = false;
+    });
 
     this.sprite.animations.play('idle');
 
     this.sprite.scale.setTo(this.scale, this.scale);
     this.sprite.setHealth(this.health);
     this.sprite.damageAmount = this.damage;
-    // console.log(this.damage);
 
     this.game.physics.p2.enable(this.sprite, false);
     this.sprite.body.fixedRotation = true;
@@ -203,33 +235,71 @@ class ShadowBoyBoss {
       15
     );
 
-    // const interval =
-    //   this.interval + Math.floor(Math.random() * this.intervalVariation);
+    const interval =
+      this.interval + Math.floor(Math.random() * this.intervalVariation);
 
-    // const beeFlight = setInterval(() => {
-    //   const randomXVelocity = Math.floor(Math.random() * this.minSpeed);
-    //   const randomXSign = Math.floor(Math.random() * 2);
-    //   const randomYVelocity = Math.sqrt(
-    //     this.minSpeed * this.minSpeed - randomXVelocity * randomXVelocity
-    //   );
-    //   const randomYSign = Math.floor(Math.random() * 2);
+    const fireballTimer = setInterval(() => {
+      if (this.sprite.body) {
+        this.ignorePathing = !this.ignorePathing;
+        const { gameId } = D6Dungeon.game.state;
 
-    //   if (this.sprite.body) {
-    //     this.sprite.body.velocity.x = randomXSign
-    //       ? randomXVelocity
-    //       : -randomXVelocity;
-    //     this.sprite.body.velocity.y = randomYSign
-    //       ? randomYVelocity
-    //       : -randomYVelocity;
-    //     if (this.sprite.body.velocity.x > 0) {
-    //       this.sprite.scale.x = -this.scale;
-    //     } else {
-    //       this.sprite.scale.x = this.scale;
-    //     }
-    //   } else {
-    //     clearInterval(beeFlight);
-    //   }
-    // }, interval);
+        socket.emit('ignoreEnemyPathing', {
+          gameId,
+          name: this.name,
+          ignorePathing: this.ignorePathing
+        });
+
+        if (this.ignorePathing) {
+          const positions = [
+            { x: 170, y: 160, scale: 1 },
+            { x: 1046, y: 256, scale: -1 },
+            { x: 170, y: 362, scale: 1 },
+            { x: 1046, y: 468, scale: -1 },
+            { x: 170, y: 574, scale: 1 },
+            { x: 1046, y: 640, scale: -1 }
+          ];
+
+          let index = 0;
+
+          const positionTimer = setInterval(() => {
+            explosion.visible = true;
+            explosion.animations.play('explode');
+            this.sprite.body.velocity.x = 0;
+            this.sprite.body.velocity.y = 0;
+            this.sprite.body.x = positions[index].x;
+            this.sprite.body.y = positions[index].y;
+            this.sprite.scale.x = positions[index].scale;
+            this.sprite.animations.play('attack');
+            const shot = this.makeShot(positions[index]);
+            index++;
+          }, interval / 6 - 30);
+
+          const timer = setTimeout(() => {
+            clearInterval(positionTimer);
+            clearTimeout(timer);
+            index = 0;
+          }, interval);
+        }
+      } else {
+        clearInterval(fireballTimer);
+      }
+    }, interval);
+  }
+
+  makeShot(position) {
+    const shotVelocity = 1000;
+    const shot = this.game.add.sprite(
+      position.x,
+      position.y,
+      'shadow-boy-boss',
+      'Shooting effect/Big-Bullet-A.png'
+    );
+
+    D6Dungeon.game.physics.p2.enable(shot);
+    shot.body.fixedRotation = true;
+    shot.scale.x = position.scale;
+    shot.body.velocity.x = position.scale * shotVelocity;
+    // this.sprite.addChild(shot);
   }
 }
 
