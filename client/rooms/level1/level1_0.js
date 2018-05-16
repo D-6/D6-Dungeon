@@ -123,17 +123,13 @@ export default {
     // *** Player 1 - Hearts ***
     player1.addHearts(game);
 
-    enemies = enemyRenderer(
-      game,
+    enemies = enemyRenderer(game, enemiesCollisionGroup, [
+      bulletsCollisionGroup,
       enemiesCollisionGroup,
-      [
-        bulletsCollisionGroup,
-        enemiesCollisionGroup,
-        playersCollisionGroup,
-        wallsCollisionGroup,
-        doorsCollisionGroup
-      ]
-    );
+      playersCollisionGroup,
+      wallsCollisionGroup,
+      doorsCollisionGroup
+    ]);
 
     socket.emit('intervalTest', gameId);
   },
@@ -149,20 +145,41 @@ export default {
           enemy.name
         ];
 
-        const currentXTile = enemy.sprite.position.x / 64;
-        const currentYTile = enemy.sprite.position.y / 64;
+        const nextX = nextXTile * 64;
+        const nextY = nextYTile * 64;
+        const currentX = enemy.sprite.position.x;
+        const currentY = enemy.sprite.position.y;
 
-        if (nextXTile > currentXTile) {
-          enemy.sprite.body.velocity.x = enemy.speed;
+        const distanceFactor = Math.sqrt(
+          Math.pow(Math.abs(currentX - nextX), 2) +
+            Math.pow(Math.abs(currentY - nextY), 2)
+        );
+
+        if (distanceFactor > enemy.randomBehavior && !enemy.ignorePathing) {
+          if (nextX > currentX) {
+            enemy.sprite.body.velocity.x = enemy.speed;
+            enemy.sprite.scale.x = enemy.scale;
+          } else if (nextX < currentX) {
+            enemy.sprite.body.velocity.x = -enemy.speed;
+            enemy.sprite.scale.x = -enemy.scale;
+          }
+
+          if (nextY > currentY) {
+            enemy.sprite.body.velocity.y = enemy.speed;
+          } else if (nextY < currentY) {
+            enemy.sprite.body.velocity.y = -enemy.speed;
+          }
         }
-        if (nextXTile < currentXTile) {
-          enemy.sprite.body.velocity.x = -enemy.speed;
-        }
-        if (nextYTile > currentYTile) {
-          enemy.sprite.body.velocity.y = enemy.speed;
-        }
-        if (nextYTile < currentYTile) {
-          enemy.sprite.body.velocity.y = -enemy.speed;
+
+        if (
+          enemy.sprite.animations._anims.run &&
+          !enemy.sprite.animations._anims.attack.isPlaying
+        ) {
+          if (!enemy.sprite.body.velocity.x && !enemy.sprite.body.velocity.y) {
+            enemy.sprite.animations.play('idle');
+          } else {
+            enemy.sprite.animations.play('run');
+          }
         }
       }
     });
@@ -178,11 +195,7 @@ export default {
       doors.destroy();
     }
 
-    if (
-      player2.health !== 0 &&
-      player2.socketId &&
-      !player2.sprite.visible
-    ) {
+    if (player2.health > 0 && player2.socketId && !player2.sprite.visible) {
       player2.sprite.visible = true;
       player2.sprite.body.data.shapes[0].sensor = false;
     } else if (!player2.socketId && player2.sprite.visible) {

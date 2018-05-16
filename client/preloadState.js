@@ -12,6 +12,8 @@ export default () => ({
     D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
     D6Dungeon.game.physics.p2.setImpactEvents(true);
 
+    D6Dungeon.game.load.audio('boss-battle', 'assets/audio/boss-battle.mp3');
+
     // Load all sprites / enemies for the level
 
     D6Dungeon.game.load.image('level1Image', 'assets/tilemaps/level_1.png');
@@ -25,13 +27,24 @@ export default () => ({
       'assets/character_sprites/wizard_idle_1.png'
     );
 
-    D6Dungeon.game.load.spritesheet('hearts', 'assets/character_sprites/binding_hearts.png', 130, 136.25);
+    D6Dungeon.game.load.spritesheet(
+      'hearts',
+      'assets/character_sprites/binding_hearts.png',
+      130,
+      136.25
+    );
 
     D6Dungeon.game.load.spritesheet(
       'weasel',
       'assets/character_sprites/WeaselA.png',
       16,
       16
+    );
+
+    D6Dungeon.game.load.atlasJSONHash(
+      'shadow-boy-boss',
+      'assets/monster_sprites/shadow-boss.png',
+      'assets/monster_sprites/shadow-boss.json'
     );
 
     D6Dungeon.game.load.atlasJSONHash(
