@@ -343,10 +343,12 @@ module.exports = io => {
     };
 
     const ignoreEnemyPathing = ({ gameId, name, ignorePathing }) => {
-      if (enemies[gameId] && enemies[gameId][currentRoom[gameId]][name]) {
-        enemies[gameId][currentRoom[gameId]][
-          name
-        ].ignorePathing = ignorePathing;
+      if (enemies[gameId] && enemies[gameId][currentRoom[gameId]]) {
+        if (enemies[gameId][currentRoom[gameId]][name]) {
+          enemies[gameId][currentRoom[gameId]][
+            name
+          ].ignorePathing = ignorePathing;
+        }
       }
     };
 

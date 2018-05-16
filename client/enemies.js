@@ -166,8 +166,23 @@ class ShadowBoyBoss {
 
   createShadowBoyBoss() {
     const music = D6Dungeon.game.add.audio('boss-battle');
-    music.loopFull(1);
-    music.play();
+    music.loopFull(0.5);
+
+    const resumeAudio = () => {
+      if (D6Dungeon.game.sound.context.state === 'suspended') {
+        D6Dungeon.game.sound.context.resume();
+        music.play();
+      }
+    };
+
+    // Resumes the Web Audio API audio context so sounds can be played
+    if (D6Dungeon.game.sound.usingWebAudio) {
+      const { player1 } = D6Dungeon.game.state;
+      player1.keybinds.up.onDown.addOnce(resumeAudio);
+      player1.keybinds.down.onDown.addOnce(resumeAudio);
+      player1.keybinds.left.onDown.addOnce(resumeAudio);
+      player1.keybinds.right.onDown.addOnce(resumeAudio);
+    }
 
     this.sprite = this.game.add.sprite(
       this.x,
@@ -285,7 +300,7 @@ class ShadowBoyBoss {
           }, interval);
         }
       } else {
-        music.fadeOut(4000);
+        music.fadeOut(5000);
         clearInterval(fireballTimer);
       }
     }, interval);
