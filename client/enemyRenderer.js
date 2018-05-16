@@ -93,15 +93,6 @@ export const enemyRenderer = (
           }
         }
       });
-
-      if (monster.sprite.children.length) {
-        monster.sprite.children.forEach(child => {
-          child.body.setCollisionGroup(enemiesCollisionGroup);
-          child.body.collides(collidesWithEnemiesArr);
-          console.log(child);
-        });
-      }
-
       enemiesArr.push(monster);
     });
   }

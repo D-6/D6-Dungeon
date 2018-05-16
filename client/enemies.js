@@ -239,7 +239,7 @@ class ShadowBoyBoss {
       this.interval + Math.floor(Math.random() * this.intervalVariation);
 
     const fireballTimer = setInterval(() => {
-      if (this.sprite.body) {
+      if (this.sprite._exists) {
         this.ignorePathing = !this.ignorePathing;
         const { gameId } = D6Dungeon.game.state;
 
@@ -251,11 +251,11 @@ class ShadowBoyBoss {
 
         if (this.ignorePathing) {
           const positions = [
-            { x: 170, y: 160, scale: 1 },
-            { x: 1046, y: 256, scale: -1 },
-            { x: 170, y: 362, scale: 1 },
-            { x: 1046, y: 468, scale: -1 },
-            { x: 170, y: 574, scale: 1 },
+            { x: 170, y: 170, scale: 1 },
+            { x: 1046, y: 264, scale: -1 },
+            { x: 170, y: 358, scale: 1 },
+            { x: 1046, y: 452, scale: -1 },
+            { x: 170, y: 546, scale: 1 },
             { x: 1046, y: 640, scale: -1 }
           ];
 
@@ -289,17 +289,35 @@ class ShadowBoyBoss {
   makeShot(position) {
     const shotVelocity = 1000;
     const shot = this.game.add.sprite(
-      position.x,
-      position.y,
+      position.x + 50 * position.scale,
+      position.y + 15,
       'shadow-boy-boss',
       'Shooting effect/Big-Bullet-A.png'
     );
 
+    shot.damageAmount = 1;
+
     D6Dungeon.game.physics.p2.enable(shot);
     shot.body.fixedRotation = true;
+
+    const { collisionGroups } = D6Dungeon.game.physics.p2;
+    const enemiesCollisionGroup = collisionGroups.find(
+      group => group.name === 'enemies'
+    );
+    const collidesWithEnemiesArr = collisionGroups.filter(group => {
+      return (
+        group.name === 'doors' ||
+        group.name === 'walls' ||
+        group.name === 'players'
+      );
+    });
+
+    shot.body.setCollisionGroup(enemiesCollisionGroup);
+    shot.body.collides(collidesWithEnemiesArr, () => {
+      shot.kill();
+    });
     shot.scale.x = position.scale;
     shot.body.velocity.x = position.scale * shotVelocity;
-    // this.sprite.addChild(shot);
   }
 }
 
