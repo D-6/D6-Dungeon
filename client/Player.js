@@ -62,7 +62,7 @@ export default class Player {
       'idle/unarmed/idleu_000.png'
     );
 
-    //health text
+    // *** Player - Health Text ***
     let style = { font: '15px Arial', fill: '#ffffff' };
     let health = game.add.text(0, -40, `HP: ${this.health}`, style);
     game.physics.p2.enable(health);
@@ -299,6 +299,11 @@ export default class Player {
       this.keybinds.arrows.right.isDown
     ) {
       this.fire(game);
+      this.wasFiring = true;
+    }
+    else if (this.wasFiring) {
+      socket.emit('playerFire', { fireDirection: null, gameId: game.state.gameId });
+      this.wasFiring = false;
     }
   }
 
