@@ -150,7 +150,7 @@ class ShadowBoyBoss {
     this.y = y;
     this.health = health;
     this.damage = damage;
-    this.minSpeed = 200;
+    this.minSpeed = 240;
     this.speedVariation = 0;
     this.animationSpeed = 14;
     this.interval = 5000;
@@ -160,7 +160,7 @@ class ShadowBoyBoss {
 
     // Makes the enemy run around more instead of going straight for the player
     // More than 140 makes the enemy not run for the player sometimes
-    this.randomBehavior = 100;
+    this.randomBehavior = 60;
 
     this.createShadowBoyBoss();
   }
