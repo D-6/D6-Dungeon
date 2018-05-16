@@ -148,8 +148,6 @@ export default {
           enemy.name
         ];
 
-        // console.log(nextXTile);
-
         const nextX = nextXTile * 64;
         const nextY = nextYTile * 64;
         const currentX = enemy.sprite.position.x;
