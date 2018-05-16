@@ -278,17 +278,17 @@ module.exports = io => {
       if (players[gameId]) {
         players[gameId][socketId].nextRoom = nextRoom;
 
-        const allReady = Object.keys(players[gameId]).every(player => {
-          return players[gameId][player].nextRoom === nextRoom;
-        });
+        // const allReady = Object.keys(players[gameId]).every(player => {
+        //   return players[gameId][player].nextRoom === nextRoom;
+        // });
 
         const enemiesDead =
           Object.keys(enemies[gameId][currentRoom[gameId]]).length === 0;
 
         if (
-          allReady &&
+          // allReady &&
           enemiesDead &&
-          Object.keys(players[gameId]).length === 1
+          Object.keys(players[gameId]).length >= 1
         ) {
           const position = {};
           switch (direction) {
