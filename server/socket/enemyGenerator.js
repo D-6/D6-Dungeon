@@ -27,7 +27,7 @@ const baseEnemies = [
   },
   {
     name: 'shadowBoy',
-    health: 30,
+    health: 10,
     quantity: 1,
     damage: 1,
     interval: 0,
@@ -35,8 +35,6 @@ const baseEnemies = [
     ignorePathing: false
   }
 ];
-
-const enemies = {};
 
 const getRandomPosition = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
@@ -62,9 +60,11 @@ const generateEnemies = baseEnemy => {
   return enemyObject;
 };
 
-const createEnemies = (newMap, level) => {
+const createEnemies = newMap => {
+  const enemies = {};
   newMap.rooms.forEach(room => {
     const { x, y } = room.position;
+    const { level } = room;
 
     if (room.type === 'start') {
       enemies[`level${level}_${x}-${y}`] = [];
@@ -76,7 +76,8 @@ const createEnemies = (newMap, level) => {
       );
       const randomEnemy =
         normalEnemies[Math.floor(Math.random() * normalEnemies.length)];
-      enemies[`level${level}_${x}-${y}`] = generateEnemies(randomEnemy);
+      // enemies[`level${level}_${x}-${y}`] = generateEnemies(randomEnemy);
+      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[0]);
     } else if (room.type === 'boss') {
       const bossEnemies = baseEnemies.filter(enemy => enemy.type === 'boss');
       const bossEnemy =
