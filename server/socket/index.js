@@ -218,7 +218,7 @@ module.exports = io => {
         if (health > 0) {
           io.to(gameId).emit('updateEnemy', {
             currentRoom: currentRoom[gameId],
-            enemyObj
+            enemy: enemyObj
           });
         } else {
           delete enemies[gameId][currentRoom[gameId]][name];
