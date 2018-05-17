@@ -25,10 +25,10 @@ export class Potion {
           damage,
           fireRate,
           speed,
+          maxHealth,
           socketId,
           sprite,
-          hearts,
-          maxHealth
+          hearts
         } = player1;
 
         if (this.type === 'health') {
@@ -42,7 +42,31 @@ export class Potion {
             player1.health += healAmount;
             sprite.health += healAmount;
 
-            console.log('HEALTH POTION! sprite', sprite.health);
+            for (let i = 0; i < healAmount; i++) {
+              for (let j = 0; j < hearts.length; j++) {
+                let heart = hearts.getAt(j);
+
+                if (heart.frame === 2) {
+                  heart.frame = 1;
+                  break;
+                } else if (heart.frame === 1) {
+                  heart.frame = 0;
+                  break;
+                }
+              }
+            }
+          }
+        }
+        else if (this.type === 'maxHealth') {
+          let healAmount = 1;
+
+          if (player1.health + healAmount > maxHealth) {
+            healAmount = maxHealth - player1.health;
+          }
+
+          if (player1.health !== maxHealth) {
+            player1.health += healAmount;
+            sprite.health += healAmount;
 
             for (let i = 0; i < healAmount; i++) {
               for (let j = 0; j < hearts.length; j++) {
@@ -60,8 +84,6 @@ export class Potion {
           }
         }
 
-        console.log('pickup current health', sprite.health);
-
         this.sprite.destroy();
 
         socket.emit('playerPickup', {
@@ -69,6 +91,7 @@ export class Potion {
           damage,
           fireRate,
           speed,
+          maxHealth,
           health: player1.health,
           socketId,
           gameId
