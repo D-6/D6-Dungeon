@@ -17,6 +17,15 @@ const baseEnemies = [
     ignorePathing: false
   },
   {
+    name: 'weasel',
+    health: 1,
+    quantity: 4,
+    damage: 1,
+    interval: 0,
+    type: 'normal',
+    ignorePathing: false
+  },
+  {
     name: 'redHornedBee',
     health: 1,
     quantity: 16,
@@ -27,7 +36,7 @@ const baseEnemies = [
   },
   {
     name: 'shadowBoy',
-    health: 1,
+    health: 20,
     quantity: 1,
     damage: 1,
     interval: 0,
@@ -68,16 +77,13 @@ const createEnemies = newMap => {
 
     if (room.type === 'start') {
       enemies[`level${level}_${x}-${y}`] = [];
-      // enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[2]);
-      // enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[3]);
     } else if (room.type === 'normal') {
       const normalEnemies = baseEnemies.filter(
         enemy => enemy.type === 'normal'
       );
       const randomEnemy =
         normalEnemies[Math.floor(Math.random() * normalEnemies.length)];
-      // enemies[`level${level}_${x}-${y}`] = generateEnemies(randomEnemy);
-      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[0]);
+      enemies[`level${level}_${x}-${y}`] = generateEnemies(randomEnemy);
     } else if (room.type === 'boss') {
       const bossEnemies = baseEnemies.filter(enemy => enemy.type === 'boss');
       const bossEnemy =
