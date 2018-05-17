@@ -259,7 +259,6 @@ export default {
     if (!Object.keys(game.state.enemies[gameRoom]).length) {
       game.physics.p2.clearTilemapLayerBodies(map, doors);
       carpet.visible = false;
-      border.visible = true;
       doors.destroy();
     }
 
