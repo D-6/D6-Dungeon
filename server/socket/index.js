@@ -215,11 +215,15 @@ module.exports = io => {
       if (enemyObj) {
         enemyObj.health = health;
 
-        if (health === 0) {
+        if (health > 0) {
+          io.to(gameId).emit('updateEnemy', {
+            currentRoom: currentRoom[gameId],
+            enemy: enemyObj
+          });
+        } else {
           delete enemies[gameId][currentRoom[gameId]][name];
+          io.to(gameId).emit('setEnemies', enemies[gameId]);
         }
-
-        io.to(gameId).emit('setEnemies', enemies[gameId]);
       }
     };
 
