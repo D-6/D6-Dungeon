@@ -1,3 +1,5 @@
+import socket from './socket';
+
 export class Potion {
   constructor(type, x, y) {
     this.type = type;
@@ -10,20 +12,67 @@ export class Potion {
     this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.scale.set(4);
 
-    game.physics.p2.enable(this.sprite, true);
+    game.physics.p2.enable(this.sprite, false);
     this.sprite.body.static = true;
     this.sprite.body.setCollisionGroup(itemsCollisionGroup);
     this.sprite.body.collides(collidesWithItemsArr);
 
     this.sprite.body.onBeginContact.add(other => {
-      if (other.sprite.key === 'player') {
-        const { player1 } = game.state;
+      if (other.sprite.key === 'player1') {
+        const { player1, gameId } = game.state;
+        const {
+          bulletSpeed,
+          damage,
+          fireRate,
+          speed,
+          socketId,
+          sprite,
+          hearts,
+          maxHealth
+        } = player1;
 
         if (this.type === 'health') {
-          player1.health++;
-          console.log('HEALTH POTION! ', player1.health);
-          this.sprite.destroy();
+          let healAmount = 1;
+
+          if (player1.health + healAmount > maxHealth) {
+            healAmount = maxHealth - player1.health;
+          }
+
+          if (player1.health !== maxHealth) {
+            player1.health += healAmount;
+            sprite.health += healAmount;
+
+            console.log('HEALTH POTION! sprite', sprite.health);
+
+            for (let i = 0; i < healAmount; i++) {
+              for (let j = 0; j < hearts.length; j++) {
+                let heart = hearts.getAt(j);
+
+                if (heart.frame === 2) {
+                  heart.frame = 1;
+                  break;
+                } else if (heart.frame === 1) {
+                  heart.frame = 0;
+                  break;
+                }
+              }
+            }
+          }
         }
+
+        console.log('pickup current health', sprite.health);
+
+        this.sprite.destroy();
+
+        socket.emit('playerPickup', {
+          bulletSpeed,
+          damage,
+          fireRate,
+          speed,
+          health: player1.health,
+          socketId,
+          gameId
+        });
       }
     });
   }

@@ -1,8 +1,7 @@
-// const specialRoomTypes = ['start', 'boss', 'treasure'];
-
 class Room {
   constructor(
     position = { x: null, y: null },
+    level,
     type = 'normal',
     doors = { n: false, s: false, e: false, w: false }
   ) {
@@ -10,6 +9,7 @@ class Room {
     this.doors = doors;
     this.type = type;
     this.filename = '';
+    this.level = level;
   }
 
   makeRoomFilename() {
@@ -23,13 +23,18 @@ class Room {
 }
 
 class Map {
-  constructor(gridSize = 9, totalRooms = 12, startMiddle = true) {
+  constructor(gridSize = 7, totalRooms = 8, startMiddle = true, level = 1) {
     this.gridSize = gridSize;
+    this.level = level;
     this.totalRooms = totalRooms;
     this.startMiddle = startMiddle;
     this.rooms = [];
-    this.createMap();
-    this.addDoors();
+    this.bossRoomCreated = false;
+    while (!this.bossRoomCreated) {
+      this.createMap();
+      this.addDoors();
+      this.makeSpecialRooms();
+    }
     this.makeRoomFilenames();
   }
 
@@ -38,9 +43,9 @@ class Map {
       let start;
       if (this.startMiddle) {
         const middle = Math.floor(this.gridSize / 2);
-        start = new Room({ x: middle, y: middle }, 'start');
+        start = new Room({ x: middle, y: middle }, this.level, 'start');
       } else {
-        start = new Room(this.getRandomPosition(), 'start');
+        start = new Room(this.getRandomPosition(), this.level, 'start');
       }
 
       this.addRoom(start);
@@ -48,9 +53,41 @@ class Map {
       while (this.rooms.length < this.totalRooms) {
         const nextValidPositions = this.getNextValidPositions();
         const index = Math.floor(Math.random() * nextValidPositions.length);
-        const room = new Room(nextValidPositions[index]);
+        const room = new Room(nextValidPositions[index], this.level);
         this.addRoom(room);
       }
+    }
+  }
+
+  makeSpecialRooms() {
+    const roomsWithOneDoor = this.rooms.filter((room, i) => {
+      if (i === 0) return false; // Ignore first room
+      const totalDoors = Object.keys(room.doors).reduce((acc, door) => {
+        if (room.doors[door]) return ++acc;
+        return acc;
+      }, 0);
+      return totalDoors === 1;
+    });
+
+    if (roomsWithOneDoor.length) {
+      const randomRoomIndex = Math.floor(
+        Math.random() * roomsWithOneDoor.length
+      );
+
+      const bossRoom = roomsWithOneDoor[randomRoomIndex];
+      this.rooms.forEach(room => {
+        if (
+          room.position.x === bossRoom.position.x &&
+          room.position.y === bossRoom.position.y
+        ) {
+          room.type = 'boss';
+        }
+      });
+
+      this.bossRoomCreated = true;
+    } else {
+      // Start over
+      this.rooms = [];
     }
   }
 
