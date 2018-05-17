@@ -19,3 +19,24 @@ form div {
   margin: 1em;
   display: inline-block;
 }
+
+.minimap {
+  color: white;
+  font-family: monospace;
+  font-size: 1.3em;
+  padding: 0;
+  margin: 0;
+}
+
+.sideways {
+  display: flex;
+}
+
+.overlap {
+  position: absolute;
+  left: 1060px;
+  top: 20px;
+  padding: 10px;
+  background-color: darkslategray;
+  opacity: .7;
+}
