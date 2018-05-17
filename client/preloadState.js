@@ -14,7 +14,6 @@ export default () => ({
 
     D6Dungeon.game.load.audio('boss-battle', 'assets/audio/boss-battle-2.mp3');
 
-
     D6Dungeon.game.load.image('level1Image', 'assets/tilemaps/level_1.png');
     D6Dungeon.game.load.image('level2Image', 'assets/tilemaps/level_2.png');
     D6Dungeon.game.load.image('level3Image', 'assets/tilemaps/level_3.png');
@@ -47,6 +46,24 @@ export default () => ({
       'assets/character_sprites/WeaselA.png',
       16,
       16
+    );
+
+    D6Dungeon.game.load.atlasJSONHash(
+      'spike-head',
+      'assets/monster_sprites/spike-head.png',
+      'assets/monster_sprites/spike-head.json'
+    );
+
+    D6Dungeon.game.load.atlasJSONHash(
+      'cruncher',
+      'assets/monster_sprites/cruncher.png',
+      'assets/monster_sprites/cruncher.json'
+    );
+
+    D6Dungeon.game.load.atlasJSONHash(
+      'skull-biter',
+      'assets/monster_sprites/skull-biter.png',
+      'assets/monster_sprites/skull-biter.json'
     );
 
     D6Dungeon.game.load.atlasJSONHash(

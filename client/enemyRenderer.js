@@ -1,5 +1,13 @@
 // Import enemies here:
-import { Weasel, Golem, RedHornedBee, ShadowBoyBoss } from './enemies';
+import {
+  Weasel,
+  Golem,
+  RedHornedBee,
+  ShadowBoyBoss,
+  SpikeHead,
+  Cruncher,
+  SkullBiter
+} from './enemies';
 import socket from './socket';
 import { Potion } from './Items';
 
@@ -22,6 +30,33 @@ export const enemyRenderer = (
       let monster;
       if (enemy.type === 'weasel') {
         monster = new Weasel(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
+      } else if (enemy.type === 'spikeHead') {
+        monster = new SpikeHead(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
+      } else if (enemy.type === 'cruncher') {
+        monster = new Cruncher(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
+      } else if (enemy.type === 'skullBiter') {
+        monster = new SkullBiter(
           game,
           enemy.name,
           enemy.x,

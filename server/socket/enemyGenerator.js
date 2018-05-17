@@ -1,15 +1,7 @@
 const baseEnemies = [
-  // {
-  //   name: 'golem',
-  //   health: 5,
-  //   quantity: 1,
-  //   damage: 2,
-  //   interval: 10000,
-  //   type: 'boss'
-  // },
   {
-    name: 'weasel',
-    health: 1,
+    name: 'spikeHead',
+    health: 4,
     quantity: 4,
     damage: 1,
     interval: 0,
@@ -17,9 +9,18 @@ const baseEnemies = [
     ignorePathing: false
   },
   {
-    name: 'weasel',
-    health: 1,
-    quantity: 4,
+    name: 'cruncher',
+    health: 20,
+    quantity: 2,
+    damage: 2,
+    interval: 0,
+    type: 'normal',
+    ignorePathing: false
+  },
+  {
+    name: 'skullBiter',
+    health: 2,
+    quantity: 6,
     damage: 1,
     interval: 0,
     type: 'normal',
@@ -77,6 +78,7 @@ const createEnemies = newMap => {
 
     if (room.type === 'start') {
       enemies[`level${level}_${x}-${y}`] = [];
+      // enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[3]);
     } else if (room.type === 'normal') {
       const normalEnemies = baseEnemies.filter(
         enemy => enemy.type === 'normal'
