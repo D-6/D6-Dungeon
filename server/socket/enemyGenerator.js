@@ -27,7 +27,7 @@ const baseEnemies = [
   },
   {
     name: 'shadowBoy',
-    health: 10,
+    health: 1,
     quantity: 1,
     damage: 1,
     interval: 0,

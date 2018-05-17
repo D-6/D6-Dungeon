@@ -176,7 +176,8 @@ export default {
         map.heightInPixels / 2,
         'wizard'
       );
-      sensor.scale.set(0.1);
+      sensor.scale.set(0.3);
+      sensor.anchor.setTo(0.5);
       sensor.visible = false;
       game.physics.p2.enable(sensor, false);
       sensor.body.static = true;
@@ -185,7 +186,8 @@ export default {
       sensor.body.collides(playersCollisionGroup);
       sensor.body.onBeginContact.add(other => {
         if (other.sprite.key === 'player1' && enemies[0].health === 0) {
-          const nextLevel = +gameRoom.slice(5, 6) + 1;
+          let nextLevel = +gameRoom.slice(5, 6) + 1;
+          if (nextLevel > 3) nextLevel = 1;
           const nextRoom = gameRoom.slice(0, 5) + nextLevel + '_3-3';
           socket.emit('nextRoomReady', {
             gameId,
