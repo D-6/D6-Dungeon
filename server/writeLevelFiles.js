@@ -1,12 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const pathToReference = path.join(
-  __dirname,
-  '..',
-  'client',
-  'rooms/'
-);
+const pathToReference = path.join(__dirname, '..', 'client', 'rooms/');
 const referenceFile = 'level1/level1_0.js';
 const otherFiles = [
   'level1/level1_1.js',
@@ -43,12 +38,23 @@ const otherFiles = [
   'level3/level3_12.js',
   'level3/level3_13.js',
   'level3/level3_14.js',
-  'level3/level3_15.js',
+  'level3/level3_15.js'
 ];
 
 // Overwrite the level files with the contents of level1_0
 const writeLevelFiles = () => {
-  var contents = fs.readFileSync(pathToReference + referenceFile);
+  const contents = fs.readFileSync(pathToReference + referenceFile);
+  const level2Dir = path.join(pathToReference, 'level2');
+  const level3Dir = path.join(pathToReference, 'level3');
+
+  if (!fs.existsSync(level2Dir)) {
+    fs.mkdirSync(level2Dir);
+  }
+
+  if (!fs.existsSync(level3Dir)) {
+    fs.mkdirSync(level3Dir);
+  }
+
   otherFiles.forEach(file => {
     fs.writeFileSync(pathToReference + file, contents);
   });
