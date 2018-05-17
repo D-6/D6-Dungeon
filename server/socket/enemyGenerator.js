@@ -26,6 +26,15 @@ const baseEnemies = [
     ignorePathing: false
   },
   {
+    name: 'cruncher',
+    health: 20,
+    quantity: 2,
+    damage: 2,
+    interval: 0,
+    type: 'normal',
+    ignorePathing: false
+  },
+  {
     name: 'redHornedBee',
     health: 1,
     quantity: 16,
