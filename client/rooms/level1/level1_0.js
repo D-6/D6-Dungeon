@@ -319,5 +319,9 @@ export default {
     if (player2.health <= 0) {
       player2.sprite.kill();
     }
+
+    if (player1.health <= 0) {
+      player1.sprite.kill();
+    }
   }
 };

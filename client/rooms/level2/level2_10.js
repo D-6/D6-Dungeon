@@ -307,12 +307,21 @@ export default {
       doors.destroy();
     }
 
+    // P2 connection
     if (player2.health > 0 && player2.socketId && !player2.sprite.visible) {
       player2.sprite.visible = true;
       player2.sprite.body.data.shapes[0].sensor = false;
     } else if (!player2.socketId && player2.sprite.visible) {
       player2.sprite.visible = false;
       player2.sprite.body.data.shapes[0].sensor = true;
+    }
+
+    if (player2.health <= 0) {
+      player2.sprite.kill();
+    }
+
+    if (player1.health <= 0) {
+      player1.sprite.kill();
     }
   }
 };

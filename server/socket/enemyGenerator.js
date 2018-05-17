@@ -1,21 +1,4 @@
 const baseEnemies = [
-  // {
-  //   name: 'golem',
-  //   health: 5,
-  //   quantity: 1,
-  //   damage: 2,
-  //   interval: 10000,
-  //   type: 'boss'
-  // },
-  {
-    name: 'weasel',
-    health: 1,
-    quantity: 4,
-    damage: 1,
-    interval: 0,
-    type: 'normal',
-    ignorePathing: false
-  },
   {
     name: 'spikeHead',
     health: 4,
