@@ -405,7 +405,6 @@ module.exports = io => {
         delete players[gameId];
         delete maps[gameId];
         delete enemies[gameId];
-        console.log(enemies[socket.id]);
         delete currentRoom[gameId];
       }
     });
