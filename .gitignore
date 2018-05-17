@@ -62,7 +62,7 @@ typings/
 
 # Generated level files
 level*.js
-!level*0.js
+!level1*0.js
 
 public/bundle.js
 public/bundle.js.map

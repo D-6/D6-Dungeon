@@ -10,7 +10,38 @@ import level1_4 from './rooms/level1/level1_4';
 import level1_5 from './rooms/level1/level1_5';
 import level1_6 from './rooms/level1/level1_6';
 import level1_7 from './rooms/level1/level1_7';
-const level1Arr = [
+
+import level2_0 from './rooms/level2/level2_0';
+import level2_1 from './rooms/level2/level2_1';
+import level2_2 from './rooms/level2/level2_2';
+import level2_3 from './rooms/level2/level2_3';
+import level2_4 from './rooms/level2/level2_4';
+import level2_5 from './rooms/level2/level2_5';
+import level2_6 from './rooms/level2/level2_6';
+import level2_7 from './rooms/level2/level2_7';
+import level2_8 from './rooms/level2/level2_8';
+import level2_9 from './rooms/level2/level2_9';
+import level2_10 from './rooms/level2/level2_10';
+import level2_11 from './rooms/level2/level2_11';
+
+import level3_0 from './rooms/level3/level3_0';
+import level3_1 from './rooms/level3/level3_1';
+import level3_2 from './rooms/level3/level3_2';
+import level3_3 from './rooms/level3/level3_3';
+import level3_4 from './rooms/level3/level3_4';
+import level3_5 from './rooms/level3/level3_5';
+import level3_6 from './rooms/level3/level3_6';
+import level3_7 from './rooms/level3/level3_7';
+import level3_8 from './rooms/level3/level3_8';
+import level3_9 from './rooms/level3/level3_9';
+import level3_10 from './rooms/level3/level3_10';
+import level3_11 from './rooms/level3/level3_11';
+import level3_12 from './rooms/level3/level3_12';
+import level3_13 from './rooms/level3/level3_13';
+import level3_14 from './rooms/level3/level3_14';
+import level3_15 from './rooms/level3/level3_15';
+
+const levelArr = [
   level1_0,
   level1_1,
   level1_2,
@@ -18,7 +49,35 @@ const level1Arr = [
   level1_4,
   level1_5,
   level1_6,
-  level1_7
+  level1_7,
+  level2_0,
+  level2_1,
+  level2_2,
+  level2_3,
+  level2_4,
+  level2_5,
+  level2_6,
+  level2_7,
+  level2_8,
+  level2_9,
+  level2_10,
+  level2_11,
+  level3_0,
+  level3_1,
+  level3_2,
+  level3_3,
+  level3_4,
+  level3_5,
+  level3_6,
+  level3_7,
+  level3_8,
+  level3_9,
+  level3_10,
+  level3_11,
+  level3_12,
+  level3_13,
+  level3_14,
+  level3_15
 ];
 
 /* global D6Dungeon, Phaser */
@@ -137,19 +196,26 @@ const setPlayer2Animation = animation => {
 const setRooms = rooms => {
   rooms.forEach((room, i) => {
     const { x, y } = room.position;
-    const roomName = `level1_${x}-${y}`;
-    D6Dungeon.game.state.add(roomName, level1Arr[i]);
-  });
-
-  rooms.forEach(room => {
-    const { x, y } = room.position;
+    const { level } = room;
+    const roomName = `level${level}_${x}-${y}`;
+    D6Dungeon.game.state.add(roomName, levelArr[i]);
     D6Dungeon.game.load.tilemap(
-      `level1_${x}-${y}`,
+      roomName,
       null,
       room,
       Phaser.Tilemap.TILED_JSON
     );
   });
+
+  // rooms.forEach(((room, i) => {
+  //   const { x, y } = room.position;
+  //   D6Dungeon.game.load.tilemap(
+  //     `level1_${x}-${y}`,
+  //     null,
+  //     room,
+  //     Phaser.Tilemap.TILED_JSON
+  //   );
+  // });
 };
 
 const updateEnemy = ({ currentRoom, enemy }) => {

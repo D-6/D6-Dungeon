@@ -5,7 +5,6 @@ const createSensor = (game, x, y) => {
   sensor.scale.set(0.1);
   sensor.visible = false;
 
-
   // 2nd arg is debug mode
   game.physics.p2.enable(sensor, false);
   sensor.body.static = true;

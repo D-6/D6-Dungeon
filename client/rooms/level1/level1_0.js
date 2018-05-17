@@ -12,6 +12,8 @@ let player1;
 let player2;
 let enemies;
 let game;
+let carpet;
+let border;
 let gameRoom;
 let doors;
 let map;
@@ -23,7 +25,6 @@ export default {
     player2 = game.state.player2;
     const { gameId } = game.state;
     gameRoom = game.state.current;
-    console.log(gameRoom);
 
     const [
       wallsCollisionGroup,
@@ -38,13 +39,47 @@ export default {
     socket.emit('setRoom', { gameId, gameRoom });
 
     map = game.add.tilemap(gameRoom);
-    map.addTilesetImage('level_1', 'level1Image');
+    const floorDoor = game.add.tilemap('floorDoor');
+
+    if (gameRoom.includes('level1')) {
+      map.addTilesetImage('level_1', 'level1Image');
+      floorDoor.addTilesetImage('level_1', 'level1Image');
+    } else if (gameRoom.includes('level2')) {
+      map.addTilesetImage('level_1', 'level2Image');
+      floorDoor.addTilesetImage('level_1', 'level2Image');
+    } else {
+      map.addTilesetImage('level_1', 'level3Image');
+      floorDoor.addTilesetImage('level_1', 'level3Image');
+    }
     const floor = map.createLayer('Floor');
     const walls = map.createLayer('Walls');
     doors = map.createLayer('Doors');
 
-    // const p1Health = HealthBar(game, { x: player1.x, y: player1.y });
-    // console.log(p1Health);
+    const hole = floorDoor.createLayer('Hole');
+    hole.cameraOffset.setTo(
+      (map.widthInPixels - hole.layer.widthInPixels) / 2,
+      (map.heightInPixels - hole.layer.heightInPixels) / 2
+    );
+    hole.visible = false;
+    const ladder = floorDoor.createLayer('Ladder');
+    ladder.cameraOffset.setTo(
+      (map.widthInPixels - ladder.layer.widthInPixels) / 2,
+      (map.heightInPixels - ladder.layer.heightInPixels) / 2
+    );
+
+    ladder.visible = false;
+    carpet = floorDoor.createLayer('Carpet');
+    carpet.cameraOffset.setTo(
+      (map.widthInPixels - carpet.layer.widthInPixels) / 2,
+      (map.heightInPixels - carpet.layer.heightInPixels) / 2
+    );
+    carpet.visible = false;
+    border = floorDoor.createLayer('Border');
+    border.cameraOffset.setTo(
+      (map.widthInPixels - border.layer.widthInPixels) / 2,
+      (map.heightInPixels - border.layer.heightInPixels) / 2
+    );
+    border.visible = false;
 
     const wallBodies = createWallCollision(map, walls, game);
     wallBodies.forEach(wallBody => {
@@ -131,6 +166,39 @@ export default {
       doorsCollisionGroup
     ]);
 
+    if (enemies.length && enemies[0].name.includes('shadowBoy')) {
+      hole.visible = true;
+      ladder.visible = true;
+      carpet.visible = true;
+
+      const sensor = game.add.sprite(
+        map.widthInPixels / 2,
+        map.heightInPixels / 2,
+        'wizard'
+      );
+      sensor.scale.set(0.3);
+      sensor.anchor.setTo(0.5);
+      sensor.visible = false;
+      game.physics.p2.enable(sensor, false);
+      sensor.body.static = true;
+      sensor.body.data.shapes[0].sensor = true;
+      sensor.body.setCollisionGroup(doorSensorsCollisionGroup);
+      sensor.body.collides(playersCollisionGroup);
+      sensor.body.onBeginContact.add(other => {
+        if (other.sprite.key === 'player1' && enemies[0].health === 0) {
+          let nextLevel = +gameRoom.slice(5, 6) + 1;
+          if (nextLevel > 3) nextLevel = 1;
+          const nextRoom = gameRoom.slice(0, 5) + nextLevel + '_3-3';
+          socket.emit('nextRoomReady', {
+            gameId,
+            socketId: player1.socketId,
+            nextRoom,
+            direction: 'down'
+          });
+        }
+      });
+    }
+
     socket.emit('intervalTest', gameId);
   },
 
@@ -210,6 +278,7 @@ export default {
 
     if (!Object.keys(game.state.enemies[gameRoom]).length) {
       game.physics.p2.clearTilemapLayerBodies(map, doors);
+      carpet.visible = false;
       doors.destroy();
     }
 

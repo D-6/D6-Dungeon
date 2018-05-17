@@ -2,7 +2,6 @@ import socket from './socket';
 
 /* global Phaser */
 
-
 class Weasel {
   constructor(game, name, x, y, health, damage) {
     this.game = game;
