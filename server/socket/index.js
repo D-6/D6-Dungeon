@@ -284,9 +284,11 @@ module.exports = io => {
 
     const setRoom = ({ gameId, gameRoom }) => {
       currentRoom[gameId] = gameRoom;
-      let floorX = gameRoom[7];
+
+      let currentFloor = Number(gameRoom[5]);
+      let floorX = Number(gameRoom[7]);
       let floorY = 6 - gameRoom[9];
-      socket.emit('updateMap', { x: floorX, y: floorY });
+      socket.emit('updateMap', { x: floorX, y: floorY, current: currentFloor });
     };
 
     const nextRoomReady = ({ gameId, socketId, nextRoom, direction }) => {
