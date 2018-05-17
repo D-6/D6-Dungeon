@@ -17,8 +17,8 @@ const baseEnemies = [
     ignorePathing: false
   },
   {
-    name: 'weasel',
-    health: 1,
+    name: 'spikeHead',
+    health: 4,
     quantity: 4,
     damage: 1,
     interval: 0,
@@ -77,6 +77,7 @@ const createEnemies = newMap => {
 
     if (room.type === 'start') {
       enemies[`level${level}_${x}-${y}`] = [];
+      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
     } else if (room.type === 'normal') {
       const normalEnemies = baseEnemies.filter(
         enemy => enemy.type === 'normal'

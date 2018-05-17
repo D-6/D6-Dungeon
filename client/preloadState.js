@@ -48,6 +48,22 @@ export default () => ({
       16
     );
 
+    const spikeHead = D6Dungeon.game.load.atlasJSONHash(
+      'spike-head',
+      'assets/monster_sprites/spike-head.png',
+      'assets/monster_sprites/spike-head.json'
+    );
+
+    // console.log(spikeHead);
+
+    // var flipX_Texture = new PIXI.Texture(
+    //   texture.baseTexture,
+    //   texture.frame,
+    //   null,
+    //   null,
+    //   12
+    // );
+
     D6Dungeon.game.load.atlasJSONHash(
       'shadow-boy-boss',
       'assets/monster_sprites/shadow-boss.png',
