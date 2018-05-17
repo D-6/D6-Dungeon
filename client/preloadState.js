@@ -61,6 +61,12 @@ export default () => ({
     );
 
     D6Dungeon.game.load.atlasJSONHash(
+      'skull-biter',
+      'assets/monster_sprites/skull-biter.png',
+      'assets/monster_sprites/skull-biter.json'
+    );
+
+    D6Dungeon.game.load.atlasJSONHash(
       'shadow-boy-boss',
       'assets/monster_sprites/shadow-boss.png',
       'assets/monster_sprites/shadow-boss.json'

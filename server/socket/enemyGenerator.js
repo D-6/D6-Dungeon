@@ -35,6 +35,15 @@ const baseEnemies = [
     ignorePathing: false
   },
   {
+    name: 'skullBiter',
+    health: 2,
+    quantity: 6,
+    damage: 1,
+    interval: 0,
+    type: 'normal',
+    ignorePathing: false
+  },
+  {
     name: 'redHornedBee',
     health: 1,
     quantity: 16,
@@ -86,7 +95,7 @@ const createEnemies = newMap => {
 
     if (room.type === 'start') {
       enemies[`level${level}_${x}-${y}`] = [];
-      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[1]);
+      enemies[`level${level}_${x}-${y}`] = generateEnemies(baseEnemies[3]);
     } else if (room.type === 'normal') {
       const normalEnemies = baseEnemies.filter(
         enemy => enemy.type === 'normal'

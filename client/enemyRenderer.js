@@ -5,7 +5,8 @@ import {
   RedHornedBee,
   ShadowBoyBoss,
   SpikeHead,
-  Cruncher
+  Cruncher,
+  SkullBiter
 } from './enemies';
 import socket from './socket';
 import { Potion } from './Items';
@@ -47,6 +48,15 @@ export const enemyRenderer = (
         );
       } else if (enemy.type === 'cruncher') {
         monster = new Cruncher(
+          game,
+          enemy.name,
+          enemy.x,
+          enemy.y,
+          enemy.health,
+          enemy.damage
+        );
+      } else if (enemy.type === 'skullBiter') {
+        monster = new SkullBiter(
           game,
           enemy.name,
           enemy.x,

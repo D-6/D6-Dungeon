@@ -1,0 +1,108 @@
+{"frames": {
+
+"s_000.png":
+{
+	"frame": {"x":1,"y":421,"w":38,"h":38},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":4,"w":38,"h":38},
+	"sourceSize": {"w":41,"h":42}
+},
+"s_001.png":
+{
+	"frame": {"x":1,"y":461,"w":38,"h":38},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":4,"w":38,"h":38},
+	"sourceSize": {"w":41,"h":42}
+},
+"s_002.png":
+{
+	"frame": {"x":1,"y":339,"w":38,"h":39},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":38,"h":39},
+	"sourceSize": {"w":41,"h":42}
+},
+"s_003.png":
+{
+	"frame": {"x":1,"y":87,"w":39,"h":40},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":39,"h":40},
+	"sourceSize": {"w":41,"h":42}
+},
+"s_004.png":
+{
+	"frame": {"x":1,"y":129,"w":39,"h":40},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":39,"h":40},
+	"sourceSize": {"w":41,"h":42}
+},
+"s_005.png":
+{
+	"frame": {"x":1,"y":296,"w":38,"h":41},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":1,"w":38,"h":41},
+	"sourceSize": {"w":41,"h":42}
+},
+"s_006.png":
+{
+	"frame": {"x":1,"y":1,"w":39,"h":41},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":1,"w":39,"h":41},
+	"sourceSize": {"w":41,"h":42}
+},
+"s_007.png":
+{
+	"frame": {"x":1,"y":44,"w":39,"h":41},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":1,"w":39,"h":41},
+	"sourceSize": {"w":41,"h":42}
+},
+"s_008.png":
+{
+	"frame": {"x":1,"y":171,"w":39,"h":40},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":39,"h":40},
+	"sourceSize": {"w":41,"h":42}
+},
+"s_009.png":
+{
+	"frame": {"x":1,"y":213,"w":39,"h":40},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":2,"w":39,"h":40},
+	"sourceSize": {"w":41,"h":42}
+},
+"s_010.png":
+{
+	"frame": {"x":1,"y":255,"w":39,"h":39},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":3,"w":39,"h":39},
+	"sourceSize": {"w":41,"h":42}
+},
+"s_011.png":
+{
+	"frame": {"x":1,"y":380,"w":38,"h":39},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":38,"h":39},
+	"sourceSize": {"w":41,"h":42}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "skull-biter.png",
+	"format": "RGBA8888",
+	"size": {"w":41,"h":500},
+	"scale": "0.208333",
+	"smartupdate": "$TexturePacker:SmartUpdate:b9b8e9072016c5efaa8b2166469b28ef:71a7ddbebfa727f76f14825169b19283:3c34491e8ff8a9411d9a4ff96c225ba8$"
+}
+}

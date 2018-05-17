@@ -90,22 +90,69 @@ class Cruncher {
     this.x = x;
     this.y = y;
     this.health = health;
-    this.minSpeed = 50;
-    this.speedVariation = 50;
+    this.minSpeed = 60;
+    this.speedVariation = 80;
     this.damage = damage;
     this.scale = 1;
     this.randomBehavior = 0;
     this.animationSpeed = 60;
 
-    this.createSpikeHeadSprite();
+    this.createCruncherSprite();
   }
 
-  createSpikeHeadSprite() {
-    this.sprite = this.game.add.sprite(this.x, this.y, 'spike-head');
+  createCruncherSprite() {
+    this.sprite = this.game.add.sprite(this.x, this.y, 'cruncher');
 
     this.sprite.animations.add(
       'run',
       Phaser.Animation.generateFrameNames('', 1, 14, '.png', 1),
+      this.animationSpeed,
+      true,
+      false
+    );
+
+    this.sprite.animations.play('run');
+
+    this.sprite.anchor.set(0.5);
+    this.sprite.scale.setTo(this.scale);
+
+    this.sprite.setHealth(this.health);
+    this.sprite.damageAmount = this.damage;
+
+    this.game.physics.p2.enable(this.sprite, false);
+    this.sprite.body.fixedRotation = true;
+    this.sprite.body.setRectangle(
+      this.sprite.width - 25,
+      this.sprite.height - 25,
+      0,
+      0
+    );
+  }
+}
+
+class SkullBiter {
+  constructor(game, name, x, y, health, damage) {
+    this.game = game;
+    this.name = name;
+    this.x = x;
+    this.y = y;
+    this.health = health;
+    this.minSpeed = 50;
+    this.speedVariation = 90;
+    this.damage = damage;
+    this.scale = 1;
+    this.randomBehavior = 0;
+    this.animationSpeed = 60;
+
+    this.createSkullBiterSprite();
+  }
+
+  createSkullBiterSprite() {
+    this.sprite = this.game.add.sprite(this.x, this.y, 'skull-biter');
+
+    this.sprite.animations.add(
+      'run',
+      Phaser.Animation.generateFrameNames('s_', 0, 11, '.png', 3),
       this.animationSpeed,
       true,
       false
@@ -259,6 +306,8 @@ class ShadowBoyBoss {
   }
 
   createShadowBoyBoss() {
+
+
     this.sprite = this.game.add.sprite(
       this.x,
       this.y,
@@ -423,4 +472,4 @@ class ShadowBoyBoss {
   }
 }
 
-export { Weasel, Golem, RedHornedBee, ShadowBoyBoss, SpikeHead };
+export { Weasel, Golem, RedHornedBee, ShadowBoyBoss, SpikeHead, Cruncher, SkullBiter };
