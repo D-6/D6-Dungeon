@@ -17,10 +17,12 @@ let border;
 let gameRoom;
 let doors;
 let map;
+let music;
 
 export default {
   create() {
     game = D6Dungeon.game;
+
     player1 = game.state.player1;
     player2 = game.state.player2;
     const { gameId } = game.state;
@@ -199,6 +201,27 @@ export default {
       });
     }
 
+    game.state.music = D6Dungeon.game.add.audio('boss-battle');
+    game.state.music.loopFull(0.1);
+    game.state.music.allowMultiple = false;
+
+    console.log(game.state.music);
+    const resumeAudio = () => {
+      // console.log(game.sound.context.state);
+      // console.log(game.state.music.isPlaying);
+      if (game.sound.context.state === 'suspended') {
+        game.sound.context.resume();
+        game.state.music.play();
+      }
+    };
+
+    if (game.sound.usingWebAudio) {
+      player1.keybinds.up.onDown.addOnce(resumeAudio);
+      player1.keybinds.down.onDown.addOnce(resumeAudio);
+      player1.keybinds.left.onDown.addOnce(resumeAudio);
+      player1.keybinds.right.onDown.addOnce(resumeAudio);
+    }
+
     socket.emit('intervalTest', gameId);
   },
 
@@ -279,6 +302,7 @@ export default {
     if (!Object.keys(game.state.enemies[gameRoom]).length) {
       game.physics.p2.clearTilemapLayerBodies(map, doors);
       carpet.visible = false;
+      // music.fadeOut(2000);
       doors.destroy();
     }
 

@@ -14,7 +14,6 @@ export default () => ({
 
     D6Dungeon.game.load.audio('boss-battle', 'assets/audio/boss-battle-2.mp3');
 
-
     D6Dungeon.game.load.image('level1Image', 'assets/tilemaps/level_1.png');
     D6Dungeon.game.load.image('level2Image', 'assets/tilemaps/level_2.png');
     D6Dungeon.game.load.image('level3Image', 'assets/tilemaps/level_3.png');
