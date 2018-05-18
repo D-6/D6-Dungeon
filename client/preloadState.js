@@ -83,25 +83,25 @@ export default () => ({
     // Player 1
     if (D6Dungeon.game.state.player1) {
       D6Dungeon.game.load.atlasJSONHash(
-        'player2',
+        'player1',
         'assets/character_sprites/nerd.png',
         'assets/character_sprites/nerd.json'
       );
       // Player 2
       D6Dungeon.game.load.atlasJSONHash(
-        'player1',
+        'player2',
         'assets/character_sprites/girl.png',
         'assets/character_sprites/girl.json'
       );
     } else {
       D6Dungeon.game.load.atlasJSONHash(
-        'player1',
+        'player2',
         'assets/character_sprites/nerd.png',
         'assets/character_sprites/nerd.json'
       );
       // Player 2
       D6Dungeon.game.load.atlasJSONHash(
-        'player2',
+        'player1',
         'assets/character_sprites/girl.png',
         'assets/character_sprites/girl.json'
       );
