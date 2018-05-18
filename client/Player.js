@@ -290,6 +290,7 @@ export default class Player {
   ) {
     this.bullets = game.add.physicsGroup(Phaser.Physics.P2JS);
     this.bullets.createMultiple(10, spriteKey, 0, false, bullet => {
+      bullet.scale.setTo(1.7);
       bullet.anchor.setTo(0, 0);
       bullet.damageAmount = damage;
       bullet.body.setCollisionGroup(bulletsCollisionGroup);
