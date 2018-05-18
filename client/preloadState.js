@@ -89,6 +89,7 @@ export default () => ({
 
     // Patiently wait for the server sockets to come back with player1 data
     const waitForSockets = setInterval(() => {
+      console.log(D6Dungeon.game.state.player1, gameId);
       if (D6Dungeon.game.state.player1 && gameId) {
         if (D6Dungeon.game.state.player1.socketId === gameId) {
           D6Dungeon.game.load.atlasJSONHash(
@@ -118,7 +119,7 @@ export default () => ({
           clearInterval(waitForSockets);
         }
       }
-    }, 20);
+    }, 100);
   },
 
   delayCreate() {
