@@ -107,13 +107,6 @@ export const enemyRenderer = (
             monster.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
             if (monster.sprite.health === 0) {
-              const deathAnimation = monster.sprite.children.filter(child => {
-                return child.animations._anims.die;
-              });
-              if (deathAnimation) {
-                console.log(deathAnimation);
-              }
-
               const generate = Math.random();
               if (generate >= 0 && generate <= 0.1) {
                 const healthPotion = new Item(
