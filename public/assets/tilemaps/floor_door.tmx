@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="5" height="5" tilewidth="64" tileheight="64" infinite="0" nextobjectid="1">
+ <tileset firstgid="1" name="level_1" tilewidth="64" tileheight="64" tilecount="256" columns="16">
+  <image source="level_1.png" width="1024" height="1024"/>
+ </tileset>
+ <layer name="Hole" width="5" height="5">
+  <data encoding="csv">
+0,0,0,0,0,
+0,158,159,160,0,
+0,174,175,176,0,
+0,190,191,192,0,
+0,0,0,0,0
+</data>
+ </layer>
+ <layer name="Ladder" width="5" height="5">
+  <data encoding="csv">
+0,0,0,0,0,
+0,155,156,157,0,
+0,171,172,173,0,
+0,0,0,0,0,
+0,0,0,0,0
+</data>
+ </layer>
+ <layer name="Border" width="5" height="5">
+  <data encoding="csv">
+0,0,0,0,0,
+32,0,0,0,30,
+32,0,0,0,30,
+32,0,0,0,30,
+44,15,15,15,45
+</data>
+ </layer>
+ <layer name="Carpet" width="5" height="5" visible="0">
+  <data encoding="csv">
+0,0,0,0,0,
+0,110,111,112,0,
+0,126,127,128,0,
+0,142,143,144,0,
+0,0,0,0,0
+</data>
+ </layer>
+</map>

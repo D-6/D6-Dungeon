@@ -93,7 +93,7 @@ const makeNewPlayer = (socket, gameId) => {
   players[gameId][socket.id] = {
     maxHealth: 6,
     health: 6,
-    speed: 140,
+    speed: 150,
     damage: 1,
     fireRate: 400,
     bulletSpeed: 400,
@@ -150,39 +150,46 @@ const placeClientInRoom = (io, socket) => {
   return gameId;
 };
 
-const mapAndEnemyGenerator = async (socket, level) => {
+const mapAndEnemyGenerator = async socket => {
   try {
-    let numRooms = 8;
-    if (level === 2) {
-      numRooms = 12;
-    } else if (level === 3) {
-      numRooms = 16;
+    maps[socket.id] = [];
+    enemies[socket.id] = {};
+    const levels = 3;
+    let newMap = {};
+
+    for (let i = 1; i <= levels; i++) {
+      if (i === 1) {
+        newMap = new Map(7, 8, true, i);
+      } else if (i === 2) {
+        newMap = new Map(7, 12, true, i);
+      } else if (i === 3) {
+        newMap = new Map(7, 16, true, i);
+      }
+
+      const promiseArray = newMap.rooms.map(room => {
+        const pathToFile = path.join(
+          __dirname,
+          '..',
+          'map_generator',
+          'layouts',
+          room.filename
+        );
+        return readFilePromise(pathToFile, 'utf8');
+      });
+
+      const rooms = await Promise.all(promiseArray);
+
+      const levelRooms = rooms.map((room, j) => {
+        const JSONroom = JSON.parse(room);
+        JSONroom.position = newMap.rooms[j].position;
+        JSONroom.level = newMap.rooms[j].level;
+        return JSONroom;
+      });
+      maps[socket.id] = [...maps[socket.id], ...levelRooms];
+
+      const levelEnemies = createEnemies(newMap);
+      enemies[socket.id] = { ...enemies[socket.id], ...levelEnemies };
     }
-
-    const newMap = new Map(7, numRooms, true);
-
-    const promiseArray = newMap.rooms.map(room => {
-      const pathToFile = path.join(
-        __dirname,
-        '..',
-        'map_generator',
-        'layouts',
-        room.filename
-      );
-      return readFilePromise(pathToFile, 'utf8');
-    });
-
-    const rooms = await Promise.all(promiseArray);
-
-    // Assign map for socket.id
-    maps[socket.id] = rooms.map((room, i) => {
-      const JSONroom = JSON.parse(room);
-      JSONroom.position = newMap.rooms[i].position;
-      return JSONroom;
-    });
-
-    // Assign enemies for socket.id
-    enemies[socket.id] = createEnemies(newMap, level);
 
     socket.emit('setRooms', maps[socket.id]);
     socket.emit('setEnemies', enemies[socket.id]);
@@ -206,7 +213,7 @@ module.exports = io => {
       makeNewPlayer(socket, newGameId);
 
       if (Object.keys(players[newGameId]).length === 1) {
-        await mapAndEnemyGenerator(socket, 1);
+        await mapAndEnemyGenerator(socket);
       }
     }
 
@@ -277,6 +284,11 @@ module.exports = io => {
 
     const setRoom = ({ gameId, gameRoom }) => {
       currentRoom[gameId] = gameRoom;
+
+      let currentFloor = Number(gameRoom[5]);
+      let floorX = Number(gameRoom[7]);
+      let floorY = 6 - gameRoom[9];
+      socket.emit('updateMap', { x: floorX, y: floorY, current: currentFloor });
     };
 
     const nextRoomReady = ({ gameId, socketId, nextRoom, direction }) => {
@@ -321,7 +333,6 @@ module.exports = io => {
           setRoom({ gameId, gameRoom: nextRoom });
 
           Object.keys(players[gameId]).forEach(player => {
-            console.log('setting ', player, ' to null');
             players[gameId][player].nextRoom = null;
             players[gameId][player].x = position.x;
             players[gameId][player].y = position.y;
@@ -381,8 +392,8 @@ module.exports = io => {
         gameId = socket.id;
         socket.to(gameId).broadcast.emit('removePlayer2');
       } else {
-        gameId = Object.keys(players).find(gameId => {
-          return Object.keys(players[gameId]).find(player => {
+        gameId = Object.keys(players).find(playId => {
+          return Object.keys(players[playId]).find(player => {
             return player === socket.id;
           });
         });
