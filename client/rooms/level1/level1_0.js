@@ -4,8 +4,7 @@ import { createDoorCollision } from '../../doorCollision';
 import { createDoorSensors } from '../../doorSensors';
 import { enemyRenderer } from '../../enemyRenderer';
 import { createCollisionGroups } from '../../collisionGroups';
-import { Potion } from '../../Items';
-import HealthBar from '../../health';
+
 /* global D6Dungeon */
 
 let player1;
