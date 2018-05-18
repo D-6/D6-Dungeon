@@ -87,37 +87,46 @@ export default () => ({
       16
     );
 
+    // Patiently wait for the server sockets to come back with player1 data
     const waitForSockets = setInterval(() => {
-      if (
-        D6Dungeon.game.state.player1 &&
-        D6Dungeon.game.state.player1.socketId === gameId
-      ) {
-        D6Dungeon.game.load.atlasJSONHash(
-          'player1',
-          'assets/character_sprites/nerd.png',
-          'assets/character_sprites/nerd.json'
-        );
-        D6Dungeon.game.load.atlasJSONHash(
-          'player2',
-          'assets/character_sprites/girl.png',
-          'assets/character_sprites/girl.json'
-        );
-      } else {
-        D6Dungeon.game.load.atlasJSONHash(
-          'player2',
-          'assets/character_sprites/nerd.png',
-          'assets/character_sprites/nerd.json'
-        );
-        D6Dungeon.game.load.atlasJSONHash(
-          'player1',
-          'assets/character_sprites/girl.png',
-          'assets/character_sprites/girl.json'
-        );
+      if (D6Dungeon.game.state.player1 && gameId) {
+        if (D6Dungeon.game.state.player1.socketId === gameId) {
+          D6Dungeon.game.load.atlasJSONHash(
+            'player1',
+            'assets/character_sprites/nerd.png',
+            'assets/character_sprites/nerd.json'
+          );
+          D6Dungeon.game.load.atlasJSONHash(
+            'player2',
+            'assets/character_sprites/girl.png',
+            'assets/character_sprites/girl.json'
+          );
+          this.delayCreate();
+          clearInterval(waitForSockets);
+        } else {
+          D6Dungeon.game.load.atlasJSONHash(
+            'player1',
+            'assets/character_sprites/girl.png',
+            'assets/character_sprites/girl.json'
+          );
+          D6Dungeon.game.load.atlasJSONHash(
+            'player2',
+            'assets/character_sprites/nerd.png',
+            'assets/character_sprites/nerd.json'
+          );
+          this.delayCreate();
+          clearInterval(waitForSockets);
+        }
       }
-      this.state.start('level1_3-3', true, false);
-      clearInterval(waitForSockets);
-    }, 50);
+    }, 20);
   },
 
-  // create() {}
+  delayCreate() {
+    const waitForSockets = setInterval(() => {
+      if (D6Dungeon.game.state.player1.socketId) {
+        D6Dungeon.game.state.start('level1_3-3', true, false);
+        clearInterval(waitForSockets);
+      }
+    }, 1000);
+  }
 });
