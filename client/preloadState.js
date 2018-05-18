@@ -7,7 +7,7 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 export default () => ({
   preload() {
     // Won't pause on loss of focus
-    // const { gameId } = D6Dungeon.game.state;
+    const { gameId } = D6Dungeon.game.state;
 
     D6Dungeon.game.stage.disableVisibilityChange = true;
 
@@ -80,39 +80,44 @@ export default () => ({
       'assets/monster_sprites/red-horned-bee.json'
     );
 
-    if (D6Dungeon.game.state.player1) {
-      D6Dungeon.game.load.atlasJSONHash(
-        'player1',
-        'assets/character_sprites/nerd.png',
-        'assets/character_sprites/nerd.json'
-      );
-      D6Dungeon.game.load.atlasJSONHash(
-        'player2',
-        'assets/character_sprites/girl.png',
-        'assets/character_sprites/girl.json'
-      );
-    } else {
-      D6Dungeon.game.load.atlasJSONHash(
-        'player2',
-        'assets/character_sprites/nerd.png',
-        'assets/character_sprites/nerd.json'
-      );
-      D6Dungeon.game.load.atlasJSONHash(
-        'player1',
-        'assets/character_sprites/girl.png',
-        'assets/character_sprites/girl.json'
-      );
-    }
-
     D6Dungeon.game.load.spritesheet(
       'golem',
       'assets/monster_sprites/HulkA.png',
       16,
       16
     );
+
+    const waitForSockets = setInterval(() => {
+      if (
+        D6Dungeon.game.state.player1 &&
+        D6Dungeon.game.state.player1.socketId === gameId
+      ) {
+        D6Dungeon.game.load.atlasJSONHash(
+          'player1',
+          'assets/character_sprites/nerd.png',
+          'assets/character_sprites/nerd.json'
+        );
+        D6Dungeon.game.load.atlasJSONHash(
+          'player2',
+          'assets/character_sprites/girl.png',
+          'assets/character_sprites/girl.json'
+        );
+      } else {
+        D6Dungeon.game.load.atlasJSONHash(
+          'player2',
+          'assets/character_sprites/nerd.png',
+          'assets/character_sprites/nerd.json'
+        );
+        D6Dungeon.game.load.atlasJSONHash(
+          'player1',
+          'assets/character_sprites/girl.png',
+          'assets/character_sprites/girl.json'
+        );
+      }
+      this.state.start('level1_3-3', true, false);
+      clearInterval(waitForSockets);
+    }, 50);
   },
 
-  create() {
-    this.state.start('level1_3-3', true, false);
-  }
+  // create() {}
 });
