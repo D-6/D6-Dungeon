@@ -108,6 +108,12 @@ export const enemyRenderer = (
             other.sprite.kill();
             const generate = Math.floor(Math.random() * 4);
             if (monster.sprite.health === 0) {
+              const deathAnimation = monster.sprite.children.filter(child => {
+                return child.animations._anims.die;
+              });
+              if (deathAnimation) {
+                deathAnimation.play();
+              }
               if (generate === 0) {
                 const healthPotion = new Potion(
                   'health',

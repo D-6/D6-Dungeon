@@ -387,6 +387,30 @@ class ShadowBoyBoss {
       explosion.visible = false;
     });
 
+    // Explosion child
+    const deadBoss = this.game.add.sprite(
+      0,
+      0,
+      'shadow-boy-boss',
+      'GameOver/frame-1.png'
+    );
+    // this.game.physics.p2.enable(explosion);
+    // explosion.body.static = true;
+    deadBoss.visible = false;
+    this.sprite.addChild(deadBoss);
+
+    deadBoss.animations.add(
+      'die',
+      Phaser.Animation.generateFrameNames('GameOver/frame-', 1, 9, '.png', 1),
+      45,
+      false,
+      false
+    );
+
+    deadBoss.animations._anims.die.onComplete.add(() => {
+      deadBoss.visible = false;
+    });
+
     this.sprite.animations.play('idle');
 
     this.sprite.scale.setTo(this.scale, this.scale);
