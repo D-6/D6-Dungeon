@@ -7,7 +7,7 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 export default () => ({
   preload() {
     // Won't pause on loss of focus
-    const { gameId } = D6Dungeon.game.state;
+    // const { gameId } = D6Dungeon.game.state;
 
     D6Dungeon.game.stage.disableVisibilityChange = true;
 
@@ -80,7 +80,7 @@ export default () => ({
       'assets/monster_sprites/red-horned-bee.json'
     );
 
-    if (D6Dungeon.game.state.player1.socketId === gameId) {
+    if (D6Dungeon.game.state.player1) {
       D6Dungeon.game.load.atlasJSONHash(
         'player1',
         'assets/character_sprites/nerd.png',
