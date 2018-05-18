@@ -93,7 +93,7 @@ const makeNewPlayer = (socket, gameId) => {
   players[gameId][socket.id] = {
     maxHealth: 6,
     health: 6,
-    speed: 170,
+    speed: 150,
     damage: 1,
     fireRate: 400,
     bulletSpeed: 400,
