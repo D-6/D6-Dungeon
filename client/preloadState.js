@@ -7,8 +7,6 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 export default () => ({
   preload() {
     // Won't pause on loss of focus
-    const { gameId } = D6Dungeon.game.state;
-
     D6Dungeon.game.stage.disableVisibilityChange = true;
 
     D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
@@ -89,7 +87,7 @@ export default () => ({
 
     // Patiently wait for the server sockets to come back with player1 data
     const waitForSockets = setInterval(() => {
-      console.log(D6Dungeon.game.state.player1, gameId);
+      const { gameId } = D6Dungeon.game.state;
       if (D6Dungeon.game.state.player1 && gameId) {
         if (D6Dungeon.game.state.player1.socketId === gameId) {
           D6Dungeon.game.load.atlasJSONHash(
