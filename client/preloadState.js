@@ -25,6 +25,7 @@ export default () => ({
       Phaser.Tilemap.TILED_JSON
     );
 
+    D6Dungeon.game.load.image('fist', 'assets/items/fist.png');
     D6Dungeon.game.load.image('potion', 'assets/items/Potion_42.png');
     D6Dungeon.game.load.image('bullet', 'assets/items/Food_01.png');
     D6Dungeon.game.load.image('dummyBullet', 'assets/items/Food_01.png');

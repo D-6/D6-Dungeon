@@ -90,8 +90,8 @@ class Cruncher {
     this.x = x;
     this.y = y;
     this.health = health;
-    this.minSpeed = 60;
-    this.speedVariation = 80;
+    this.minSpeed = 70;
+    this.speedVariation = 60;
     this.damage = damage;
     this.scale = 1;
     this.randomBehavior = 0;

@@ -16,6 +16,10 @@ export class Item {
       this.sprite = game.add.sprite(this.x, this.y, 'blood');
       this.sprite.anchor.setTo(0.5, 0.5);
       this.sprite.scale.set(4);
+    } else if (this.type === 'ironFist') {
+      this.sprite = game.add.sprite(this.x, this.y, 'fist');
+      this.sprite.anchor.setTo(0.5, 0.5);
+      this.sprite.scale.set(0.18);
     }
 
     game.physics.p2.enable(this.sprite, false);
