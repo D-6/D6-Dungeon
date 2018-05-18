@@ -28,6 +28,8 @@ export default () => ({
     D6Dungeon.game.load.image('potion', 'assets/items/Potion_42.png');
     D6Dungeon.game.load.image('bullet', 'assets/items/Food_01.png');
     D6Dungeon.game.load.image('dummyBullet', 'assets/items/Food_01.png');
+    D6Dungeon.game.load.image('blood', 'assets/items/Misc_08.png');
+
 
     D6Dungeon.game.load.image(
       'wizard',
@@ -78,29 +80,54 @@ export default () => ({
       'assets/monster_sprites/red-horned-bee.json'
     );
 
-    // Player 1
-    D6Dungeon.game.load.atlasJSONHash(
-      'player1',
-      'assets/character_sprites/nerd.png',
-      'assets/character_sprites/nerd.json'
-    );
-
-    // Player 2
-    D6Dungeon.game.load.atlasJSONHash(
-      'player2',
-      'assets/character_sprites/girl.png',
-      'assets/character_sprites/girl.json'
-    );
-
     D6Dungeon.game.load.spritesheet(
       'golem',
       'assets/monster_sprites/HulkA.png',
       16,
       16
     );
+
+    // Patiently wait for the server sockets to come back with player1 data
+    const waitForSockets = setInterval(() => {
+      const { gameId, player1 } = D6Dungeon.game.state;
+      if (player1 && gameId) {
+        let player1Key;
+        let player2Key;
+
+        if (player1.socketId === gameId) {
+          player1Key = 'player1';
+          player2Key = 'player2';
+        } else {
+          player1Key = 'player2';
+          player2Key = 'player1';
+        }
+
+        D6Dungeon.game.load.atlasJSONHash(
+          player1Key,
+          'assets/character_sprites/nerd.png',
+          'assets/character_sprites/nerd.json'
+        );
+        D6Dungeon.game.load.atlasJSONHash(
+          player2Key,
+          'assets/character_sprites/girl.png',
+          'assets/character_sprites/girl.json'
+        );
+
+        this.delayCreate();
+        clearInterval(waitForSockets);
+      }
+    }, 50);
   },
 
-  create() {
-    this.state.start('level1_3-3', true, false);
+  // Patiently wait for the player images to load
+  delayCreate() {
+    const waitForPlayerSprites = setInterval(() => {
+      const player1Loaded = D6Dungeon.game.cache._cache.image.player1;
+      const player2Loaded = D6Dungeon.game.cache._cache.image.player2;
+      if (player1Loaded && player2Loaded) {
+        D6Dungeon.game.state.start('level1_3-3', true, false);
+        clearInterval(waitForPlayerSprites);
+      }
+    }, 50);
   }
 });

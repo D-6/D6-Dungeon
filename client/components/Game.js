@@ -32,26 +32,26 @@ class Game extends Component {
     });
     socket.on('updateMap', roomCoord => {
       let newMap = this.state.map;
-      console.log(roomCoord);
-      console.log(this.state.roomChange);
-      console.log(roomCoord.current !== this.state.roomChange);
+      // console.log(roomCoord);
+      // console.log(this.state.roomChange);
+      // console.log(roomCoord.current !== this.state.roomChange);
       if (roomCoord.current !== this.state.roomChange) {
         let newNewMap = newMap.map(row =>
           row.map(room => {
             room = 'O';
-            console.log(room);
+            // console.log(room);
             return room;
           })
         );
         newNewMap[roomCoord.y][roomCoord.x] = 'X';
-        console.log('this is the new map', newNewMap);
+        // console.log('this is the new map', newNewMap);
         this.setState({
           roomChange: roomCoord.current,
           map: newNewMap
         });
       } else {
         newMap[roomCoord.y][roomCoord.x] = 'X';
-        console.log(newMap);
+        // console.log(newMap);
         this.setState({
           map: newMap
         });

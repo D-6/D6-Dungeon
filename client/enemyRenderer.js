@@ -9,7 +9,7 @@ import {
   SkullBiter
 } from './enemies';
 import socket from './socket';
-import { Potion } from './Items';
+import { Item } from './Items';
 
 /* global D6Dungeon */
 
@@ -103,24 +103,44 @@ export const enemyRenderer = (
       monster.sprite.body.onBeginContact.add(other => {
         if (other.sprite) {
           if (other.sprite.key === 'bullet') {
-            monster.health -= other.sprite.damageAmount;
+            const currentStateHealth =
+              game.state.enemies[gameRoom][monster.name].health;
+
+            monster.health = currentStateHealth - other.sprite.damageAmount;
+            monster.sprite.health = currentStateHealth;
             monster.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
-            const generate = Math.floor(Math.random() * 4);
+
             if (monster.sprite.health === 0) {
-              if (generate === 0) {
-                const healthPotion = new Potion(
+              const generate = Math.random();
+
+              if (generate >= 0 && generate <= 0.1) {
+                const healthPotion = new Item(
                   'health',
                   monster.sprite.body.x,
                   monster.sprite.body.y
                 );
-                healthPotion.createPotionSprite(
+
+                healthPotion.createItemSprite(
+                  game,
+                  game.physics.p2.collisionGroups[5],
+                  [game.physics.p2.collisionGroups[3]]
+                );
+              } else if (generate > 0.1 && generate <= 0.13) {
+                const maxHealthBlood = new Item(
+                  'maxHealth',
+                  monster.sprite.body.x,
+                  monster.sprite.body.y
+                );
+
+                maxHealthBlood.createItemSprite(
                   game,
                   game.physics.p2.collisionGroups[5],
                   [game.physics.p2.collisionGroups[3]]
                 );
               }
             }
+
             socket.emit('enemyHit', {
               health: monster.health,
               name: monster.name,

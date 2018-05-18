@@ -1,16 +1,22 @@
 import socket from './socket';
 
-export class Potion {
+export class Item {
   constructor(type, x, y) {
     this.type = type;
     this.x = x;
     this.y = y;
   }
 
-  createPotionSprite(game, itemsCollisionGroup, collidesWithItemsArr) {
-    this.sprite = game.add.sprite(this.x, this.y, 'potion');
-    this.sprite.anchor.setTo(0.5, 0.5);
-    this.sprite.scale.set(4);
+  createItemSprite(game, itemsCollisionGroup, collidesWithItemsArr) {
+    if (this.type === 'health') {
+      this.sprite = game.add.sprite(this.x, this.y, 'potion');
+      this.sprite.anchor.setTo(0.5, 0.5);
+      this.sprite.scale.set(4);
+    } else if (this.type === 'maxHealth') {
+      this.sprite = game.add.sprite(this.x, this.y, 'blood');
+      this.sprite.anchor.setTo(0.5, 0.5);
+      this.sprite.scale.set(4);
+    }
 
     game.physics.p2.enable(this.sprite, false);
     this.sprite.body.static = true;
@@ -25,10 +31,10 @@ export class Potion {
           damage,
           fireRate,
           speed,
+          maxHealth,
           socketId,
           sprite,
-          hearts,
-          maxHealth
+          hearts
         } = player1;
 
         if (this.type === 'health') {
@@ -41,8 +47,6 @@ export class Potion {
           if (player1.health !== maxHealth) {
             player1.health += healAmount;
             sprite.health += healAmount;
-
-            console.log('HEALTH POTION! sprite', sprite.health);
 
             for (let i = 0; i < healAmount; i++) {
               for (let j = 0; j < hearts.length; j++) {
@@ -58,9 +62,15 @@ export class Potion {
               }
             }
           }
-        }
+        } else if (this.type === 'maxHealth') {
+          const maxHealthIncrease = 2;
+          player1.maxHealth += maxHealthIncrease;
 
-        console.log('pickup current health', sprite.health);
+          game.add.sprite(120 + 40 * hearts.length, 45, 'hearts', 2, hearts);
+
+          hearts.setAll('scale.x', 0.35);
+          hearts.setAll('scale.y', 0.35);
+        }
 
         this.sprite.destroy();
 
@@ -69,6 +79,7 @@ export class Potion {
           damage,
           fireRate,
           speed,
+          maxHealth: player1.maxHealth,
           health: player1.health,
           socketId,
           gameId
