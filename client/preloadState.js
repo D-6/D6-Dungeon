@@ -123,6 +123,7 @@ export default () => ({
 
   delayCreate() {
     const waitForSockets = setTimeout(() => {
+      console.log('Waiting for data!');
       D6Dungeon.game.state.start('level1_3-3', true, false);
       clearTimeout(waitForSockets);
     }, 1000);
