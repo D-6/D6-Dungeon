@@ -122,11 +122,9 @@ export default () => ({
   },
 
   delayCreate() {
-    const waitForSockets = setInterval(() => {
-      if (D6Dungeon.game.state.player1.socketId) {
-        D6Dungeon.game.state.start('level1_3-3', true, false);
-        clearInterval(waitForSockets);
-      }
+    const waitForSockets = setTimeout(() => {
+      D6Dungeon.game.state.start('level1_3-3', true, false);
+      clearTimeout(waitForSockets);
     }, 1000);
   }
 });
