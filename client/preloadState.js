@@ -89,31 +89,28 @@ export default () => ({
     const waitForSockets = setInterval(() => {
       const { gameId, player1 } = D6Dungeon.game.state;
       if (player1 && gameId) {
+        let player1Key;
+        let player2Key;
+
         if (player1.socketId === gameId) {
-          console.log('boy');
-          D6Dungeon.game.load.atlasJSONHash(
-            'player1',
-            'assets/character_sprites/nerd.png',
-            'assets/character_sprites/nerd.json'
-          );
-          D6Dungeon.game.load.atlasJSONHash(
-            'player2',
-            'assets/character_sprites/girl.png',
-            'assets/character_sprites/girl.json'
-          );
+          player1Key = 'player1';
+          player2Key = 'player2';
         } else {
-          console.log('girl');
-          D6Dungeon.game.load.atlasJSONHash(
-            'player1',
-            'assets/character_sprites/girl.png',
-            'assets/character_sprites/girl.json'
-          );
-          D6Dungeon.game.load.atlasJSONHash(
-            'player2',
-            'assets/character_sprites/nerd.png',
-            'assets/character_sprites/nerd.json'
-          );
+          player1Key = 'player2';
+          player2Key = 'player1';
         }
+
+        D6Dungeon.game.load.atlasJSONHash(
+          player1Key,
+          'assets/character_sprites/nerd.png',
+          'assets/character_sprites/nerd.json'
+        );
+        D6Dungeon.game.load.atlasJSONHash(
+          player2Key,
+          'assets/character_sprites/girl.png',
+          'assets/character_sprites/girl.json'
+        );
+
         this.delayCreate();
         clearInterval(waitForSockets);
       }
