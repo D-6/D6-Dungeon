@@ -120,13 +120,7 @@ export default () => ({
     }, 50);
   },
 
-  // create() {
-  //   console.log(player1Loader);
-  //   D6Dungeon.game.cache.onReady.add(() => {
-  //     D6Dungeon.game.state.start('level1_3-3', true, false);
-  //   });
-  // },
-
+  // Patiently wait for the player images to load
   delayCreate() {
     const waitForPlayerSprites = setInterval(() => {
       const player1Loaded = D6Dungeon.game.cache._cache.image.player1;
