@@ -138,6 +138,18 @@ export const enemyRenderer = (
                   game.physics.p2.collisionGroups[5],
                   [game.physics.p2.collisionGroups[3]]
                 );
+              } else if (generate > 0.13 && generate <= 0.14) {
+                const ironFist = new Item(
+                  'ironFist',
+                  monster.sprite.body.x,
+                  monster.sprite.body.y
+                );
+
+                ironFist.createItemSprite(
+                  game,
+                  game.physics.p2.collisionGroups[5],
+                  [game.physics.p2.collisionGroups[3]]
+                );
               }
             }
 

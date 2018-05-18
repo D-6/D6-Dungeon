@@ -16,6 +16,10 @@ export class Item {
       this.sprite = game.add.sprite(this.x, this.y, 'blood');
       this.sprite.anchor.setTo(0.5, 0.5);
       this.sprite.scale.set(4);
+    } else if (this.type === 'ironFist') {
+      this.sprite = game.add.sprite(this.x, this.y, 'fist');
+      this.sprite.anchor.setTo(0.5, 0.5);
+      this.sprite.scale.set(0.15);
     }
 
     game.physics.p2.enable(this.sprite, false);
@@ -63,6 +67,14 @@ export class Item {
             }
           }
         } else if (this.type === 'maxHealth') {
+          const maxHealthIncrease = 2;
+          player1.maxHealth += maxHealthIncrease;
+
+          game.add.sprite(120 + 40 * hearts.length, 45, 'hearts', 2, hearts);
+
+          hearts.setAll('scale.x', 0.35);
+          hearts.setAll('scale.y', 0.35);
+        } else if (this.type === 'ironFist') {
           const maxHealthIncrease = 2;
           player1.maxHealth += maxHealthIncrease;
 
