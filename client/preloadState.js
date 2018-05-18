@@ -4,6 +4,9 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 
 /* global D6Dungeon */
 
+let player1Loader;
+let player2Loader;
+
 export default () => ({
   preload() {
     // Won't pause on loss of focus
@@ -88,44 +91,53 @@ export default () => ({
     // Patiently wait for the server sockets to come back with player1 data
     const waitForSockets = setInterval(() => {
       const { gameId, player1 } = D6Dungeon.game.state;
-      if (player1 && gameId && player1.socketId === gameId) {
-        D6Dungeon.game.load.atlasJSONHash(
-          'player1',
-          'assets/character_sprites/nerd.png',
-          'assets/character_sprites/nerd.json'
-        );
-        D6Dungeon.game.load.atlasJSONHash(
-          'player2',
-          'assets/character_sprites/girl.png',
-          'assets/character_sprites/girl.json'
-        );
-      } else {
-        D6Dungeon.game.load.atlasJSONHash(
-          'player1',
-          'assets/character_sprites/girl.png',
-          'assets/character_sprites/girl.json'
-        );
-        D6Dungeon.game.load.atlasJSONHash(
-          'player2',
-          'assets/character_sprites/nerd.png',
-          'assets/character_sprites/nerd.json'
-        );
+      if (player1 && gameId) {
+        if (player1.socketId === gameId) {
+          console.log('boy');
+          player1Loader = D6Dungeon.game.load.atlasJSONHash(
+            'player1',
+            'assets/character_sprites/nerd.png',
+            'assets/character_sprites/nerd.json'
+          );
+          player2Loader = D6Dungeon.game.load.atlasJSONHash(
+            'player2',
+            'assets/character_sprites/girl.png',
+            'assets/character_sprites/girl.json'
+          );
+        } else {
+          console.log('girl');
+          player1Loader = D6Dungeon.game.load.atlasJSONHash(
+            'player1',
+            'assets/character_sprites/girl.png',
+            'assets/character_sprites/girl.json'
+          );
+          player2Loader = D6Dungeon.game.load.atlasJSONHash(
+            'player2',
+            'assets/character_sprites/nerd.png',
+            'assets/character_sprites/nerd.json'
+          );
+        }
+        this.delayCreate();
+        clearInterval(waitForSockets);
       }
-      this.delayCreate();
-      clearInterval(waitForSockets);
-    }, 100);
+    }, 50);
   },
+
+  // create() {
+  //   console.log(player1Loader);
+  //   D6Dungeon.game.cache.onReady.add(() => {
+  //     D6Dungeon.game.state.start('level1_3-3', true, false);
+  //   });
+  // },
 
   delayCreate() {
     const waitForPlayerSprites = setInterval(() => {
-      const player1Loaded =
-        D6Dungeon.game.cache._cache.image.player1.base.hasLoaded;
-      const player2Loaded =
-        D6Dungeon.game.cache._cache.image.player2.base.hasLoaded;
+      let player1Loaded = D6Dungeon.game.cache._cache.image.player1;
+      let player2Loaded = D6Dungeon.game.cache._cache.image.player1;
       if (player1Loaded && player2Loaded) {
         D6Dungeon.game.state.start('level1_3-3', true, false);
         clearInterval(waitForPlayerSprites);
       }
-    }, 300);
+    }, 50);
   }
 });
