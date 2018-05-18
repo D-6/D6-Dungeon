@@ -129,8 +129,8 @@ export default () => ({
 
   delayCreate() {
     const waitForPlayerSprites = setInterval(() => {
-      let player1Loaded = D6Dungeon.game.cache._cache.image.player1;
-      let player2Loaded = D6Dungeon.game.cache._cache.image.player2;
+      const player1Loaded = D6Dungeon.game.cache._cache.image.player1;
+      const player2Loaded = D6Dungeon.game.cache._cache.image.player2;
       if (player1Loaded && player2Loaded) {
         D6Dungeon.game.state.start('level1_3-3', true, false);
         clearInterval(waitForPlayerSprites);
