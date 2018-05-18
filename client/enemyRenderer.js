@@ -106,8 +106,8 @@ export const enemyRenderer = (
             monster.health -= other.sprite.damageAmount;
             monster.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
-            const generate = Math.random();
             if (monster.sprite.health === 0) {
+              const generate = Math.random();
               if (generate >= 0 && generate <= 0.1) {
                 const healthPotion = new Item(
                   'health',
@@ -119,8 +119,7 @@ export const enemyRenderer = (
                   game.physics.p2.collisionGroups[5],
                   [game.physics.p2.collisionGroups[3]]
                 );
-              }
-              else if (generate > 0.1 && generate <= 0.13) {
+              } else if (generate > 0.1 && generate <= 0.13) {
                 const maxHealthBlood = new Item(
                   'maxHealth',
                   monster.sprite.body.x,
