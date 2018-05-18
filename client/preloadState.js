@@ -4,9 +4,6 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 
 /* global D6Dungeon */
 
-let player1Loader;
-let player2Loader;
-
 export default () => ({
   preload() {
     // Won't pause on loss of focus
@@ -94,24 +91,24 @@ export default () => ({
       if (player1 && gameId) {
         if (player1.socketId === gameId) {
           console.log('boy');
-          player1Loader = D6Dungeon.game.load.atlasJSONHash(
+          D6Dungeon.game.load.atlasJSONHash(
             'player1',
             'assets/character_sprites/nerd.png',
             'assets/character_sprites/nerd.json'
           );
-          player2Loader = D6Dungeon.game.load.atlasJSONHash(
+          D6Dungeon.game.load.atlasJSONHash(
             'player2',
             'assets/character_sprites/girl.png',
             'assets/character_sprites/girl.json'
           );
         } else {
           console.log('girl');
-          player1Loader = D6Dungeon.game.load.atlasJSONHash(
+          D6Dungeon.game.load.atlasJSONHash(
             'player1',
             'assets/character_sprites/girl.png',
             'assets/character_sprites/girl.json'
           );
-          player2Loader = D6Dungeon.game.load.atlasJSONHash(
+          D6Dungeon.game.load.atlasJSONHash(
             'player2',
             'assets/character_sprites/nerd.png',
             'assets/character_sprites/nerd.json'
@@ -133,7 +130,7 @@ export default () => ({
   delayCreate() {
     const waitForPlayerSprites = setInterval(() => {
       let player1Loaded = D6Dungeon.game.cache._cache.image.player1;
-      let player2Loaded = D6Dungeon.game.cache._cache.image.player1;
+      let player2Loaded = D6Dungeon.game.cache._cache.image.player2;
       if (player1Loaded && player2Loaded) {
         D6Dungeon.game.state.start('level1_3-3', true, false);
         clearInterval(waitForPlayerSprites);
