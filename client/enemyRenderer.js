@@ -103,17 +103,24 @@ export const enemyRenderer = (
       monster.sprite.body.onBeginContact.add(other => {
         if (other.sprite) {
           if (other.sprite.key === 'bullet') {
-            monster.health -= other.sprite.damageAmount;
+            const currentStateHealth =
+              game.state.enemies[gameRoom][monster.name].health;
+
+            monster.health = currentStateHealth - other.sprite.damageAmount;
+            monster.sprite.health = currentStateHealth;
             monster.sprite.damage(other.sprite.damageAmount);
             other.sprite.kill();
+
             if (monster.sprite.health === 0) {
               const generate = Math.random();
+
               if (generate >= 0 && generate <= 0.1) {
                 const healthPotion = new Item(
                   'health',
                   monster.sprite.body.x,
                   monster.sprite.body.y
                 );
+
                 healthPotion.createItemSprite(
                   game,
                   game.physics.p2.collisionGroups[5],
@@ -125,6 +132,7 @@ export const enemyRenderer = (
                   monster.sprite.body.x,
                   monster.sprite.body.y
                 );
+
                 maxHealthBlood.createItemSprite(
                   game,
                   game.physics.p2.collisionGroups[5],
@@ -132,6 +140,7 @@ export const enemyRenderer = (
                 );
               }
             }
+
             socket.emit('enemyHit', {
               health: monster.health,
               name: monster.name,
