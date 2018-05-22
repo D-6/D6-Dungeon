@@ -35,6 +35,7 @@ class Game extends Component {
     });
 
     socket.on('updateMap', ({ x, y, currentLevel }) => {
+      y = 6 - y;
       let newMap = this.state.map;
 
       if (currentLevel !== this.state.roomChange) {

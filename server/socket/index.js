@@ -238,7 +238,7 @@ module.exports = io => {
 
       const currentLevel = +gameRoom[5];
       const x = +gameRoom[7];
-      const y = 6 - gameRoom[9];
+      const y = +gameRoom[9];
       socket.emit('updateMap', { x, y, currentLevel });
     };
 
