@@ -1,6 +1,5 @@
 import io from 'socket.io-client';
 import Player from './Player';
-import D6DungeonGame from './game';
 
 import level1_0 from './rooms/level1/level1_0';
 import level1_1 from './rooms/level1/level1_1';
@@ -85,19 +84,8 @@ const levelArr = [
 const socket = io(window.location.origin);
 const player2Scale = 1.2;
 
-const socketFunctions = socket => {
-  socket.on('createPlayer', createPlayer);
-  socket.on('newRoom', newRoom);
-  socket.on('player2Fire', player2Fire);
-  socket.on('player2Hit', player2Hit);
-  socket.on('player2Move', player2Move);
-  socket.on('player2Pickup', player2Pickup);
-  socket.on('removePlayer2', removePlayer2);
-  socket.on('setEnemies', setEnemies);
-  socket.on('setPlayer2', setPlayer2);
-  socket.on('setPlayer2Animation', setPlayer2Animation);
-  socket.on('setRooms', setRooms);
-  socket.on('updateEnemy', updateEnemy);
+const connected = () => {
+  console.log('Connected!');
 };
 
 const createPlayer = data => {
@@ -212,10 +200,18 @@ const updateEnemy = ({ currentRoom, enemy }) => {
   D6Dungeon.game.state.enemies[currentRoom][enemy.name] = enemy;
 };
 
-socket.on('connect', () => {
-  console.log('Connected!');
-});
-
-socketFunctions(socket);
+socket.on('connect', connected);
+socket.on('createPlayer', createPlayer);
+socket.on('newRoom', newRoom);
+socket.on('player2Fire', player2Fire);
+socket.on('player2Hit', player2Hit);
+socket.on('player2Move', player2Move);
+socket.on('player2Pickup', player2Pickup);
+socket.on('removePlayer2', removePlayer2);
+socket.on('setEnemies', setEnemies);
+socket.on('setPlayer2', setPlayer2);
+socket.on('setPlayer2Animation', setPlayer2Animation);
+socket.on('setRooms', setRooms);
+socket.on('updateEnemy', updateEnemy);
 
 export default socket;
