@@ -103,8 +103,11 @@ export const enemyRenderer = (
       monster.sprite.body.onBeginContact.add(other => {
         if (other.sprite) {
           if (other.sprite.key === 'bullet') {
-            const currentStateHealth =
-              game.state.enemies[gameRoom][monster.name].health;
+            const currentStateHealth = game.state.enemies[gameRoom][
+              monster.name
+            ]
+              ? game.state.enemies[gameRoom][monster.name].health
+              : 0;
 
             monster.health = currentStateHealth - other.sprite.damageAmount;
             monster.sprite.health = currentStateHealth;
