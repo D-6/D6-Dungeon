@@ -1,6 +1,5 @@
 const router = require('express').Router();
 
-router.use('/users', require('./users'));
 router.use('/levels', require('./levels'));
 
 router.use((req, res, next) => {
