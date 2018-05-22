@@ -238,7 +238,7 @@ module.exports = io => {
       socket.emit('updateMap', { x, y, currentLevel });
     };
 
-    const nextRoomReady = ({ gameId, socketId, nextRoom, direction }) => {
+    const nextRoomReady = ({ gameId, nextRoom, direction }) => {
       if (players[gameId]) {
         const enemiesDead =
           Object.keys(enemies[gameId][currentRoom[gameId]]).length === 0;
