@@ -254,7 +254,7 @@ module.exports = io => {
           switch (direction) {
             case 'north':
               position.x = 608;
-              position.y = 160;
+              position.y = 662;
               break;
             case 'east':
               position.x = 160;
@@ -262,7 +262,7 @@ module.exports = io => {
               break;
             case 'south':
               position.x = 608;
-              position.y = 662;
+              position.y = 160;
               break;
             case 'west':
               position.x = 1056;
@@ -379,8 +379,6 @@ module.exports = io => {
     //   let floorY = 6 - gameRoom[9];
     //   socket.emit('updateMap', { x: floorX, y: floorY, current: currentFloor });
     // };
-
-
 
     socket.on('intervalTest', gameId => {
       runIntervals(io, gameId);
