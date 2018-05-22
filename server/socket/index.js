@@ -240,8 +240,6 @@ module.exports = io => {
 
     const nextRoomReady = ({ gameId, socketId, nextRoom, direction }) => {
       if (players[gameId]) {
-        // players[gameId][socketId].nextRoom = nextRoom;
-
         const enemiesDead =
           Object.keys(enemies[gameId][currentRoom[gameId]]).length === 0;
 
