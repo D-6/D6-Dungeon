@@ -33,8 +33,7 @@ const createSensor = ({ x, y }, direction) => {
 
 export const createDoorSensors = () => {
   const { state } = D6Dungeon.game;
-  const { gameId, player1 } = state;
-  const { socketId } = player1;
+  const { gameId } = state;
   const gameRoom = state.current;
 
   const doorSensors = [
@@ -60,7 +59,6 @@ export const createDoorSensors = () => {
       if (other.sprite.key === 'player1') {
         socket.emit('nextRoomReady', {
           gameId,
-          socketId,
           nextRoom,
           direction
         });
