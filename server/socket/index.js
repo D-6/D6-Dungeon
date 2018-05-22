@@ -202,10 +202,6 @@ module.exports = io => {
       }
     }
 
-    const clearRoomReady = ({ gameId, socketId }) => {
-      players[gameId][socketId].nextRoom = null;
-    };
-
     const enemyHit = ({ health, name, gameId }) => {
       const enemyObj = enemies[gameId][currentRoom[gameId]][name];
       if (enemyObj) {
@@ -371,15 +367,6 @@ module.exports = io => {
       }
     };
 
-    // const setRoom = ({ gameId, gameRoom }) => {
-    //   currentRoom[gameId] = gameRoom;
-
-    //   let currentFloor = Number(gameRoom[5]);
-    //   let floorX = Number(gameRoom[7]);
-    //   let floorY = 6 - gameRoom[9];
-    //   socket.emit('updateMap', { x: floorX, y: floorY, current: currentFloor });
-    // };
-
     socket.on('intervalTest', gameId => {
       runIntervals(io, gameId);
     });
@@ -391,7 +378,6 @@ module.exports = io => {
     socket.on('playerMove', playerMove);
     socket.on('playerPickup', playerPickup);
     socket.on('nextRoomReady', nextRoomReady);
-    socket.on('clearRoomReady', clearRoomReady);
     socket.on('player2Animation', player2Animation);
     socket.on('disconnect', disconnect);
   });

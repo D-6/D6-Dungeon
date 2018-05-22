@@ -66,11 +66,5 @@ export const createDoorSensors = () => {
         });
       }
     });
-
-    doorSensor.body.onEndContact.add(other => {
-      if (other.sprite && other.sprite.key === 'player1') {
-        socket.emit('clearRoomReady', { gameId, socketId });
-      }
-    });
   });
 };
