@@ -4,4 +4,4 @@
  * having to figure out which file they belong to!
  */
 
-//  export { Login, Signup } from './auth-form';
+export { default as Game } from './Game';
