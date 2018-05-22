@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import D6DungeonGame from '../game';
 import socket from '../socket.js';
 import { Link } from 'react-router-dom';
+
 /* global D6Dungeon */
 
 class Game extends Component {
@@ -22,45 +23,48 @@ class Game extends Component {
       roomChange: 1
     };
   }
+
   componentDidMount = () => {
     D6Dungeon.game = new D6DungeonGame();
+
     socket.on('sendUrl', url => {
       this.setState({
         send: 'Send this link to Player2: ',
         url: `${url}`
       });
     });
+
     socket.on('updateMap', roomCoord => {
       let newMap = this.state.map;
-      // console.log(roomCoord);
-      // console.log(this.state.roomChange);
-      // console.log(roomCoord.current !== this.state.roomChange);
+
       if (roomCoord.current !== this.state.roomChange) {
         let newNewMap = newMap.map(row =>
           row.map(room => {
             room = 'O';
-            // console.log(room);
             return room;
           })
         );
+
         newNewMap[roomCoord.y][roomCoord.x] = 'X';
-        // console.log('this is the new map', newNewMap);
+
         this.setState({
           roomChange: roomCoord.current,
           map: newNewMap
         });
       } else {
         newMap[roomCoord.y][roomCoord.x] = 'X';
-        // console.log(newMap);
+
         this.setState({
           map: newMap
         });
       }
     });
   };
+
   handleclick = link => {
     link.preventDefault();
   };
+
   render() {
     return (
       <div className="sideways">
