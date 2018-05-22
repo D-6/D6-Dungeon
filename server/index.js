@@ -3,8 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const compression = require('compression');
-const session = require('express-session');
-const passport = require('passport');
+const session = require('express-session')
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./db');
 const sessionStore = new SequelizeStore({ db });
@@ -27,13 +26,6 @@ writeLevelFiles();
 if (process.env.NODE_ENV !== 'production') require('../secrets');
 
 // passport registration
-passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser((id, done) =>
-  db.models.user
-    .findById(id)
-    .then(user => done(null, user))
-    .catch(done)
-);
 
 const createApp = () => {
   // logging middleware
@@ -55,11 +47,8 @@ const createApp = () => {
       saveUninitialized: false
     })
   );
-  app.use(passport.initialize());
-  app.use(passport.session());
 
-  // auth and api routes
-  app.use('/auth', require('./auth'));
+  // api routes
   app.use('/api', require('./api'));
 
   // static file-serving middleware
