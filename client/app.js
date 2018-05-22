@@ -1,8 +1,5 @@
 import React from 'react';
-
-import { Navbar } from './components';
-import Routes from './routes';
-import Game from './components/Game';
+import { Game } from './components';
 
 const App = () => {
   return (

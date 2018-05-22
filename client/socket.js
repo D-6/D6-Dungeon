@@ -206,16 +206,6 @@ const setRooms = rooms => {
       Phaser.Tilemap.TILED_JSON
     );
   });
-
-  // rooms.forEach(((room, i) => {
-  //   const { x, y } = room.position;
-  //   D6Dungeon.game.load.tilemap(
-  //     `level1_${x}-${y}`,
-  //     null,
-  //     room,
-  //     Phaser.Tilemap.TILED_JSON
-  //   );
-  // });
 };
 
 const updateEnemy = ({ currentRoom, enemy }) => {
@@ -224,10 +214,6 @@ const updateEnemy = ({ currentRoom, enemy }) => {
 
 socket.on('connect', () => {
   console.log('Connected!');
-});
-
-socket.on('setIntervalTest', arg => {
-  console.log(arg);
 });
 
 socketFunctions(socket);
