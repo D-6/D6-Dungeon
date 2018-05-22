@@ -34,10 +34,10 @@ class Game extends Component {
       });
     });
 
-    socket.on('updateMap', roomCoord => {
+    socket.on('updateMap', ({ x, y, currentLevel }) => {
       let newMap = this.state.map;
 
-      if (roomCoord.current !== this.state.roomChange) {
+      if (currentLevel !== this.state.roomChange) {
         let newNewMap = newMap.map(row =>
           row.map(room => {
             room = 'O';
@@ -45,14 +45,14 @@ class Game extends Component {
           })
         );
 
-        newNewMap[roomCoord.y][roomCoord.x] = 'X';
+        newNewMap[y][x] = 'X';
 
         this.setState({
-          roomChange: roomCoord.current,
+          roomChange: currentLevel,
           map: newNewMap
         });
       } else {
-        newMap[roomCoord.y][roomCoord.x] = 'X';
+        newMap[y][x] = 'X';
 
         this.setState({
           map: newMap

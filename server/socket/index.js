@@ -285,45 +285,37 @@ module.exports = io => {
     const setRoom = ({ gameId, gameRoom }) => {
       currentRoom[gameId] = gameRoom;
 
-      let currentFloor = Number(gameRoom[5]);
-      let floorX = Number(gameRoom[7]);
-      let floorY = 6 - gameRoom[9];
-      socket.emit('updateMap', { x: floorX, y: floorY, current: currentFloor });
+      const currentLevel = +gameRoom[5];
+      const x = +gameRoom[7];
+      const y = 6 - gameRoom[9];
+      socket.emit('updateMap', { x, y, currentLevel });
     };
 
     const nextRoomReady = ({ gameId, socketId, nextRoom, direction }) => {
       if (players[gameId]) {
         players[gameId][socketId].nextRoom = nextRoom;
 
-        // const allReady = Object.keys(players[gameId]).every(player => {
-        //   return players[gameId][player].nextRoom === nextRoom;
-        // });
-
         const enemiesDead =
           Object.keys(enemies[gameId][currentRoom[gameId]]).length === 0;
 
-        if (
-          // allReady &&
-          enemiesDead &&
-          Object.keys(players[gameId]).length >= 1
-        ) {
+        if (enemiesDead && Object.keys(players[gameId]).length >= 1) {
           const position = {};
           switch (direction) {
-            case 'east':
-              position.x = 1056;
-              position.y = 416;
+            case 'north':
+              position.x = 608;
+              position.y = 160;
               break;
-            case 'west':
+            case 'east':
               position.x = 160;
               position.y = 416;
               break;
-            case 'north':
+            case 'south':
               position.x = 608;
               position.y = 662;
               break;
-            case 'south':
-              position.x = 608;
-              position.y = 160;
+            case 'west':
+              position.x = 1056;
+              position.y = 416;
               break;
             default:
               position.x = 608;
@@ -340,12 +332,6 @@ module.exports = io => {
           io
             .to(gameId)
             .emit('newRoom', { nextRoom, x: position.x, y: position.y });
-
-          // Attempt to get player2 to move into position quicker after a room change
-          // const lagTimer = setTimeout(() => {
-          //   io.to(gameId).emit('player2Move', { x: position.x, y: position.y });
-          //   clearTimeout(lagTimer);
-          // }, 300);
         }
       }
     };
