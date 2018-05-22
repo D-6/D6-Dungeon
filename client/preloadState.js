@@ -1,134 +1,22 @@
 import PIXI from 'expose-loader?PIXI!phaser-ce/build/custom/pixi.js';
 import p2 from 'expose-loader?p2!phaser-ce/build/custom/p2.js';
 import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js';
+import {
+  preloadAudio,
+  preloadSprites,
+  preloadTilemaps
+} from './preload_assets';
 
 /* global D6Dungeon */
 
 export default () => ({
   preload() {
-    // Won't pause on loss of focus
     D6Dungeon.game.stage.disableVisibilityChange = true;
-
     D6Dungeon.game.physics.startSystem(Phaser.Physics.P2JS);
     D6Dungeon.game.physics.p2.setImpactEvents(true);
 
-    D6Dungeon.game.load.audio('boss-battle', 'assets/audio/boss-battle-2.mp3');
-
-    D6Dungeon.game.load.image('level1Image', 'assets/tilemaps/level_1.png');
-    D6Dungeon.game.load.image('level2Image', 'assets/tilemaps/level_2.png');
-    D6Dungeon.game.load.image('level3Image', 'assets/tilemaps/level_3.png');
-
-    D6Dungeon.game.load.tilemap(
-      'floorDoor',
-      'assets/tilemaps/floor_door.json',
-      null,
-      Phaser.Tilemap.TILED_JSON
-    );
-
-    D6Dungeon.game.load.image('fist', 'assets/items/fist.png');
-    D6Dungeon.game.load.image('potion', 'assets/items/Potion_42.png');
-    D6Dungeon.game.load.image('bullet', 'assets/items/Food_01.png');
-    D6Dungeon.game.load.image('dummyBullet', 'assets/items/Food_01.png');
-    D6Dungeon.game.load.image('blood', 'assets/items/Misc_08.png');
-
-
-    D6Dungeon.game.load.image(
-      'wizard',
-      'assets/character_sprites/wizard_idle_1.png'
-    );
-
-    D6Dungeon.game.load.spritesheet(
-      'hearts',
-      'assets/character_sprites/binding_hearts.png',
-      130,
-      136.25
-    );
-
-    D6Dungeon.game.load.spritesheet(
-      'weasel',
-      'assets/character_sprites/WeaselA.png',
-      16,
-      16
-    );
-
-    D6Dungeon.game.load.atlasJSONHash(
-      'spike-head',
-      'assets/monster_sprites/spike-head.png',
-      'assets/monster_sprites/spike-head.json'
-    );
-
-    D6Dungeon.game.load.atlasJSONHash(
-      'cruncher',
-      'assets/monster_sprites/cruncher.png',
-      'assets/monster_sprites/cruncher.json'
-    );
-
-    D6Dungeon.game.load.atlasJSONHash(
-      'skull-biter',
-      'assets/monster_sprites/skull-biter.png',
-      'assets/monster_sprites/skull-biter.json'
-    );
-
-    D6Dungeon.game.load.atlasJSONHash(
-      'shadow-boy-boss',
-      'assets/monster_sprites/shadow-boss.png',
-      'assets/monster_sprites/shadow-boss.json'
-    );
-
-    D6Dungeon.game.load.atlasJSONHash(
-      'red-horned-bee',
-      'assets/monster_sprites/red-horned-bee.png',
-      'assets/monster_sprites/red-horned-bee.json'
-    );
-
-    D6Dungeon.game.load.spritesheet(
-      'golem',
-      'assets/monster_sprites/HulkA.png',
-      16,
-      16
-    );
-
-    // Patiently wait for the server sockets to come back with player1 data
-    const waitForSockets = setInterval(() => {
-      const { gameId, player1 } = D6Dungeon.game.state;
-      if (player1 && gameId) {
-        let player1Key;
-        let player2Key;
-
-        if (player1.socketId === gameId) {
-          player1Key = 'player1';
-          player2Key = 'player2';
-        } else {
-          player1Key = 'player2';
-          player2Key = 'player1';
-        }
-
-        D6Dungeon.game.load.atlasJSONHash(
-          player1Key,
-          'assets/character_sprites/nerd.png',
-          'assets/character_sprites/nerd.json'
-        );
-        D6Dungeon.game.load.atlasJSONHash(
-          player2Key,
-          'assets/character_sprites/girl.png',
-          'assets/character_sprites/girl.json'
-        );
-
-        this.delayCreate();
-        clearInterval(waitForSockets);
-      }
-    }, 50);
-  },
-
-  // Patiently wait for the player images to load
-  delayCreate() {
-    const waitForPlayerSprites = setInterval(() => {
-      const player1Loaded = D6Dungeon.game.cache._cache.image.player1;
-      const player2Loaded = D6Dungeon.game.cache._cache.image.player2;
-      if (player1Loaded && player2Loaded) {
-        D6Dungeon.game.state.start('level1_3-3', true, false);
-        clearInterval(waitForPlayerSprites);
-      }
-    }, 50);
+    preloadAudio();
+    preloadTilemaps();
+    preloadSprites();
   }
 });
