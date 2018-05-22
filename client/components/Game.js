@@ -82,7 +82,7 @@ class Game extends Component {
           <p className="minimap">{this.state.map[5].join(' ')}</p>
           <p className="minimap">{this.state.map[6].join(' ')}</p>
         </div>
-        <div>
+        <div id="instructions">
           <p>W, A, S, D - Movement</p>
           <p>Arrows - Shooting</p>
         </div>
