@@ -14,7 +14,7 @@ App: https://d6-dungeon.herokuapp.com/
 
 # About the Game
 
-D6 Dungeon is a multiplayer randomly generated rougelike dungeon crawler. Players take the challenger of clearing the dungeon with a friend, and work together to defeat monsters, power up with items, and defeat the level boss. Traversing downwards after each boss, players are faced with newly generated levels, to give a fresh gameplay experience.
+D6 Dungeon is a multiplayer roguelike dungeon crawler. Players take the challenge of clearing the dungeon with a friend, and work together to defeat monsters, power up with items, and defeat the level's boss. Traversing downwards after each boss, players are faced with newly generated levels, to give a fresh gameplay experience.
 
 ## Instructions
 
