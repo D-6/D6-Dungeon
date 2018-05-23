@@ -5,7 +5,7 @@ App: https://d6-dungeon.herokuapp.com/
 # The Team
 
 * Tyler Brooks
-* Roberty Goon
+* Robert Goon
 * Eugene Park
 
 # Demo
